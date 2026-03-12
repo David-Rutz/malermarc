@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MalerMarc Freiburghaus GmbH – Maler & Dekorative Wandgestaltung Bern</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #F5F0E8;
+      --warm-white: #FAF7F2;
+      --charcoal: #1C1A17;
+      --mid: #4A4540;
+      --gold: #B8860B;
+      --gold-light: #D4A017;
+      --accent: #C17F3A;
+      --light-border: #E0D8CC;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--warm-white);
+      color: var(--charcoal);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 4rem;
+      background: rgba(250,247,242,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--light-border);
+      transition: padding 0.3s;
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--charcoal);
+      letter-spacing: 0.02em;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--mid); font-size: 0.88rem;
+      letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--charcoal); color: var(--cream) !important;
+      padding: 0.6rem 1.4rem; border-radius: 2px;
+    }
+    .nav-cta:hover { background: var(--gold); color: var(--charcoal) !important; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-left {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 10rem 5rem 6rem 7rem;
+      background: var(--warm-white);
+      position: relative; z-index: 2;
+    }
+    .hero-eyebrow {
+      font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); font-weight: 500; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block; width: 30px; height: 1px; background: var(--gold);
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 4vw, 4.5rem);
+      line-height: 1.08; font-weight: 700;
+      color: var(--charcoal); margin-bottom: 1.8rem;
+    }
+    .hero h1 em {
+      font-style: italic; color: var(--gold);
+    }
+    .hero-sub {
+      font-size: 1rem; line-height: 1.8; color: var(--mid);
+      max-width: 420px; margin-bottom: 3rem; font-weight: 300;
+    }
+    .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--charcoal); color: var(--cream);
+      padding: 1rem 2.2rem; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+      letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+      text-decoration: none; display: inline-block;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--gold); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent; color: var(--charcoal);
+      padding: 1rem 2.2rem; border: 1.5px solid var(--charcoal); cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+      letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+      text-decoration: none; display: inline-block;
+      transition: all 0.25s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .hero-stats {
+      margin-top: 4rem; display: flex; gap: 3rem;
+      padding-top: 2.5rem; border-top: 1px solid var(--light-border);
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--charcoal);
+    }
+    .stat-label { font-size: 0.8rem; color: var(--mid); letter-spacing: 0.05em; text-transform: uppercase; }
+
+    .hero-right {
+      position: relative; overflow: hidden;
+    }
+    .hero-image-stack {
+      width: 100%; height: 100%; position: relative;
+    }
+    .hero-bg {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: brightness(0.85) saturate(1.1);
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(184,134,11,0.15) 0%, rgba(28,26,23,0.3) 100%);
+    }
+    .hero-badge {
+      position: absolute; bottom: 3rem; left: -2.5rem;
+      background: var(--charcoal); color: var(--cream);
+      padding: 1.5rem 2rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-style: italic;
+      max-width: 200px; text-align: center;
+      line-height: 1.5;
+    }
+    .hero-badge strong { display: block; font-family: 'DM Sans', sans-serif; font-style: normal; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-light); margin-top: 0.4rem; }
+
+    /* PLACEHOLDER HERO IMAGE - painted texture */
+    .hero-canvas {
+      width: 100%; height: 100%;
+      background:
+        linear-gradient(165deg, #C17F3A22 0%, transparent 40%),
+        linear-gradient(to bottom, #2C2520, #1C1A17);
+      position: relative; overflow: hidden;
+    }
+    .paint-stroke {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.12;
+      background: var(--gold-light);
+    }
+    .ps1 { width: 500px; height: 500px; top: -100px; right: -100px; }
+    .ps2 { width: 300px; height: 700px; top: 200px; left: 50px; background: #C17F3A; opacity: 0.08; border-radius: 40%; transform: rotate(20deg); }
+    .ps3 { width: 200px; height: 200px; bottom: 100px; right: 150px; background: var(--cream); }
+    .hero-img-text {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      text-align: center; color: var(--cream);
+    }
+    .hero-img-text .big-m {
+      font-family: 'Playfair Display', serif; font-size: 12rem; opacity: 0.06;
+      line-height: 1; user-select: none;
+    }
+
+    /* SECTION GENERAL */
+    section { padding: 7rem 7rem; }
+    .section-label {
+      font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); font-weight: 500; margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3vw, 3rem);
+      line-height: 1.15; color: var(--charcoal);
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    /* LEISTUNGEN */
+    .services { background: var(--cream); }
+    .services-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; }
+    .services-header p { max-width: 380px; line-height: 1.8; color: var(--mid); font-weight: 300; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .service-card {
+      background: var(--warm-white); padding: 3rem 2.5rem;
+      border: 1px solid var(--light-border);
+      transition: all 0.3s; cursor: default; position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: var(--gold); transform: scaleX(0); transform-origin: left;
+      transition: transform 0.35s;
+    }
+    .service-card:hover { background: var(--charcoal); transform: translateY(-4px); }
+    .service-card:hover .svc-num, .service-card:hover .svc-title, .service-card:hover .svc-desc { color: var(--cream); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .svc-num {
+      font-family: 'Playfair Display', serif; font-size: 3.5rem;
+      color: var(--light-border); line-height: 1; margin-bottom: 1.5rem;
+      transition: color 0.3s;
+    }
+    .svc-title {
+      font-family: 'Playfair Display', serif; font-size: 1.2rem;
+      color: var(--charcoal); margin-bottom: 1rem; transition: color 0.3s;
+    }
+    .svc-desc { font-size: 0.9rem; line-height: 1.8; color: var(--mid); transition: color 0.3s; font-weight: 300; }
+
+    /* ÜBER MARC */
+    .about { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+    .about-visual {
+      position: relative;
+    }
+    .about-main-img {
+      width: 100%; aspect-ratio: 4/5;
+      background: linear-gradient(160deg, #2C2520 0%, #1C1A17 100%);
+      position: relative; overflow: hidden;
+    }
+    .about-accent-box {
+      position: absolute; bottom: -2rem; right: -2rem;
+      width: 180px; height: 180px;
+      background: var(--gold); display: flex;
+      align-items: center; justify-content: center; flex-direction: column;
+      text-align: center; padding: 1.5rem;
+    }
+    .accent-years {
+      font-family: 'Playfair Display', serif; font-size: 3rem;
+      color: var(--charcoal); line-height: 1;
+    }
+    .accent-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--charcoal); font-weight: 600; }
+    .about-content { padding: 2rem 0; }
+    .about-content p { font-size: 0.97rem; line-height: 1.9; color: var(--mid); font-weight: 300; margin-bottom: 1.5rem; }
+    .about-features { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2.5rem; }
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 0.8rem;
+      padding: 1rem; background: var(--cream); border-left: 2px solid var(--gold);
+    }
+    .feature-icon { color: var(--gold); font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .feature-text { font-size: 0.85rem; line-height: 1.5; color: var(--mid); }
+
+    /* DEKORATIVE TECHNIKEN */
+    .deko { background: var(--charcoal); }
+    .deko .section-title { color: var(--cream); }
+    .deko .section-label { color: var(--gold-light); }
+    .deko-header { margin-bottom: 4rem; max-width: 600px; }
+    .deko-header p { color: #AAA49C; line-height: 1.9; font-weight: 300; margin-top: 1.5rem; }
+    .deko-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    .deko-card {
+      position: relative; overflow: hidden; cursor: pointer;
+      aspect-ratio: 3/4;
+    }
+    .deko-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.5s;
+    }
+    .deko-card:hover .deko-bg { transform: scale(1.05); }
+    .deko-info {
+      position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem;
+      background: linear-gradient(to top, rgba(28,26,23,0.95) 0%, transparent 100%);
+    }
+    .deko-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--cream); }
+    .deko-brand { font-size: 0.75rem; color: var(--gold-light); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.3rem; }
+
+    /* Placeholder deko backgrounds */
+    .deko-1 { background: linear-gradient(135deg, #8B6914 0%, #C17F3A 50%, #E8C47A 100%); }
+    .deko-2 { background: linear-gradient(160deg, #2C3E50 0%, #3A5A72 50%, #5B8DB8 100%); }
+    .deko-3 { background: linear-gradient(145deg, #4A3728 0%, #7A5C44 50%, #A07856 100%); }
+    .deko-4 { background: linear-gradient(155deg, #1A3A2A 0%, #2D6B4A 50%, #4A9068 100%); }
+
+    /* PROZESS */
+    .process { background: var(--cream); }
+    .process-inner { display: grid; grid-template-columns: 1fr 2fr; gap: 6rem; }
+    .process-steps { display: flex; flex-direction: column; gap: 0; }
+    .process-step {
+      display: flex; gap: 1.5rem; padding: 2rem 0;
+      border-bottom: 1px solid var(--light-border);
+      transition: all 0.2s;
+    }
+    .process-step:last-child { border-bottom: none; }
+    .step-num {
+      font-family: 'Playfair Display', serif; font-size: 2rem;
+      color: var(--light-border); flex-shrink: 0; width: 2.5rem;
+      line-height: 1;
+    }
+    .step-content h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: 0.5rem; }
+    .step-content p { font-size: 0.9rem; color: var(--mid); line-height: 1.7; font-weight: 300; }
+
+    /* MARKEN */
+    .brands { padding: 5rem 7rem; border-top: 1px solid var(--light-border); }
+    .brands-label { text-align: center; font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 2.5rem; }
+    .brands-row { display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap; align-items: center; }
+    .brand-name {
+      font-family: 'DM Sans', sans-serif; font-size: 1.1rem; font-weight: 500;
+      color: #C0B8AC; letter-spacing: 0.06em; text-transform: uppercase;
+      transition: color 0.2s; cursor: default;
+    }
+    .brand-name:hover { color: var(--gold); }
+
+    /* KONTAKT */
+    .contact { background: var(--charcoal); display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .contact-left { padding: 7rem; }
+    .contact-left .section-title { color: var(--cream); }
+    .contact-left .section-label { color: var(--gold-light); }
+    .contact-left p { color: #AAA49C; line-height: 1.9; margin-top: 1.5rem; font-weight: 300; }
+    .contact-info { margin-top: 3rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .contact-item { display: flex; align-items: center; gap: 1rem; }
+    .contact-icon { width: 44px; height: 44px; border: 1px solid #3A3630; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 1rem; flex-shrink: 0; }
+    .contact-detail { color: var(--cream); font-size: 0.95rem; }
+    .contact-detail small { display: block; color: #6A6460; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
+    .contact-right {
+      background: var(--warm-white); padding: 7rem;
+    }
+    .contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.5rem; color: var(--mid); }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%; padding: 0.9rem 1rem;
+      background: var(--cream); border: 1px solid var(--light-border);
+      color: var(--charcoal); font-family: 'DM Sans', sans-serif; font-size: 0.92rem;
+      transition: border-color 0.2s; outline: none; resize: none;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--gold);
+    }
+    .form-group textarea { min-height: 130px; }
+    .form-submit {
+      background: var(--charcoal); color: var(--cream); padding: 1rem 2rem;
+      border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 500; width: 100%; transition: background 0.25s;
+      margin-top: 0.5rem;
+    }
+    .form-submit:hover { background: var(--gold); color: var(--charcoal); }
+
+    /* FOOTER */
+    footer {
+      background: #111009; padding: 2.5rem 7rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid #2A2820;
+    }
+    .footer-logo { font-family: 'Playfair Display', serif; color: var(--cream); font-size: 1rem; }
+    .footer-logo span { color: var(--gold); }
+    .footer-text { font-size: 0.8rem; color: #5A5650; letter-spacing: 0.04em; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { font-size: 0.8rem; color: #5A5650; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-eyebrow { animation: fadeUp 0.7s ease 0.2s both; }
+    .hero h1 { animation: fadeUp 0.7s ease 0.4s both; }
+    .hero-sub { animation: fadeUp 0.7s ease 0.6s both; }
+    .hero-buttons { animation: fadeUp 0.7s ease 0.8s both; }
+    .hero-stats { animation: fadeUp 0.7s ease 1s both; }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+      nav { padding: 1.2rem 2.5rem; }
+      .nav-links { gap: 1.8rem; }
+      section { padding: 5rem 3.5rem; }
+      .hero-left { padding: 8rem 3rem 5rem; }
+      .services-header { flex-direction: column; gap: 1.5rem; }
+      .deko-grid { grid-template-columns: 1fr 1fr; }
+      .contact { grid-template-columns: 1fr; }
+      .contact-left { padding: 5rem 3.5rem; }
+      .contact-right { padding: 5rem 3.5rem; }
+      footer { padding: 2rem 3.5rem; }
+      brands { padding: 4rem 3.5rem; }
+    }
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 8rem 2rem 4rem; }
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 4rem 1.5rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .about { grid-template-columns: 1fr; }
+      .process-inner { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem; }
+      .contact-left, .contact-right { padding: 3rem 1.5rem; }
+      .brands { padding: 3rem 1.5rem; }
+      .brands-row { gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Maler<span>Marc</span></div>
+  <ul class="nav-links">
+    <li><a href="#leistungen">Leistungen</a></li>
+    <li><a href="#ueber">Über mich</a></li>
+    <li><a href="#techniken">Dekorative Techniken</a></li>
+    <li><a href="#kontakt" class="nav-cta">Offerte anfragen</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Maler & Gipser · Köniz / Bern</div>
+    <h1>Handwerk,<br>das <em>Wände<br>verwandelt.</em></h1>
+    <p class="hero-sub">Über 20 Jahre Erfahrung in Malerarbeiten und dekorativen Wandgestaltungen. Persönlich, sorgfältig – von der ersten Idee bis zum finalen WoW-Effekt.</p>
+    <div class="hero-buttons">
+      <a href="#kontakt" class="btn-primary">Offerte anfragen</a>
+      <a href="#techniken" class="btn-outline">Dekorative Techniken</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">20+</div>
+        <div class="stat-label">Jahre Erfahrung</div>
+      </div>
+      <div>
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Projekte</div>
+      </div>
+      <div>
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Persönlich</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-canvas">
+      <div class="paint-stroke ps1"></div>
+      <div class="paint-stroke ps2"></div>
+      <div class="paint-stroke ps3"></div>
+      <div class="hero-img-text">
+        <div class="big-m">M</div>
+      </div>
+    </div>
+    <div class="hero-badge">
+      «Der WoW-Effekt ist garantiert.»
+      <strong>Marc Freiburghaus</strong>
+    </div>
+  </div>
+</section>
+
+<!-- LEISTUNGEN -->
+<section class="services" id="leistungen">
+  <div class="services-header">
+    <div>
+      <div class="section-label">Was ich anbiete</div>
+      <h2 class="section-title">Meine <em>Leistungen</em></h2>
+    </div>
+    <p>Sämtliche Malerarbeiten im Innen- und Aussenbereich, ausgeführt mit Spezialwerkzeug und hochwertigen Produkten namhafter Marken.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="svc-num">01</div>
+      <h3 class="svc-title">Innenmalerarbeiten</h3>
+      <p class="svc-desc">Wände, Decken, Türen und Einbauschränke – sauber, sorgfältig und termingerecht ausgeführt. Farben nach Wahl oder Beratung.</p>
+    </div>
+    <div class="service-card">
+      <div class="svc-num">02</div>
+      <h3 class="svc-title">Aussenmalerarbeiten</h3>
+      <p class="svc-desc">Fassaden, Balkone und Garagentore. Witterungsbeständige Verarbeitung mit langlebigen Qualitätsprodukten für dauerhaften Schutz.</p>
+    </div>
+    <div class="service-card">
+      <div class="svc-num">03</div>
+      <h3 class="svc-title">Dekorative Wandgestaltung</h3>
+      <p class="svc-desc">Einzigartige Spachteltechniken, kreative Wandbilder und dekorative Effekte – für Räume, die in Erinnerung bleiben.</p>
+    </div>
+    <div class="service-card">
+      <div class="svc-num">04</div>
+      <h3 class="svc-title">Tapezierarbeiten</h3>
+      <p class="svc-desc">Klassische Vlies- und Strukturtapeten bis hin zu modernen Mustertapeten. Präzise Verarbeitung für ein makelloses Ergebnis.</p>
+    </div>
+    <div class="service-card">
+      <div class="svc-num">05</div>
+      <h3 class="svc-title">Renovierungen</h3>
+      <p class="svc-desc">Wohnungen, Häuser, Büros und Geschäftsräume. Ich bringe Ihre Räume wieder zum Strahlen – pünktlich und zuverlässig.</p>
+    </div>
+    <div class="service-card">
+      <div class="svc-num">06</div>
+      <h3 class="svc-title">Spezialarbeiten</h3>
+      <p class="svc-desc">Täfer lackieren, Küchen und Badezimmer auffrischen, individuelle Projekte aller Art. Dank Netzwerk auch Grossaufträge möglich.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ÜBER MARC -->
+<section id="ueber" style="padding: 7rem;">
+  <div class="about">
+    <div class="about-visual">
+      <div class="about-main-img">
+        <svg width="100%" height="100%" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="rg" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#3D2F22" />
+              <stop offset="100%" stop-color="#1C1A17" />
+            </radialGradient>
+          </defs>
+          <rect width="400" height="500" fill="url(#rg)"/>
+          <!-- Paintbrush strokes decoration -->
+          <ellipse cx="200" cy="250" rx="80" ry="120" fill="none" stroke="#B8860B" stroke-width="0.5" opacity="0.3"/>
+          <ellipse cx="200" cy="250" rx="120" ry="180" fill="none" stroke="#B8860B" stroke-width="0.5" opacity="0.15"/>
+          <text x="200" y="270" text-anchor="middle" font-family="serif" font-size="120" fill="#B8860B" opacity="0.05">M</text>
+          <!-- Icon silhouette: paintbrush -->
+          <line x1="140" y1="160" x2="260" y2="340" stroke="#C17F3A" stroke-width="12" stroke-linecap="round" opacity="0.4"/>
+          <ellipse cx="140" cy="155" rx="22" ry="28" fill="#D4A017" opacity="0.35" transform="rotate(-30 140 155)"/>
+          <text x="200" y="420" text-anchor="middle" font-family="serif" font-size="14" fill="#B8860B" opacity="0.6" letter-spacing="4">MALERMARC</text>
+        </svg>
+      </div>
+      <div class="about-accent-box">
+        <div class="accent-years">20+</div>
+        <div class="accent-label">Jahre<br>Erfahrung</div>
+      </div>
+    </div>
+    <div class="about-content">
+      <div class="section-label">Über mich</div>
+      <h2 class="section-title">Marc Freiburghaus –<br><em>Ihr Maler in Bern</em></h2>
+      <p style="margin-top:1.5rem">Herzlich willkommen! Ich bin Marc Freiburghaus, ausgebildeter Maler und Gipser mit Sitz in Liebefeld/Köniz bei Bern. Mit mehr als 20 Jahren Berufserfahrung bringe ich Leidenschaft, Präzision und Kreativität in jedes Projekt.</p>
+      <p>Was mich von grossen Betrieben unterscheidet: Ich bin persönlich bei jedem Auftrag vor Ort – von der Beratung bis zur Schlüsselübergabe. Ihr Projekt ist bei mir in besten Händen, egal ob Einzimmerwohnung oder repräsentative Büroräume.</p>
+      <p>Falls ein Auftrag einmal meine Kapazität übersteigt, greife ich auf ein Netzwerk von geprüften Malerkollegen zurück – so bleiben Qualität und Termin immer garantiert.</p>
+      <div class="about-features">
+        <div class="feature-item">
+          <div class="feature-icon">✦</div>
+          <div class="feature-text">Persönliche Beratung von Anfang bis Ende</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">✦</div>
+          <div class="feature-text">Nur namhafte Qualitätsprodukte</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">✦</div>
+          <div class="feature-text">Dekorative Spezialtechniken</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">✦</div>
+          <div class="feature-text">Region Bern & Umgebung</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEKORATIVE TECHNIKEN -->
+<section class="deko" id="techniken">
+  <div class="deko-header">
+    <div class="section-label">Das Besondere</div>
+    <h2 class="section-title">Dekorative <em>Wandgestaltung</em></h2>
+    <p>Nur weisse Wände sind zu langweilig? Ich verwandle Ihre Räume mit exklusiven Spachteltechniken und Effektfarben in etwas Einzigartiges. Der WoW-Effekt ist garantiert.</p>
+  </div>
+  <div class="deko-grid">
+    <div class="deko-card">
+      <div class="deko-bg deko-1"></div>
+      <div class="deko-info">
+        <div class="deko-name">Venezianischer Stuck</div>
+        <div class="deko-brand">Caparol · Valpaint</div>
+      </div>
+    </div>
+    <div class="deko-card">
+      <div class="deko-bg deko-2"></div>
+      <div class="deko-info">
+        <div class="deko-name">Zero Magic Touch</div>
+        <div class="deko-brand">Exklusive Effekte</div>
+      </div>
+    </div>
+    <div class="deko-card">
+      <div class="deko-bg deko-3"></div>
+      <div class="deko-info">
+        <div class="deko-name">Giorgio Graesan</div>
+        <div class="deko-brand">Dekorative Spachtelung</div>
+      </div>
+    </div>
+    <div class="deko-card">
+      <div class="deko-bg deko-4"></div>
+      <div class="deko-info">
+        <div class="deko-name">Individuelle Techniken</div>
+        <div class="deko-brand">Nach Ihrem Wunsch</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROZESS -->
+<section class="process">
+  <div class="process-inner">
+    <div>
+      <div class="section-label">Mein Vorgehen</div>
+      <h2 class="section-title">Alles aus<br><em>einer Hand</em></h2>
+      <p style="margin-top:1.5rem; color: var(--mid); font-weight:300; line-height:1.9;">Von der ersten Kontaktaufnahme bis zum finalen Resultat begleite ich Sie persönlich durch den gesamten Prozess.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3>Erstgespräch & Beratung</h3>
+          <p>Ich nehme mir Zeit für Ihre Ideen und Wünsche. Vor Ort analysieren wir gemeinsam die Möglichkeiten und entwickeln das Konzept.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3>Offerte & Planung</h3>
+          <p>Sie erhalten eine transparente Offerte mit klaren Preisen. Wir vereinbaren den Termin, der für Sie am besten passt.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3>Ausführung</h3>
+          <p>Ich arbeite sauber, pünktlich und sorgfältig – mit Spezialwerkzeug und ausschliesslich hochwertigen Materialien bekannter Marken.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3>Abnahme & WoW-Effekt</h3>
+          <p>Gemeinsam nehmen wir das Ergebnis ab. Erst wenn Sie vollständig zufrieden sind, ist die Arbeit erledigt.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKEN -->
+<div class="brands">
+  <div class="brands-label">Ausschliesslich Qualitätsprodukte von</div>
+  <div class="brands-row">
+    <div class="brand-name">Caparol</div>
+    <div class="brand-name">Knuchelfarben</div>
+    <div class="brand-name">Bosshard</div>
+    <div class="brand-name">Brillux</div>
+    <div class="brand-name">Sikkens</div>
+    <div class="brand-name">Valpaint</div>
+  </div>
+</div>
+
+<!-- KONTAKT -->
+<section class="contact" id="kontakt" style="padding:0">
+  <div class="contact-left">
+    <div class="section-label">Jetzt anfragen</div>
+    <h2 class="section-title">Offerte<br><em>anfordern</em></h2>
+    <p>Ich freue mich auf Ihr Projekt. Kontaktieren Sie mich für eine kostenlose Beratung und ein unverbindliches Angebot.</p>
+    <div class="contact-info">
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div class="contact-detail">
+          <small>Telefon</small>
+          076 337 33 48
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">✉</div>
+        <div class="contact-detail">
+          <small>E-Mail</small>
+          info@malermarc.ch
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <div class="contact-detail">
+          <small>Standort</small>
+          Spiegelstrasse 2, Köniz/Bern
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🕐</div>
+        <div class="contact-detail">
+          <small>Erreichbarkeit</small>
+          Mo–Fr, 07:00 – 18:00 Uhr
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="contact-right">
+    <div class="contact-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vorname</label>
+          <input type="text" placeholder="Max">
+        </div>
+        <div class="form-group">
+          <label>Nachname</label>
+          <input type="text" placeholder="Mustermann">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>E-Mail</label>
+        <input type="email" placeholder="max@beispiel.ch">
+      </div>
+      <div class="form-group">
+        <label>Telefon</label>
+        <input type="tel" placeholder="+41 76 000 00 00">
+      </div>
+      <div class="form-group">
+        <label>Art der Arbeit</label>
+        <select>
+          <option>Innenmalerarbeiten</option>
+          <option>Aussenmalerarbeiten</option>
+          <option>Dekorative Wandgestaltung</option>
+          <option>Tapezierarbeiten</option>
+          <option>Renovierung</option>
+          <option>Anderes</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Ihre Nachricht</label>
+        <textarea placeholder="Beschreiben Sie Ihr Projekt kurz..."></textarea>
+      </div>
+      <button class="form-submit">Unverbindliche Offerte anfragen →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Maler<span>Marc</span> Freiburghaus GmbH</div>
+  <div class="footer-text">© 2025 MalerMarc Freiburghaus GmbH · Köniz, Bern</div>
+  <div class="footer-links">
+    <a href="#">Impressum</a>
+    <a href="#">Datenschutz</a>
+    <a href="tel:0763373348">076 337 33 48</a>
+  </div>
+</footer>
+
+</body>
+</html>
