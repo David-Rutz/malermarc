@@ -6,6 +6,7 @@
 <title>MalerMarc · Köniz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Cormorant+Garamond:ital,wght@1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- ══ VECTORIZED LOGO as reusable SVG symbol ══════════════════════════════
      Green splat + MALER inside + MARC graffiti right — transparent bg
@@ -437,7 +438,7 @@ footer{
   </div>
 
   <div class="hero-foot">
-    <p class="hero-sub">Über 20 Jahre Erfahrung. Persönlich, präzise und mit echter Leidenschaft – von der ersten Idee bis zur fertigen Wand.</p>
+    <p class="hero-sub" id="hero-sub-text">Über 20 Jahre Erfahrung. Persönlich, präzise und mit echter Leidenschaft – von der ersten Idee bis zur fertigen Wand.</p>
     <a href="#contact" class="blobtn"><span class="btn-label">Offerte anfragen →</span></a>
   </div>
 </section>
@@ -455,9 +456,9 @@ footer{
   <div class="reveal">
     <div class="about-num" id="counter">20</div>
     <div class="about-tag">Jahre Berufserfahrung</div>
-    <p class="about-txt"><strong>Marc Freiburghaus</strong> – Ihr persönlicher Maler in Liebefeld / Köniz. Im grünen Renovierungs-Van mit dem markanten Farbklecks täglich in der Region Bern unterwegs. Alles aus einer Hand, von Ihrer ersten Idee bis zur fertigen Wand.</p>
+    <p class="about-txt" id="about-text"><strong>Marc Freiburghaus</strong> – Ihr persönlicher Maler in Liebefeld / Köniz. Im grünen Renovierungs-Van mit dem markanten Farbklecks täglich in der Region Bern unterwegs. Alles aus einer Hand, von Ihrer ersten Idee bis zur fertigen Wand.</p>
   </div>
-  <div class="reveal" data-d="2">
+  <div class="reveal" data-d="2" id="leistungen-list">
     <div class="svc-item"><span class="svc-n">Innen- &amp; Aussenmalerei</span><span class="svc-arr">→</span></div>
     <div class="svc-item"><span class="svc-n">Dekorative Spachteltechniken</span><span class="svc-arr">→</span></div>
     <div class="svc-item"><span class="svc-n">Renovierungen &amp; Sanierungen</span><span class="svc-arr">→</span></div>
@@ -473,29 +474,42 @@ footer{
   <div class="sc reveal" data-d="2"><div class="sn">1<b>×</b></div><div class="sl">Ansprechperson<br>von A bis Z</div></div>
 </section>
 
+<!-- ══ GALERIE ══════════════════════════════════════════════════════════════ -->
+<section id="galerie" class="pad" style="display:none">
+  <div class="reveal" style="text-align:center;margin-bottom:2.5rem">
+    <div class="about-tag">Unsere Arbeiten</div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em">Einblicke in <em style="font-family:'Cormorant Garamond',serif;font-style:italic">unsere Projekte</em></h2>
+  </div>
+  <div id="galerie-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem"></div>
+</section>
+
 <!-- ══ CONTACT ═════════════════════════════════════════════════════════════ -->
 <section id="contact" class="pad">
   <div class="reveal">
     <h2 class="c-head">Starten<br>wir Ihr<br><em>Projekt.</em></h2>
     <div class="c-info">
-      <div class="ci"><div class="l">Telefon</div><a href="tel:0763373348">076 337 33 48</a></div>
-      <div class="ci"><div class="l">E-Mail</div><a href="mailto:info@malermarc.ch">info@malermarc.ch</a></div>
-      <div class="ci"><div class="l">Adresse</div><span>Sportweg 5, 3097 Liebefeld</span></div>
-      <div class="ci"><div class="l">Instagram</div><a href="https://instagram.com/malermarc_freiburghaus" target="_blank">@malermarc_freiburghaus</a></div>
+      <div class="ci"><div class="l">Telefon</div><a href="tel:0763373348" id="contact-telefon">076 337 33 48</a></div>
+      <div class="ci"><div class="l">E-Mail</div><a href="/cdn-cgi/l/email-protection#a0c9cec6cfe0cdc1ccc5d2cdc1d2c38ec3c8" id="contact-email"><span class="__cf_email__" data-cfemail="8de4e3ebe2cde0ece1e8ffe0ecffeea3eee5">[email&#160;protected]</span></a></div>
+      <div class="ci"><div class="l">Adresse</div><span id="contact-adresse">Sportweg 5, 3097 Liebefeld</span></div>
+      <div class="ci"><div class="l">Instagram</div><a id="contact-ig" href="https://instagram.com/malermarc_freiburghaus" target="_blank">@malermarc_freiburghaus</a></div>
     </div>
   </div>
   <div class="reveal" data-d="2">
-    <form class="cform" onsubmit="return false">
+    <form class="cform" id="contact-form" onsubmit="submitForm(event)">
       <div class="fi-row">
-        <div class="fi"><input type="text" placeholder="Vorname"></div>
-        <div class="fi"><input type="text" placeholder="Nachname"></div>
+        <div class="fi"><input type="text" id="f-vorname" placeholder="Vorname"></div>
+        <div class="fi"><input type="text" id="f-nachname" placeholder="Nachname"></div>
       </div>
-      <div class="fi"><input type="email" placeholder="E-Mail-Adresse"></div>
-      <div class="fi"><input type="tel" placeholder="Telefonnummer"></div>
-      <div class="fi"><select><option value="" disabled selected>Leistung wählen…</option><option>Innenmalerei</option><option>Aussenmalerei</option><option>Spachteltechnik</option><option>Renovierung</option><option>Holzlackierung</option><option>Beratung</option></select></div>
-      <div class="fi"><textarea placeholder="Ihr Projekt…"></textarea></div>
+      <div class="fi"><input type="email" id="f-email" placeholder="E-Mail-Adresse"></div>
+      <div class="fi"><input type="tel" id="f-telefon" placeholder="Telefonnummer"></div>
+      <div class="fi" id="svc-select-wrap">
+        <select id="f-leistung"><option value="" disabled selected>Leistung wählen…</option><option>Innenmalerei</option><option>Aussenmalerei</option><option>Spachteltechnik</option><option>Renovierung</option><option>Holzlackierung</option><option>Beratung</option></select>
+      </div>
+      <div class="fi"><textarea id="f-nachricht" placeholder="Ihr Projekt…"></textarea></div>
+      <div id="form-success" style="display:none;color:#2e8f1a;padding:.5rem 0;font-size:.95rem">✅ Nachricht gesendet! Marc meldet sich bald.</div>
+      <div id="form-error" style="display:none;color:#e53935;padding:.5rem 0;font-size:.9rem"></div>
       <div class="csub">
-        <a href="mailto:info@malermarc.ch" class="blobtn"><span class="btn-label">Nachricht senden ✦</span></a>
+        <button type="submit" class="blobtn"><span class="btn-label" id="submit-label">Nachricht senden ✦</span></button>
       </div>
     </form>
   </div>
@@ -509,6 +523,113 @@ footer{
   <div class="fc">© 2025 malermarc.ch · Köniz</div>
 </footer>
 
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ═══════════════════════════════════════════════════════════════════════════
+//  !! HIER DEINE SUPABASE-DATEN EINTRAGEN !!
+// ═══════════════════════════════════════════════════════════════════════════
+const SUPABASE_URL  = 'https://zfyesnrezqupxolslbgx.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmeWVzbnJlenF1cHhvbHNsYmd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyOTIxOTcsImV4cCI6MjA4ODg2ODE5N30.8BeDmPJjYV7_UfGEW3E3wniq1HBx1_W85c-oxQuNuck';
+// ═══════════════════════════════════════════════════════════════════════════
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── Texte & Kontaktinfos laden ────────────────────────────────────────────
+async function loadInhalte() {
+  try {
+    const { data } = await sb.from('inhalte').select('*');
+    if (!data) return;
+    const map = {};
+    data.forEach(r => map[r.id] = r.wert);
+
+    if (map.hero_sub) document.getElementById('hero-sub-text').textContent = map.hero_sub;
+    if (map.about)    document.getElementById('about-text').textContent   = map.about;
+    if (map.telefon) {
+      const el = document.getElementById('contact-telefon');
+      el.textContent = map.telefon;
+      el.href = 'tel:' + map.telefon.replace(/\s/g,'');
+    }
+    if (map.email) {
+      const el = document.getElementById('contact-email');
+      el.textContent = map.email;
+      el.href = 'mailto:' + map.email;
+    }
+    if (map.adresse) document.getElementById('contact-adresse').textContent = map.adresse;
+    if (map.instagram) {
+      const el = document.getElementById('contact-ig');
+      el.textContent = '@' + map.instagram;
+      el.href = 'https://instagram.com/' + map.instagram;
+    }
+  } catch(e) { /* fail silently, use defaults */ }
+}
+
+// ── Leistungen laden ─────────────────────────────────────────────────────
+async function loadLeistungen() {
+  try {
+    const { data } = await sb.from('leistungen').select('*').eq('aktiv', true).order('reihenfolge');
+    if (!data || data.length === 0) return;
+    const el = document.getElementById('leistungen-list');
+    el.innerHTML = data.map(s =>
+      `<div class="svc-item"><span class="svc-n">${s.name}</span><span class="svc-arr">→</span></div>`
+    ).join('');
+    // Update select options in form too
+    const sel = document.getElementById('f-leistung');
+    sel.innerHTML = '<option value="" disabled selected>Leistung wählen…</option>' +
+      data.map(s => `<option>${s.name}</option>`).join('');
+  } catch(e) { /* fail silently */ }
+}
+
+// ── Galerie laden ─────────────────────────────────────────────────────────
+async function loadGalerie() {
+  try {
+    const { data } = await sb.from('galerie').select('*').order('reihenfolge');
+    if (!data || data.length === 0) return;
+    document.getElementById('galerie').style.display = 'block';
+    document.getElementById('galerie-grid').innerHTML = data.map(img =>
+      `<div style="border-radius:10px;overflow:hidden;aspect-ratio:1">
+        <img src="${img.url}" alt="${img.titel||''}" style="width:100%;height:100%;object-fit:cover"/>
+      </div>`
+    ).join('');
+  } catch(e) { /* fail silently */ }
+}
+
+// ── Kontaktformular absenden ──────────────────────────────────────────────
+async function submitForm(e) {
+  e.preventDefault();
+  const label = document.getElementById('submit-label');
+  const errEl = document.getElementById('form-error');
+  const okEl  = document.getElementById('form-success');
+  label.textContent = 'Wird gesendet…';
+  errEl.style.display = 'none';
+
+  const payload = {
+    vorname:  document.getElementById('f-vorname').value.trim(),
+    nachname: document.getElementById('f-nachname').value.trim(),
+    email:    document.getElementById('f-email').value.trim(),
+    telefon:  document.getElementById('f-telefon').value.trim(),
+    leistung: document.getElementById('f-leistung').value,
+    nachricht:document.getElementById('f-nachricht').value.trim(),
+  };
+
+  try {
+    const { error } = await sb.from('kontaktanfragen').insert(payload);
+    if (error) throw error;
+    document.getElementById('contact-form').reset();
+    okEl.style.display = 'block';
+    label.textContent = 'Gesendet ✓';
+  } catch(err) {
+    errEl.textContent = 'Fehler beim Senden. Bitte per Telefon oder E-Mail kontaktieren.';
+    errEl.style.display = 'block';
+    label.textContent = 'Nachricht senden ✦';
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadInhalte();
+  loadLeistungen();
+  loadGalerie();
+});
+</script>
 <script>
 // ── CURSOR ──────────────────────────────────────────
 const cur = document.getElementById('cur');
@@ -569,12 +690,3 @@ new IntersectionObserver(entries => {
     const step = ts => {
       if (!s) s = ts;
       const p = Math.min((ts - s) / 1600, 1);
-      cEl.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * 20) + (p >= 1 ? '+' : '');
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }
-}, {threshold:.5}).observe(cEl);
-</script>
-</body>
-</html>
