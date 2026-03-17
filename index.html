@@ -437,8 +437,8 @@
     background: linear-gradient(180deg, rgba(46,190,110,0.15) 0%, rgba(46,190,110,0.05) 70%, transparent 100%);
   }
 
-  /* ── ÜBER UNS ── */
-  #ueber-uns {
+  /* ── ÜBER MICH ── */
+  #ueber-mich {
     background: var(--bg2);
     display: grid; grid-template-columns: 1fr 1fr; gap: 6rem;
     align-items: center;
@@ -479,30 +479,6 @@
     font-size: 0.9rem;
   }
   .value-desc { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
-
-  /* ── FARBPALETTE / SCROLL COLOR SECTION ── */
-  #palette {
-    background: var(--bg);
-    text-align: center;
-    overflow: hidden;
-    position: relative;
-  }
-  .palette-row {
-    display: flex; gap: 0; margin-top: 3rem; border-radius: 12px; overflow: hidden;
-    height: 200px;
-  }
-  .palette-swatch {
-    flex: 1; display: flex; align-items: flex-end; padding: 1.2rem;
-    transition: flex 0.4s ease;
-    cursor: none; position: relative; overflow: hidden;
-  }
-  .palette-swatch:hover { flex: 2; }
-  .swatch-label {
-    font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    opacity: 0; transition: opacity 0.3s;
-  }
-  .palette-swatch:hover .swatch-label { opacity: 1; }
 
   /* ── FAQ ── */
   #faq { background: var(--bg2); }
@@ -687,7 +663,7 @@
     .nav-links { display: none; }
     .burger { display: block; }
     h1 { font-size: 2.8rem; }
-    #ueber-uns { grid-template-columns: 1fr; gap: 3rem; }
+    #ueber-mich { grid-template-columns: 1fr; gap: 3rem; }
     .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
     .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
     .hero-visual { display: none; }
@@ -780,7 +756,7 @@
   <ul class="nav-links">
     <li><a href="#leistungen">Leistungen</a></li>
     <li><a href="#referenzen">Referenzen</a></li>
-    <li><a href="#ueber-uns">Über uns</a></li>
+    <li><a href="#ueber-mich">Über mich</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#kontakt" class="nav-cta">Offerte</a></li>
   </ul>
@@ -871,7 +847,7 @@
       <div class="stat-label">Projekte</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num">10+</div>
+      <div class="stat-num">20+</div>
       <div class="stat-label">Jahre Erfahrung</div>
     </div>
     <div class="stat-item">
@@ -1017,11 +993,11 @@
   </div>
 </section>
 
-<!-- ÜBER UNS -->
+<!-- ÜBER MICH -->
 <div class="glow-line"></div>
-<section id="ueber-uns">
+<section id="ueber-mich">
   <div>
-    <div class="section-label reveal">Wer wir sind</div>
+    <div class="section-label reveal">Über mich</div>
     <h2 class="reveal reveal-delay-1">Handwerk mit<br><span style="color:var(--green)">Herzblut.</span></h2>
     <p class="reveal reveal-delay-2" style="color:rgba(255,255,255,0.6); line-height:1.8; font-size:0.95rem; max-width:480px; margin-bottom:0.5rem;">
       MalerMarc steht für Malerarbeiten, bei denen jedes Detail stimmt. Gegründet mit der Vision, Handwerk neu zu denken – weg vom Klischee, hin zum Design-Anspruch.
@@ -1099,24 +1075,77 @@
   </div>
 </section>
 
-<!-- FARBPALETTE -->
-<section id="palette" style="padding: 5rem 2.5rem;">
-  <div class="section-label reveal" style="justify-content:center;">Unsere Farben</div>
-  <h2 class="reveal reveal-delay-1" style="text-align:center;">Das MalerMarc<br><span style="color:var(--green)">Farbkonzept</span></h2>
+<!-- MARKEN & LIEFERANTEN -->
+<div class="glow-line"></div>
+<section id="marken" style="background: var(--bg);">
+  <div class="section-label reveal">Qualität beginnt beim Material</div>
+  <h2 class="reveal reveal-delay-1">Meine Marken &amp;<br><span style="color:var(--green)">Lieferanten</span></h2>
+  <p class="reveal reveal-delay-2" style="color:rgba(255,255,255,0.55); max-width:560px; line-height:1.8; font-size:0.95rem;">
+    Ich arbeite ausschliesslich mit führenden Herstellern zusammen – für Resultate, die dauerhaft überzeugen.
+  </p>
 
-  <div class="palette-row reveal reveal-delay-2">
-    <div class="palette-swatch" style="background:#2EBE6E;">
-      <div class="swatch-label" style="color:#000;">Maler Grün<br>#2EBE6E</div>
+  <div class="leistungen-grid reveal reveal-delay-3">
+
+    <div class="leistung-card">
+      <div class="leistung-icon">
+        <i data-lucide="droplets" width="22" height="22"></i>
+      </div>
+      <div class="leistung-title">Sikkens</div>
+      <div class="leistung-desc">Premiumfarben aus dem Hause AkzoNobel – entwickelt für höchste Ansprüche an Deckkraft, Haltbarkeit und Farbbrillanz.</div>
+      <div class="leistung-tag">Innenfarben · Aussenfarben · Lasuren</div>
     </div>
-    <div class="palette-swatch" style="background:#2B2B2B; border: 1px solid rgba(255,255,255,0.08);">
-      <div class="swatch-label" style="color:#fff;">Anthrazit<br>#2B2B2B</div>
+
+    <div class="leistung-card">
+      <div class="leistung-icon">
+        <i data-lucide="layers" width="22" height="22"></i>
+      </div>
+      <div class="leistung-title">Caparol</div>
+      <div class="leistung-desc">Systemlösungen für Fassade und Innenraum – bewährt in der Schweizer Baupraxis mit erstklassigen Strukturputzen und Fassadenfarben.</div>
+      <div class="leistung-tag">Strukturputze · Fassade · Innen</div>
     </div>
-    <div class="palette-swatch" style="background:#FF7A00;">
-      <div class="swatch-label" style="color:#000;">Orange<br>#FF7A00</div>
+
+    <div class="leistung-card">
+      <div class="leistung-icon">
+        <i data-lucide="paintbrush" width="22" height="22"></i>
+      </div>
+      <div class="leistung-title">Brillux</div>
+      <div class="leistung-desc">Profi-Lacke und Farben mit hervorragender Verarbeitbarkeit – die erste Wahl für anspruchsvolle Handwerker.</div>
+      <div class="leistung-tag">Lacke · Grundierungen · Spezialfarben</div>
     </div>
-    <div class="palette-swatch" style="background:#FFFFFF;">
-      <div class="swatch-label" style="color:#000;">Weiss<br>#FFFFFF</div>
+
+    <div class="leistung-card">
+      <div class="leistung-icon">
+        <i data-lucide="shield-check" width="22" height="22"></i>
+      </div>
+      <div class="leistung-title">Kansai</div>
+      <div class="leistung-desc">Industriefarben und Schutzlacke für extreme Anforderungen – zuverlässiger Korrosionsschutz für Gewerbe und Industrie.</div>
+      <div class="leistung-tag">Korrosionsschutz · Schutzlacke</div>
     </div>
+
+    <div class="leistung-card">
+      <div class="leistung-icon">
+        <i data-lucide="box" width="22" height="22"></i>
+      </div>
+      <div class="leistung-title">Knauf</div>
+      <div class="leistung-desc">Gips- und Putzsysteme für perfekte Untergründe – vom Trockenbau bis zum Spachtelprodukt aus einer Hand.</div>
+      <div class="leistung-tag">Gipsputz · Trockenbau · Spachtelprodukte</div>
+    </div>
+
+    <div class="leistung-card">
+      <div class="leistung-icon">
+        <i data-lucide="leaf" width="22" height="22"></i>
+      </div>
+      <div class="leistung-title">Swiss Color</div>
+      <div class="leistung-desc">Schweizer Qualitätsfarben – nachhaltig produziert, hergestellt in der Schweiz, für bewusste Kunden mit höchsten Ansprüchen.</div>
+      <div class="leistung-tag">Swiss Made · Nachhaltigkeit</div>
+    </div>
+
+  </div>
+
+  <!-- Trust-Bar -->
+  <div class="reveal" style="margin-top:3rem; padding:1.2rem 2rem; background:rgba(46,190,110,0.07); border:1px solid rgba(46,190,110,0.2); border-radius:8px; display:flex; align-items:center; gap:1rem; max-width:680px;">
+    <i data-lucide="check-circle" width="22" height="22" style="color:var(--green); flex-shrink:0;"></i>
+    <span style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.88rem; color:rgba(255,255,255,0.85);">Alle Materialien erfüllen Schweizer VOC-Richtlinien</span>
   </div>
 </section>
 
@@ -1405,7 +1434,7 @@
     <div>
       <div class="footer-col-title">Unternehmen</div>
       <ul class="footer-links">
-        <li><a href="#ueber-uns">Über uns</a></li>
+        <li><a href="#ueber-mich">Über mich</a></li>
         <li><a href="#referenzen">Referenzen</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="#kontakt">Kontakt</a></li>
