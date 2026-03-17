@@ -62,13 +62,14 @@
     --green: #2EBE6E;
     --green-dark: #1a9a52;
     --green-glow: rgba(46,190,110,0.25);
-    --anthrazit: #2B2B2B;
-    --anthrazit-light: #3a3a3a;
+    --anthrazit: #1a1a1a;
+    --anthrazit-light: #333;
     --orange: #FF7A00;
     --white: #FFFFFF;
-    --bg: #111111;
-    --bg2: #161616;
-    --text-muted: #888;
+    --bg: #f5f5f0;
+    --bg2: #eeeee8;
+    --bg3: #e8e8e2;
+    --text-muted: #666;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -77,38 +78,38 @@
 
   body {
     background: var(--bg);
-    color: var(--white);
+    color: var(--anthrazit);
     font-family: 'Open Sans', sans-serif;
     cursor: none;
     overflow-x: hidden;
   }
 
-  /* ── CURSOR ── */
-  #cursor-dot {
-    width: 8px; height: 8px;
-    background: var(--green);
-    border-radius: 50%;
+  /* ── CURSOR TRIANGLE ── */
+  #cursor-tri {
     position: fixed; top: 0; left: 0;
     pointer-events: none; z-index: 9999;
-    transform: translate(-50%,-50%);
-    transition: transform 0.08s ease, background 0.2s;
+    transform: translate(-2px, -2px);
+    transition: transform 0.25s ease;
+    will-change: left, top, transform;
   }
-  #cursor-ring {
-    width: 36px; height: 36px;
-    border: 2px solid var(--green);
-    border-radius: 50%;
+  #cursor-tri polygon {
+    fill: var(--green);
+    transition: fill 0.2s ease;
+  }
+  #cursor-tri.hovered {
+    transform: translate(-2px, -2px) scale(1.8) rotate(180deg);
+  }
+  #cursor-tri.hovered polygon { fill: var(--orange); }
+  #cursor-tri.clicked { transform: translate(-2px, -2px) scale(0.7); }
+  #cursor-tri-ring {
     position: fixed; top: 0; left: 0;
     pointer-events: none; z-index: 9998;
-    transform: translate(-50%,-50%);
-    transition: width 0.3s ease, height 0.3s ease, border-color 0.3s, opacity 0.3s;
-    opacity: 0.7;
+    transform: translate(-5px, -5px);
+    opacity: 0.4;
+    transition: opacity 0.2s;
+    will-change: left, top;
   }
-  body.cursor-hover #cursor-ring {
-    width: 64px; height: 64px;
-    border-color: var(--orange);
-    opacity: 1;
-  }
-  body.cursor-hover #cursor-dot { background: var(--orange); }
+  #cursor-tri-ring polygon { transition: stroke 0.2s ease; }
 
   /* ── NAVBAR ── */
   nav {
@@ -118,21 +119,22 @@
     transition: background 0.4s, backdrop-filter 0.4s, padding 0.3s;
   }
   nav.scrolled {
-    background: rgba(17,17,17,0.92);
-    backdrop-filter: blur(12px);
+    background: rgba(245,245,240,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     padding: 0.9rem 2.5rem;
     border-bottom: 1px solid rgba(46,190,110,0.15);
   }
   .nav-logo {
     font-family: 'Montserrat', sans-serif;
     font-weight: 900; font-size: 1.5rem;
-    color: var(--white); text-decoration: none;
+    color: var(--anthrazit); text-decoration: none;
     display: flex; align-items: center; gap: 0.5rem;
   }
   .nav-logo span { color: var(--green); }
   .nav-links { display: flex; gap: 2.5rem; list-style: none; }
   .nav-links a {
-    color: rgba(255,255,255,0.75);
+    color: rgba(26,26,26,0.65);
     text-decoration: none; font-size: 0.85rem;
     font-family: 'Montserrat', sans-serif; font-weight: 600;
     letter-spacing: 0.08em; text-transform: uppercase;
@@ -144,7 +146,7 @@
     height: 2px; background: var(--green);
     transform: scaleX(0); transition: transform 0.25s ease;
   }
-  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover { color: var(--anthrazit); }
   .nav-links a:hover::after { transform: scaleX(1); }
   .nav-cta {
     background: var(--green); color: #000 !important;
@@ -163,14 +165,12 @@
   }
   .hero-bg {
     position: absolute; inset: 0; z-index: 0;
-    background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(46,190,110,0.08) 0%, transparent 70%),
-                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,122,0,0.05) 0%, transparent 60%),
-                var(--bg);
+    background: var(--bg);
   }
   .hero-grid {
     position: absolute; inset: 0; z-index: 0;
-    background-image: linear-gradient(rgba(46,190,110,0.04) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(46,190,110,0.04) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(46,190,110,0.07) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(46,190,110,0.07) 1px, transparent 1px);
     background-size: 60px 60px;
     mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
   }
@@ -209,7 +209,7 @@
     opacity: 0.5;
   }
   .hero-sub {
-    font-size: 1.15rem; color: rgba(255,255,255,0.65);
+    font-size: 1.15rem; color: rgba(26,26,26,0.65);
     line-height: 1.7; margin-bottom: 2.5rem; max-width: 520px;
     opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
   }
@@ -232,12 +232,12 @@
     box-shadow: 0 12px 30px rgba(255,122,0,0.35);
   }
   .btn-ghost {
-    background: transparent; color: var(--white);
+    background: transparent; color: var(--anthrazit);
     font-family: 'Montserrat', sans-serif; font-weight: 700;
     font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase;
     padding: 1rem 2.2rem; border-radius: 4px;
     text-decoration: none; cursor: none;
-    border: 1.5px solid rgba(255,255,255,0.25);
+    border: 1.5px solid rgba(26,26,26,0.2);
     transition: border-color 0.2s, color 0.2s, transform 0.2s;
     display: inline-flex; align-items: center; gap: 0.5rem;
   }
@@ -316,17 +316,20 @@
   }
 
   /* ── LEISTUNGEN ── */
-  #leistungen { background: var(--bg2); }
+  #leistungen {
+    background: var(--bg2);
+    position: relative;
+  }
   .leistungen-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5px;
     margin-top: 4rem;
-    border: 1.5px solid rgba(46,190,110,0.12);
+    border: 1.5px solid rgba(0,0,0,0.08);
     border-radius: 12px; overflow: hidden;
   }
   .leistung-card {
-    background: var(--bg);
+    background: rgba(255,255,255,0.7);
     padding: 2.5rem;
     position: relative; overflow: hidden;
     transition: background 0.3s;
@@ -339,7 +342,7 @@
     transform: scaleX(0); transform-origin: left;
     transition: transform 0.4s ease;
   }
-  .leistung-card:hover { background: rgba(46,190,110,0.04); }
+  .leistung-card:hover { background: rgba(46,190,110,0.06); }
   .leistung-card:hover::before { transform: scaleX(1); }
   .leistung-icon {
     width: 52px; height: 52px; border-radius: 10px;
@@ -354,7 +357,7 @@
     font-family: 'Montserrat', sans-serif; font-weight: 700;
     font-size: 1.1rem; margin-bottom: 0.75rem;
   }
-  .leistung-desc { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.7; }
+  .leistung-desc { font-size: 0.9rem; color: rgba(26,26,26,0.6); line-height: 1.7; }
   .leistung-tag {
     display: inline-block; margin-top: 1.2rem;
     font-size: 0.7rem; font-weight: 600; font-family: 'Montserrat', sans-serif;
@@ -363,7 +366,7 @@
   }
 
   /* ── BEFORE/AFTER SLIDER ── */
-  #referenzen { background: var(--bg); }
+  #referenzen { background: var(--bg); position: relative; }
   .ba-container {
     position: relative; overflow: hidden;
     border-radius: 12px; cursor: ew-resize;
@@ -442,6 +445,7 @@
     background: var(--bg2);
     display: grid; grid-template-columns: 1fr 1fr; gap: 6rem;
     align-items: center;
+    position: relative;
   }
   .about-text { }
   .about-visual {
@@ -465,13 +469,13 @@
   .value-item {
     display: flex; align-items: center; gap: 1rem;
     padding: 1rem 1.2rem;
-    background: rgba(255,255,255,0.03);
-    border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.7);
+    border-radius: 8px; border: 1px solid rgba(0,0,0,0.08);
     transition: border-color 0.2s, background 0.2s;
   }
   .value-item:hover {
-    border-color: rgba(46,190,110,0.25);
-    background: rgba(46,190,110,0.04);
+    border-color: rgba(46,190,110,0.3);
+    background: rgba(46,190,110,0.06);
   }
   .value-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
   .value-name {
@@ -481,17 +485,17 @@
   .value-desc { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
 
   /* ── FAQ ── */
-  #faq { background: var(--bg2); }
+  #faq { background: var(--bg2); position: relative; }
   .faq-grid {
     max-width: 780px; margin: 3rem auto 0;
     display: flex; flex-direction: column; gap: 0;
   }
   .faq-item {
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
     overflow: hidden;
   }
   .faq-q {
-    width: 100%; background: none; border: none; color: var(--white);
+    width: 100%; background: none; border: none; color: var(--anthrazit);
     font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem;
     padding: 1.5rem 0; text-align: left; cursor: none;
     display: flex; justify-content: space-between; align-items: center;
@@ -503,12 +507,12 @@
   .faq-a {
     max-height: 0; overflow: hidden;
     transition: max-height 0.4s ease, padding 0.3s;
-    font-size: 0.9rem; color: rgba(255,255,255,0.65); line-height: 1.8;
+    font-size: 0.9rem; color: rgba(26,26,26,0.65); line-height: 1.8;
   }
   .faq-a.open { max-height: 200px; padding-bottom: 1.5rem; }
 
   /* ── KONTAKT ── */
-  #kontakt { background: var(--bg); }
+  #kontakt { background: var(--bg); position: relative; }
   .contact-grid {
     display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; max-width: 1100px; margin: 0 auto;
     align-items: start; margin-top: 4rem;
@@ -516,7 +520,7 @@
   .contact-info { }
   .contact-item {
     display: flex; align-items: flex-start; gap: 1rem;
-    padding: 1.2rem 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 1.2rem 0; border-bottom: 1px solid rgba(0,0,0,0.08);
   }
   .contact-icon-wrap {
     width: 40px; height: 40px; background: rgba(46,190,110,0.12);
@@ -530,30 +534,30 @@
   .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
   .form-group label {
     font-size: 0.72rem; font-family: 'Montserrat', sans-serif; font-weight: 600;
-    letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.55);
+    letter-spacing: 0.12em; text-transform: uppercase; color: rgba(26,26,26,0.55);
   }
   .form-group input, .form-group textarea, .form-group select {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.8);
+    border: 1px solid rgba(0,0,0,0.12);
     border-radius: 6px; padding: 0.9rem 1.1rem;
-    color: var(--white); font-family: 'Open Sans', sans-serif; font-size: 0.9rem;
+    color: var(--anthrazit); font-family: 'Open Sans', sans-serif; font-size: 0.9rem;
     transition: border-color 0.2s, background 0.2s;
     outline: none; resize: vertical;
     cursor: none;
   }
   .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
     border-color: var(--green);
-    background: rgba(46,190,110,0.05);
+    background: rgba(255,255,255,1);
   }
   .form-group textarea { min-height: 130px; }
-  .form-group select option { background: var(--anthrazit); }
+  .form-group select option { background: var(--white); color: var(--anthrazit); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
 
   /* ── FOOTER ── */
   footer {
-    background: #0a0a0a;
+    background: var(--bg3);
     padding: 4rem 2.5rem 2rem;
-    border-top: 1px solid rgba(46,190,110,0.1);
+    border-top: 1px solid rgba(0,0,0,0.08);
   }
   .footer-inner {
     display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; max-width: 1200px; margin: 0 auto;
@@ -565,18 +569,18 @@
   .footer-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; max-width: 280px; }
   .footer-col-title {
     font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75rem;
-    letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+    letter-spacing: 0.15em; text-transform: uppercase; color: rgba(26,26,26,0.4);
     margin-bottom: 1.2rem;
   }
   .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
   .footer-links a {
-    color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.88rem;
+    color: rgba(26,26,26,0.55); text-decoration: none; font-size: 0.88rem;
     transition: color 0.2s;
   }
   .footer-links a:hover { color: var(--green); }
   .footer-bottom {
     margin-top: 3rem; padding-top: 1.5rem;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(0,0,0,0.06);
     display: flex; justify-content: space-between; align-items: center;
     max-width: 1200px; margin: 3rem auto 0;
     font-size: 0.78rem; color: var(--text-muted);
@@ -617,6 +621,37 @@
   @keyframes spin-slow {
     from { transform: rotate(0deg); } to { transform: rotate(360deg); }
   }
+  @keyframes drift {
+    0%,100% { transform: translate(0, 0); }
+    25% { transform: translate(30px, -20px); }
+    50% { transform: translate(-20px, 30px); }
+    75% { transform: translate(20px, 20px); }
+  }
+  @keyframes float-rotate {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(15deg); }
+  }
+  @keyframes float-rotate-r {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(-15deg); }
+  }
+
+  /* ── GLOW BLOBS ── */
+  .glow-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    animation: drift 8s ease-in-out infinite;
+  }
+
+  /* ── HERO SHAPES ── */
+  .hero-shape {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+  }
 
   /* ── SPLASH BG ANIMATED ── */
   .splash-bg {
@@ -654,11 +689,34 @@
   .glow-line {
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--green), var(--orange), transparent);
-    opacity: 0.4;
+    opacity: 0.3;
   }
 
+  /* Section glow via pseudo-background */
+  #leistungen::before, #kundenstimmen::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse 55% 60% at 85% 45%, rgba(46,190,110,0.10) 0%, transparent 70%);
+  }
+  #referenzen::before, #faq::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse 50% 55% at 15% 55%, rgba(255,122,0,0.08) 0%, transparent 70%);
+  }
+  #ueber-mich::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse 60% 60% at 80% 30%, rgba(46,190,110,0.09) 0%, transparent 65%);
+  }
+  #kontakt::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse 50% 60% at 10% 60%, rgba(46,190,110,0.08) 0%, transparent 65%);
+  }
+  section > *:not(.glow-blob):not(.hero-shape) { position: relative; z-index: 1; }
+
   /* Mobile burger */
-  .burger { display: none; cursor: none; background: none; border: none; color: white; }
+  .burger { display: none; cursor: none; background: none; border: none; color: var(--anthrazit); }
   @media (max-width: 768px) {
     .nav-links { display: none; }
     .burger { display: block; }
@@ -699,7 +757,7 @@
   }
 
   /* ── KUNDENSTIMMEN ── */
-  #kundenstimmen { background: var(--bg2); }
+  #kundenstimmen { background: var(--bg2); position: relative; }
   .testimonials-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -707,16 +765,16 @@
     margin-top: 4rem;
   }
   .testimonial-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(0,0,0,0.08);
     border-radius: 12px;
     padding: 2rem;
     position: relative;
     transition: border-color 0.3s, background 0.3s;
   }
   .testimonial-card:hover {
-    border-color: rgba(46,190,110,0.25);
-    background: rgba(46,190,110,0.03);
+    border-color: rgba(46,190,110,0.3);
+    background: rgba(46,190,110,0.06);
   }
   .testimonial-quote {
     font-size: 3.5rem; line-height: 1;
@@ -725,7 +783,7 @@
     margin-bottom: 0.25rem;
   }
   .testimonial-text {
-    font-size: 0.93rem; color: rgba(255,255,255,0.7);
+    font-size: 0.93rem; color: rgba(26,26,26,0.7);
     line-height: 1.8; margin-bottom: 1.5rem;
   }
   .testimonial-stars { display: flex; gap: 3px; margin-bottom: 0.75rem; }
@@ -746,9 +804,13 @@
 </head>
 <body>
 
-<!-- CUSTOM CURSOR -->
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
+<!-- CUSTOM CURSOR TRIANGLE -->
+<svg id="cursor-tri" width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="2,2 22,10 10,26" fill="#2EBE6E"/>
+</svg>
+<svg id="cursor-tri-ring" width="40" height="46" viewBox="0 0 40 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="3,3 37,16 16,43" fill="none" stroke="#2EBE6E" stroke-width="1.5"/>
+</svg>
 
 <!-- NAV -->
 <nav id="navbar">
@@ -775,9 +837,17 @@
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
 
-  <!-- Animated splash shapes -->
-  <div class="splash-shape" style="right:-100px; top:10%; animation-delay:0s;"></div>
-  <div class="splash-shape" style="right:200px; bottom:-150px; width:300px; height:300px; animation-delay:-3s; background: var(--orange);"></div>
+  <!-- Glow Blobs -->
+  <div class="glow-blob" style="width:600px;height:600px;background:var(--green);top:-120px;right:-80px;opacity:0.35;animation-delay:0s;"></div>
+  <div class="glow-blob" style="width:400px;height:400px;background:var(--orange);bottom:-100px;left:-100px;opacity:0.35;animation-delay:-3s;animation-duration:10s;"></div>
+
+  <!-- 6 Floating Shapes -->
+  <div class="hero-shape" style="width:60px;height:60px;background:var(--green);border-radius:12px;opacity:0.12;top:22%;left:14%;animation:float-rotate 7s ease-in-out infinite;"></div>
+  <div class="hero-shape" style="width:40px;height:40px;background:var(--green);border-radius:8px;opacity:0.12;top:62%;left:7%;animation:float-rotate-r 9s 1s ease-in-out infinite;"></div>
+  <div class="hero-shape" style="width:80px;height:80px;background:var(--green);border-radius:16px;opacity:0.12;top:30%;right:27%;animation:float-rotate 11s 2s ease-in-out infinite;"></div>
+  <div class="hero-shape" style="width:45px;height:45px;background:var(--orange);border-radius:50%;opacity:0.10;top:72%;right:34%;animation:float-rotate-r 6s 0.5s ease-in-out infinite;"></div>
+  <div class="hero-shape" style="width:30px;height:30px;background:var(--orange);border-radius:50%;opacity:0.10;top:14%;right:38%;animation:float-rotate 8s 3s ease-in-out infinite;"></div>
+  <div class="hero-shape" style="width:120px;height:120px;background:var(--green);border-radius:24px;opacity:0.06;top:48%;left:4%;animation:float-rotate-r 12s 4s ease-in-out infinite;"></div>
 
   <div class="hero-content">
     <div class="hero-eyebrow">Maler & Gipserarbeiten · Bern · Schweiz</div>
@@ -888,7 +958,7 @@
 <section id="leistungen">
   <div class="section-label reveal">Unsere Dienstleistungen</div>
   <h2 class="reveal reveal-delay-1">Was wir für Sie tun</h2>
-  <p class="reveal reveal-delay-2" style="color:rgba(255,255,255,0.55); max-width:560px; line-height:1.8; font-size:0.95rem;">
+  <p class="reveal reveal-delay-2" style="color:rgba(26,26,26,0.6); max-width:560px; line-height:1.8; font-size:0.95rem;">
     Von der klassischen Innenmalerei bis zur kreativen Wandgestaltung – MalerMarc bietet Ihnen das komplette Spektrum professioneller Malerarbeiten.
   </p>
 
@@ -956,7 +1026,7 @@
 <section id="referenzen">
   <div class="section-label reveal">Referenzprojekte</div>
   <h2 class="reveal reveal-delay-1">Der Unterschied ist<br><span style="color:var(--green)">sichtbar.</span></h2>
-  <p class="reveal reveal-delay-2" style="color:rgba(255,255,255,0.55); max-width:520px; line-height:1.8; font-size:0.95rem;">
+  <p class="reveal reveal-delay-2" style="color:rgba(26,26,26,0.6); max-width:520px; line-height:1.8; font-size:0.95rem;">
     Ziehen Sie den Regler und erleben Sie die Transformation. Jedes Projekt ist ein Beweis für handwerkliche Perfektion.
   </p>
 
@@ -999,10 +1069,10 @@
   <div>
     <div class="section-label reveal">Über mich</div>
     <h2 class="reveal reveal-delay-1">Handwerk mit<br><span style="color:var(--green)">Herzblut.</span></h2>
-    <p class="reveal reveal-delay-2" style="color:rgba(255,255,255,0.6); line-height:1.8; font-size:0.95rem; max-width:480px; margin-bottom:0.5rem;">
+    <p class="reveal reveal-delay-2" style="color:rgba(26,26,26,0.6); line-height:1.8; font-size:0.95rem; max-width:480px; margin-bottom:0.5rem;">
       MalerMarc steht für Malerarbeiten, bei denen jedes Detail stimmt. Gegründet mit der Vision, Handwerk neu zu denken – weg vom Klischee, hin zum Design-Anspruch.
     </p>
-    <p class="reveal reveal-delay-3" style="color:rgba(255,255,255,0.6); line-height:1.8; font-size:0.95rem; max-width:480px;">
+    <p class="reveal reveal-delay-3" style="color:rgba(26,26,26,0.6); line-height:1.8; font-size:0.95rem; max-width:480px;">
       Ob klassische Renovation oder kreative Wandinstallation – wir bringen Ihre Ideen mit Expertise und Leidenschaft auf die Wand.
     </p>
 
@@ -1080,7 +1150,7 @@
 <section id="marken" style="background: var(--bg);">
   <div class="section-label reveal">Qualität beginnt beim Material</div>
   <h2 class="reveal reveal-delay-1">Meine Marken &amp;<br><span style="color:var(--green)">Lieferanten</span></h2>
-  <p class="reveal reveal-delay-2" style="color:rgba(255,255,255,0.55); max-width:560px; line-height:1.8; font-size:0.95rem;">
+  <p class="reveal reveal-delay-2" style="color:rgba(26,26,26,0.6); max-width:560px; line-height:1.8; font-size:0.95rem;">
     Ich arbeite ausschliesslich mit führenden Herstellern zusammen – für Resultate, die dauerhaft überzeugen.
   </p>
 
@@ -1145,7 +1215,7 @@
   <!-- Trust-Bar -->
   <div class="reveal" style="margin-top:3rem; padding:1.2rem 2rem; background:rgba(46,190,110,0.07); border:1px solid rgba(46,190,110,0.2); border-radius:8px; display:flex; align-items:center; gap:1rem; max-width:680px;">
     <i data-lucide="check-circle" width="22" height="22" style="color:var(--green); flex-shrink:0;"></i>
-    <span style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.88rem; color:rgba(255,255,255,0.85);">Alle Materialien erfüllen Schweizer VOC-Richtlinien</span>
+    <span style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.88rem; color:rgba(26,26,26,0.8);">Alle Materialien erfüllen Schweizer VOC-Richtlinien</span>
   </div>
 </section>
 
@@ -1154,7 +1224,7 @@
 <section id="kundenstimmen">
   <div class="section-label reveal">Kundenstimmen</div>
   <h2 class="reveal reveal-delay-1">Was unsere Kunden<br><span style="color:var(--green)">sagen.</span></h2>
-  <p class="reveal reveal-delay-2" style="color:rgba(255,255,255,0.55); max-width:520px; line-height:1.8; font-size:0.95rem;">
+  <p class="reveal reveal-delay-2" style="color:rgba(26,26,26,0.6); max-width:520px; line-height:1.8; font-size:0.95rem;">
     Zufriedene Kunden sind unser grösster Erfolg. Lesen Sie, was andere über die Arbeit von MalerMarc berichten.
   </p>
 
@@ -1318,7 +1388,7 @@
 
   <div class="contact-grid">
     <div class="contact-info reveal reveal-delay-2">
-      <p style="color:rgba(255,255,255,0.6); line-height:1.8; font-size:0.95rem; max-width:400px; margin-bottom:2rem;">
+      <p style="color:rgba(26,26,26,0.6); line-height:1.8; font-size:0.95rem; max-width:400px; margin-bottom:2rem;">
         Beschreiben Sie uns Ihr Vorhaben und wir melden uns innerhalb von 24 Stunden mit einer unverbindlichen Einschätzung.
       </p>
 
@@ -1413,10 +1483,10 @@
       <div class="footer-brand-name">Maler<span>Marc</span></div>
       <div class="footer-desc">Hochwertige Malerarbeiten, Wandgestaltung und Gipserarbeiten in Bern und der ganzen Schweiz. Qualität trifft Kreativität.</div>
       <div style="margin-top:1.5rem; display:flex; gap:0.75rem;">
-        <a href="#" style="width:36px;height:36px;background:rgba(255,255,255,0.06);border-radius:6px;display:flex;align-items:center;justify-content:center; text-decoration:none; color:rgba(255,255,255,0.5); transition:color 0.2s, background 0.2s;" onmouseenter="this.style.color='#2EBE6E';this.style.background='rgba(46,190,110,0.12)';" onmouseleave="this.style.color='rgba(255,255,255,0.5)';this.style.background='rgba(255,255,255,0.06)';">
+        <a href="#" style="width:36px;height:36px;background:rgba(0,0,0,0.06);border-radius:6px;display:flex;align-items:center;justify-content:center; text-decoration:none; color:rgba(26,26,26,0.5); transition:color 0.2s, background 0.2s;" onmouseenter="this.style.color='#2EBE6E';this.style.background='rgba(46,190,110,0.12)';" onmouseleave="this.style.color='rgba(26,26,26,0.5)';this.style.background='rgba(0,0,0,0.06)';">
           <i data-lucide="instagram" width="16" height="16"></i>
         </a>
-        <a href="#" style="width:36px;height:36px;background:rgba(255,255,255,0.06);border-radius:6px;display:flex;align-items:center;justify-content:center; text-decoration:none; color:rgba(255,255,255,0.5); transition:color 0.2s, background 0.2s;" onmouseenter="this.style.color='#2EBE6E';this.style.background='rgba(46,190,110,0.12)';" onmouseleave="this.style.color='rgba(255,255,255,0.5)';this.style.background='rgba(255,255,255,0.06)';">
+        <a href="#" style="width:36px;height:36px;background:rgba(0,0,0,0.06);border-radius:6px;display:flex;align-items:center;justify-content:center; text-decoration:none; color:rgba(26,26,26,0.5); transition:color 0.2s, background 0.2s;" onmouseenter="this.style.color='#2EBE6E';this.style.background='rgba(46,190,110,0.12)';" onmouseleave="this.style.color='rgba(26,26,26,0.5)';this.style.background='rgba(0,0,0,0.06)';">
           <i data-lucide="facebook" width="16" height="16"></i>
         </a>
       </div>
@@ -1464,31 +1534,43 @@
   // Init Lucide icons
   lucide.createIcons();
 
-  // ── CUSTOM CURSOR ──
-  const dot = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
+  // ── CUSTOM CURSOR TRIANGLE ──
+  const tri = document.getElementById('cursor-tri');
+  const triRing = document.getElementById('cursor-tri-ring');
   let mx = 0, my = 0, rx = 0, ry = 0;
 
   document.addEventListener('mousemove', e => {
     mx = e.clientX; my = e.clientY;
-    dot.style.left = mx + 'px';
-    dot.style.top = my + 'px';
+    tri.style.left = mx + 'px';
+    tri.style.top = my + 'px';
   });
 
-  // Smooth ring follow
+  // Smooth ring follow (lag factor 0.1)
   function animateRing() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
+    rx += (mx - rx) * 0.1;
+    ry += (my - ry) * 0.1;
+    triRing.style.left = rx + 'px';
+    triRing.style.top = ry + 'px';
     requestAnimationFrame(animateRing);
   }
   animateRing();
 
-  // Hover effect on interactive elements
-  document.querySelectorAll('a, button, input, textarea, select, .palette-swatch, .ba-container').forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  // Hover: scale + rotate + color change
+  document.querySelectorAll('a, button, input, textarea, select, .ba-container').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      tri.classList.add('hovered');
+      triRing.style.opacity = '0';
+    });
+    el.addEventListener('mouseleave', () => {
+      tri.classList.remove('hovered');
+      triRing.style.opacity = '0.4';
+    });
+  });
+
+  // Click: scale-down pulse
+  document.addEventListener('mousedown', () => {
+    tri.classList.add('clicked');
+    setTimeout(() => tri.classList.remove('clicked'), 200);
   });
 
   // ── NAVBAR SCROLL ──
