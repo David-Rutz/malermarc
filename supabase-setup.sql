@@ -72,3 +72,38 @@ create policy "auth upload bilder" on storage.objects
 
 create policy "auth delete bilder" on storage.objects
   for delete using (bucket_id = 'bilder' and auth.role() = 'authenticated');
+
+-- ══════════════════════════════════════════════════════════
+-- DEBUGGING: Falls Bilder nicht angezeigt werden
+-- Diese Abfragen im Supabase SQL Editor ausführen
+-- ══════════════════════════════════════════════════════════
+
+-- 1. Prüfen ob Storage Policies korrekt gesetzt sind:
+-- select * from storage.policies where bucket_id = 'bilder';
+
+-- 2. Prüfen ob Bucket auf "public" gesetzt ist:
+-- select id, name, public from storage.buckets where id = 'bilder';
+
+-- 3. Bucket auf public setzen (falls false):
+-- update storage.buckets set public = true where id = 'bilder';
+
+-- 4. Falls "public read bilder" Policy fehlt, neu erstellen:
+-- create policy "public read bilder" on storage.objects
+--   for select using (bucket_id = 'bilder');
+
+-- 5. Gespeicherte Bild-URLs in content-Tabelle prüfen:
+-- select key, value, updated_at from content
+--   where value like 'https://%.supabase.co/storage%'
+--   order by updated_at desc;
+
+-- 6. Alle content-Einträge anzeigen:
+-- select key, left(value, 80) as value_preview, updated_at from content order by key;
+
+-- 7. Falls Policies vorhanden aber Bucket nicht public, alle 3 Policies neu:
+-- drop policy if exists "public read bilder" on storage.objects;
+-- create policy "public read bilder" on storage.objects
+--   for select using (bucket_id = 'bilder');
+-- update storage.buckets set public = true where id = 'bilder';
+
+-- ERWARTETES URL-FORMAT für korrekte Bild-URLs:
+-- https://zfyesnrezqupxolslbgx.supabase.co/storage/v1/object/public/bilder/DATEINAME

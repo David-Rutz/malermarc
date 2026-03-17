@@ -1211,11 +1211,22 @@ async function processImageFile(file) {
 
   const { data: urlData } = sb.storage.from('bilder').getPublicUrl(filename);
   const url = urlData.publicUrl;
+  console.log('Bild URL:', url);
   progressFill.style.width = '100%';
   setTimeout(() => { progressWrap.style.display = 'none'; progressFill.style.width = '0'; }, 600);
 
-  // In content-Tabelle speichern
-  await sb.from('content').upsert({ key, value: url }, { onConflict: 'key' });
+  // In content-Tabelle speichern (mit updated_at)
+  const { error: upsertErr } = await sb.from('content').upsert(
+    { key, value: url, updated_at: new Date().toISOString() },
+    { onConflict: 'key' }
+  );
+  if (upsertErr) {
+    console.error('CMS: Upsert fehlgeschlagen:', upsertErr.message);
+    document.getElementById('image-save-error').textContent = 'Speichern fehlgeschlagen: ' + upsertErr.message;
+    document.getElementById('image-save-error').style.display = 'block';
+    return;
+  }
+  console.log('CMS: Bild gespeichert – key:', key, 'url:', url);
 
   // Preview aktualisieren
   const preview = document.getElementById('image-panel-preview');
@@ -1223,8 +1234,8 @@ async function processImageFile(file) {
   preview.style.display = 'block';
   document.getElementById('image-panel-placeholder').style.display = 'none';
 
-  // iframe live aktualisieren
-  sendToIframe({ action: 'update', key, value: url });
+  // iframe live aktualisieren (mit type: 'image')
+  sendToIframe({ action: 'update', key, value: url, type: 'image' });
   setPublishStatus(false);
 
   document.getElementById('image-save-success').style.display = 'block';
@@ -1264,8 +1275,13 @@ async function openImageLibrary() {
 async function selectFromLibrary(url) {
   const key = activeEditKey;
   if (!key) return;
-  await sb.from('content').upsert({ key, value: url }, { onConflict: 'key' });
-  sendToIframe({ action: 'update', key, value: url });
+  console.log('Bild URL (Bibliothek):', url);
+  await sb.from('content').upsert(
+    { key, value: url, updated_at: new Date().toISOString() },
+    { onConflict: 'key' }
+  );
+  console.log('CMS: Bild aus Bibliothek gespeichert – key:', key, 'url:', url);
+  sendToIframe({ action: 'update', key, value: url, type: 'image' });
   const preview = document.getElementById('image-panel-preview');
   preview.src = url;
   preview.style.display = 'block';
