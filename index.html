@@ -92,39 +92,47 @@
     position: fixed; top: 0; left: 0;
     pointer-events: none; z-index: 9999;
     transform-origin: 12px 14px;
-    transition: transform 0.15s ease;
+    transition: transform 0.15s ease, opacity 0.1s ease;
     will-change: left, top, transform;
   }
-  #cursor-tri polygon {
-    fill: var(--green);
-    transition: fill 0.2s ease;
-  }
-  #cursor-tri.hovered {
-    transform: scale(1.6) rotate(180deg);
-  }
-  #cursor-tri.hovered polygon { fill: var(--orange); }
+  #cursor-tri polygon { fill: var(--green); }
+  #cursor-tri.hovered { opacity: 0; }
   #cursor-tri.clicked { transform: scale(0.6); transition: transform 0.1s ease; }
-  #cursor-tri-ring {
+
+  /* ── CURSOR KREIS (Hover-Zustand) ── */
+  #cursor-circle {
     position: fixed; top: 0; left: 0;
-    pointer-events: none; z-index: 9998;
+    pointer-events: none; z-index: 9999;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    transform: translate(-22px, -22px) scale(0);
+    transition: transform 0.1s ease, opacity 0.1s ease;
     opacity: 0;
-    transition: opacity 0.2s;
     will-change: left, top;
   }
-  #cursor-tri-ring polygon { transition: stroke 0.2s ease; }
-  @keyframes tri-pulse {
-    0% { transform: translate(-5px,-5px) scale(1); opacity: 1; }
-    100% { transform: translate(-5px,-5px) scale(1.8); opacity: 0; }
+  #cursor-circle.visible {
+    transform: translate(-22px, -22px) scale(1);
+    opacity: 1;
   }
-  #cursor-tri-ring.pulsing {
-    animation: tri-pulse 1s ease-out infinite;
+  #cursor-circle .cursor-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); flex-shrink: 0;
   }
+
+  /* ── CURSOR TRAIL ── */
   .cursor-trail {
     position: fixed; top: 0; left: 0;
     pointer-events: none; z-index: 9996;
     will-change: left, top;
     transform-origin: 7px 8px;
+    transition: opacity 0.15s ease;
   }
+  .cursor-trail.hidden { opacity: 0 !important; }
+
+  /* ring (nicht mehr sichtbar, bleibt für Kompatibilität) */
+  #cursor-tri-ring { display: none; }
 
   /* ── NAVBAR ── */
   nav {
@@ -192,6 +200,7 @@
   .hero-content {
     position: relative; z-index: 2;
     max-width: 720px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.6);
   }
   .hero-eyebrow {
     font-family: 'Montserrat', sans-serif; font-weight: 700;
@@ -840,7 +849,12 @@
   }
   .hero-overlay {
     position: absolute; inset: 0; z-index: 1;
-    background: rgba(0,0,0,0.45);
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.85) 0%,
+      rgba(0,0,0,0.55) 50%,
+      rgba(0,0,0,0.35) 100%
+    );
     pointer-events: none;
   }
   .hero-dots {
@@ -912,8 +926,8 @@
   .masonry-tile:hover .tile-overlay { background: rgba(46,190,110,0.3); }
   .tile-label {
     position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(0deg, rgba(0,0,0,0.75), transparent);
-    padding: 1.5rem 1rem 0.75rem;
+    background: linear-gradient(0deg, rgba(0,0,0,0.80) 0%, transparent 100%);
+    padding: 2rem 1rem 1rem;
     transform: translateY(100%);
     transition: transform 0.35s ease;
     border-radius: 0 0 10px 10px;
@@ -922,7 +936,7 @@
   .tile-label span {
     font-family: 'Montserrat', sans-serif; font-weight: 700;
     font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #fff;
+    color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.5);
   }
 
   /* ── LIGHTBOX ── */
@@ -994,12 +1008,20 @@
   .leistung-card-bg.loaded { opacity: 1; }
   .leistung-card-bg::after {
     content: ''; position: absolute; inset: 0;
-    background: rgba(0,0,0,0.55); border-radius: inherit;
+    background: rgba(0,0,0,0.62); border-radius: inherit;
+    transition: background 0.3s;
+  }
+  .leistung-card.has-bg:hover .leistung-card-bg::after {
+    background: rgba(0,0,0,0.45);
   }
   .leistung-card.has-bg .leistung-title,
   .leistung-card.has-bg .leistung-desc,
-  .leistung-card.has-bg .leistung-tag { color: #fff !important; position: relative; z-index: 1; }
-  .leistung-card.has-bg .leistung-icon { position: relative; z-index: 1; }
+  .leistung-card.has-bg .leistung-tag { color: #ffffff !important; position: relative; z-index: 1; }
+  .leistung-card.has-bg .leistung-icon {
+    position: relative; z-index: 1;
+    background: rgba(255,255,255,0.15) !important;
+  }
+  .leistung-card.has-bg .leistung-icon svg { color: #fff !important; }
 
   /* ── EINBLICKE FILMSTRIP ── */
   #einblicke { background: var(--bg2); padding: 7rem 0; overflow: hidden; position: relative; }
@@ -1021,6 +1043,20 @@
     color: rgba(46,190,110,0.4); position: relative;
   }
   .film-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .film-frame::after {
+    content: ''; position: absolute; inset: 0; border-radius: 12px;
+    background: rgba(46,190,110,0); transition: background 0.3s;
+    pointer-events: none;
+  }
+  .film-frame:hover::after { background: rgba(46,190,110,0.2); }
+
+  /* ── PORTRAIT GRADIENT BADGE ── */
+  .about-visual .about-visual-inner::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 35%; border-radius: 0 0 20px 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+    z-index: 3; pointer-events: none;
+  }
 </style>
 </head>
 <body>
@@ -1032,6 +1068,8 @@
 <svg id="cursor-tri-ring" width="40" height="46" viewBox="0 0 40 46" fill="none" xmlns="http://www.w3.org/2000/svg">
   <polygon points="3,3 37,16 16,43" fill="none" stroke="#2EBE6E" stroke-width="1.5"/>
 </svg>
+<!-- CURSOR KREIS (Hover) -->
+<div id="cursor-circle"><div class="cursor-dot"></div></div>
 <!-- CURSOR TRAIL -->
 <svg class="cursor-trail" id="trail-0" width="14" height="16" viewBox="0 0 14 16" fill="none"><polygon points="1,1 13,5 6,15" fill="#2EBE6E" opacity="0.4"/></svg>
 <svg class="cursor-trail" id="trail-1" width="12" height="14" viewBox="0 0 12 14" fill="none"><polygon points="1,1 11,5 5,13" fill="#2EBE6E" opacity="0.3"/></svg>
@@ -1973,45 +2011,45 @@
   // Init Lucide icons
   lucide.createIcons();
 
-  // ── CUSTOM CURSOR TRIANGLE (überarbeitet) ──
-  const tri = document.getElementById('cursor-tri');
-  const triRing = document.getElementById('cursor-tri-ring');
-  // Trail
+  // ── CUSTOM CURSOR ──
+  const tri    = document.getElementById('cursor-tri');
+  const circle = document.getElementById('cursor-circle');
   const trails = [0,1,2,3,4].map(i => document.getElementById('trail-' + i));
-  const trailDelays = [20, 40, 60, 70, 80];
 
-  let mx = 0, my = 0;
-  let prevMx = 0, prevMy = 0;
-  // Positions für Cursor (Lag 0.08) und Trail
-  let cx = 0, cy = 0;
+  let mx = 0, my = 0, cx = 0, cy = 0;
+  let isHovered = false;
   const trailPos = trails.map(() => ({ x: 0, y: 0 }));
   const trailLag = [0.22, 0.18, 0.14, 0.10, 0.07];
 
   document.addEventListener('mousemove', e => {
     mx = e.clientX;
     my = e.clientY;
+    // Kreis folgt sofort (kein Lag)
+    if (circle) {
+      circle.style.left = mx + 'px';
+      circle.style.top  = my + 'px';
+    }
   });
 
   function animCursor() {
     const dx = mx - cx, dy = my - cy;
-
-    // Cursor folgt mit Lag 0.08
     cx += dx * 0.08;
     cy += dy * 0.08;
+
+    // Dreieck
     tri.style.left = cx + 'px';
     tri.style.top  = cy + 'px';
-    triRing.style.left = (cx - 8) + 'px';
-    triRing.style.top  = (cy - 9) + 'px';
 
-    // Neigung basierend auf Bewegungsvektor
-    if (!tri.classList.contains('hovered')) {
+    // Neigung beim Bewegen (nur wenn nicht gehovered)
+    if (!isHovered) {
       const angle = Math.atan2(dy, dx) * (180 / Math.PI);
       const speed = Math.sqrt(dx*dx + dy*dy);
-      const tilt  = Math.min(speed * 2, 30);
-      tri.style.transform = `rotate(${angle + 90}deg) scale(${tri.classList.contains('clicked') ? 0.6 : 1})`;
+      if (speed > 0.5) {
+        tri.style.transform = `rotate(${angle + 90}deg)`;
+      }
     }
 
-    // Trail folgt
+    // Trail
     trails.forEach((el, i) => {
       trailPos[i].x += ((i === 0 ? cx : trailPos[i-1].x) - trailPos[i].x) * trailLag[i];
       trailPos[i].y += ((i === 0 ? cy : trailPos[i-1].y) - trailPos[i].y) * trailLag[i];
@@ -2023,32 +2061,32 @@
   }
   animCursor();
 
-  // Hover: scale + rotate 180 + orange + pulsierender Ring
+  // Hover-Handler: Dreieck → Kreis
   function addHoverCursor(els) {
     els.forEach(el => {
       el.addEventListener('mouseenter', () => {
+        isHovered = true;
         tri.classList.add('hovered');
         tri.style.transform = '';
-        triRing.classList.add('pulsing');
-        triRing.style.opacity = '1';
+        circle.classList.add('visible');
+        trails.forEach(t => t.classList.add('hidden'));
       });
       el.addEventListener('mouseleave', () => {
+        isHovered = false;
         tri.classList.remove('hovered');
-        triRing.classList.remove('pulsing');
-        triRing.style.opacity = '0';
+        circle.classList.remove('visible');
+        trails.forEach(t => t.classList.remove('hidden'));
       });
     });
   }
   addHoverCursor(document.querySelectorAll('a, button, input, textarea, select, .ba-container, .masonry-tile'));
 
-  // Click: scale 0.6 kurz
+  // Click: kurz verkleinern
   document.addEventListener('mousedown', () => {
-    tri.classList.add('clicked');
-    if (!tri.classList.contains('hovered')) tri.style.transform += ' scale(0.6)';
-    setTimeout(() => {
-      tri.classList.remove('clicked');
-      if (!tri.classList.contains('hovered')) tri.style.transform = '';
-    }, 150);
+    if (!isHovered) {
+      tri.classList.add('clicked');
+      setTimeout(() => tri.classList.remove('clicked'), 150);
+    }
   });
 
   // ── NAVBAR SCROLL ──
