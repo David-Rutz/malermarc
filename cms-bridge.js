@@ -89,7 +89,11 @@
     if (!value) {
       // Hero-Slide zurücksetzen
       var emptySlide = document.querySelector('.hero-slide[data-key="' + key + '"]');
-      if (emptySlide) emptySlide.style.backgroundImage = '';
+      if (emptySlide) {
+        emptySlide.style.backgroundImage = '';
+        var emptyVid = emptySlide.querySelector('video');
+        if (emptyVid) emptyVid.remove();
+      }
 
       // Leistungskarte zurücksetzen
       var emptyCard = document.querySelector('.leistung-card[data-key="' + key + '"]');
@@ -160,9 +164,27 @@
     if (key.startsWith('hero_bg_')) {
       var slide = document.querySelector('.hero-slide[data-key="' + key + '"]');
       if (slide) {
-        slide.style.backgroundImage = "url('" + value + "')";
-        slide.style.backgroundSize = 'cover';
-        slide.style.backgroundPosition = 'center';
+        var isVideo = /\.(mp4|webm)(\?|$)/i.test(value);
+        if (isVideo) {
+          // Video-Element erstellen
+          slide.style.backgroundImage = '';
+          var existingVideo = slide.querySelector('video');
+          if (existingVideo) existingVideo.remove();
+          var vid = document.createElement('video');
+          vid.src = value;
+          vid.autoplay = true;
+          vid.muted = true;
+          vid.loop = true;
+          vid.setAttribute('playsinline', '');
+          vid.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;';
+          slide.appendChild(vid);
+        } else {
+          var existingVid = slide.querySelector('video');
+          if (existingVid) existingVid.remove();
+          slide.style.backgroundImage = "url('" + value + "')";
+          slide.style.backgroundSize = 'cover';
+          slide.style.backgroundPosition = 'center';
+        }
         console.log('CMS: Hero-Slide gesetzt:', key);
       }
     }

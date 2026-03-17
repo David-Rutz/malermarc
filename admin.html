@@ -1276,21 +1276,29 @@ async function uploadBild(file, key) {
   loadBilder();
 }
 
-async function bildEntfernen() {
-  const key = activeEditKey;
+async function bildEntfernen(key) {
+  key = key || activeEditKey;
   if (!key) return;
   if (!confirm('Bild für "' + key + '" wirklich entfernen?')) return;
 
   const { error } = await sb.from('content').upsert(
-    { key, value: null, updated_at: new Date().toISOString() },
+    { key, value: '', updated_at: new Date().toISOString() },
     { onConflict: 'key' }
   );
   if (error) { zeigeError('Fehler: ' + error.message); return; }
 
-  document.getElementById('image-panel-preview').style.display = 'none';
-  document.getElementById('image-panel-placeholder').style.display = 'flex';
-  document.getElementById('btn-bild-entfernen').style.display = 'none';
-  sendToIframe({ action: 'update', key, value: null, type: 'image' });
+  // Per-Key Vorschau aktualisieren (falls vorhanden)
+  const keyPreview = document.getElementById('preview-' + key);
+  if (keyPreview) { keyPreview.src = ''; keyPreview.style.display = 'none'; }
+
+  // Geteiltes Edit-Panel aktualisieren
+  if (key === activeEditKey) {
+    document.getElementById('image-panel-preview').style.display = 'none';
+    document.getElementById('image-panel-placeholder').style.display = 'flex';
+    document.getElementById('btn-bild-entfernen').style.display = 'none';
+  }
+
+  sendToIframe({ action: 'update', key, value: '', type: 'image' });
   setPublishStatus(false);
   zeigeErfolg('✓ Bild entfernt');
 }
