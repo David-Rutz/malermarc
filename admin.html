@@ -582,43 +582,17 @@
         <!-- IMAGE EDITOR PANEL -->
         <div id="panel-image" style="display:none; flex-direction:column; height:100%;">
           <div class="panel-header">
-            <div id="image-panel-title">Bild bearbeiten</div>
+            <div id="image-panel-title">Bild / Video bearbeiten</div>
             <button class="panel-back" onclick="closeEditPanel()">
               <i data-lucide="x" width="14" height="14"></i>
             </button>
           </div>
           <div class="panel-body">
             <div class="editor-breadcrumb" id="image-panel-breadcrumb">—</div>
-            <img id="image-panel-preview" class="img-current-preview" alt="Vorschau">
-            <div id="image-panel-placeholder" class="img-placeholder">
-              <i data-lucide="image" width="28" height="28"></i>
-              <span>Noch kein Bild gesetzt</span>
-            </div>
-
-            <div class="upload-zone" id="image-drop-zone" onclick="document.getElementById('image-file-input').click()">
-              <i data-lucide="upload-cloud" width="24" height="24" style="margin-bottom:0.4rem;"></i><br>
-              <strong>Bild hier ablegen oder klicken</strong><br>
-              <span style="font-size:0.78rem;">JPG, PNG, WebP · max. 5 MB</span>
-              <input type="file" id="image-file-input" accept="image/jpeg,image/png,image/webp,image/gif" onchange="handleImageFileSelect(this)">
-            </div>
-            <div class="progress-wrap" id="image-progress">
-              <div class="progress-track"><div class="progress-fill" id="image-progress-fill"></div></div>
-              <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">Wird hochgeladen…</div>
-            </div>
-
-            <button class="btn btn-ghost btn-sm btn-full mt-2" onclick="openImageLibrary()">
-              <i data-lucide="grid" width="13" height="13"></i>
-              Aus Bibliothek wählen
-            </button>
-            <button class="btn btn-danger btn-sm btn-full mt-1" id="btn-bild-entfernen" style="display:none" onclick="bildEntfernen()">
-              <i data-lucide="trash-2" width="13" height="13"></i>
-              Bild entfernen
-            </button>
-            <div class="success-msg mt-1" id="image-save-success">✓ Bild gespeichert</div>
-            <div class="error-msg mt-1" id="image-save-error"></div>
+            <div id="image-panel-slot-container"></div>
           </div>
           <div class="panel-footer">
-            <button class="btn btn-secondary btn-sm" onclick="closeEditPanel()">Abbrechen</button>
+            <button class="btn btn-secondary btn-sm" onclick="closeEditPanel()">Schliessen</button>
           </div>
         </div>
 
@@ -933,8 +907,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // postMessage vom iframe empfangen
   window.addEventListener('message', handleIframeMessage);
 
-  // Drag & Drop auf Upload-Zone
-  setupDropZone();
+  // (drop zones sind jetzt in renderMediaSlot inline)
 });
 
 // ══════════════════════════════════════
@@ -982,6 +955,7 @@ function showApp(user) {
   loadFaq();
   loadBilder();
   loadKontakt();
+  loadAdminPreviews();
 }
 
 // ══════════════════════════════════════
@@ -1008,11 +982,13 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 // ══════════════════════════════════════
 // POSTMESSAGE ↔ IFRAME
 // ══════════════════════════════════════
-function sendToIframe(msg) {
+function sendToIframe(actionOrMsg, key, value) {
   const iframe = document.getElementById('preview-iframe');
-  if (iframe && iframe.contentWindow) {
-    iframe.contentWindow.postMessage(msg, '*');
-  }
+  if (!iframe?.contentWindow) return;
+  const msg = typeof actionOrMsg === 'string'
+    ? { action: actionOrMsg, key, value }
+    : actionOrMsg;
+  iframe.contentWindow.postMessage(msg, '*');
 }
 
 function handleIframeMessage(e) {
@@ -1082,6 +1058,16 @@ async function veroeffentlichen() {
   iframe.src = url.toString();
 }
 
+function zeigeInfo(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = '#555';
+  t.style.color = '#fff';
+  t.style.display = 'block';
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => { t.style.display = 'none'; }, 2000);
+}
+
 function zeigeErfolg(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1137,23 +1123,8 @@ function openEditPanel(key, type, currentValue, label) {
     document.getElementById('panel-text').style.display = 'flex';
   } else if (type === 'image') {
     document.getElementById('image-panel-breadcrumb').textContent = label || key;
-    document.getElementById('image-panel-title').textContent = 'Bild bearbeiten';
-    const preview = document.getElementById('image-panel-preview');
-    const placeholder = document.getElementById('image-panel-placeholder');
-    const hasImage = currentValue && currentValue.startsWith('http');
-    if (hasImage) {
-      preview.src = currentValue;
-      preview.style.display = 'block';
-      placeholder.style.display = 'none';
-    } else {
-      preview.style.display = 'none';
-      placeholder.style.display = 'flex';
-    }
-    document.getElementById('btn-bild-entfernen').style.display = hasImage ? '' : 'none';
-    document.getElementById('image-save-success').style.display = 'none';
-    document.getElementById('image-save-error').style.display = 'none';
-    document.getElementById('image-file-input').value = '';
-    document.getElementById('image-progress').style.display = 'none';
+    document.getElementById('image-panel-slot-container').innerHTML = renderMediaSlot(key, label || key);
+    loadCurrentPreview(key);
     document.getElementById('panel-image').style.display = 'flex';
   } else if (type === 'beforeafter') {
     // Vorher/Nachher Bilder aus DB laden
@@ -1200,111 +1171,122 @@ async function saveTextEdit() {
   sucEl.style.display = 'block';
   setTimeout(() => sucEl.style.display = 'none', 3000);
 
-  sendToIframe({ action: 'update', key, value });
+  sendToIframe('update_text', key, value);
   setPublishStatus(false);
 }
 
-// ── IMAGE EDIT ──
-function setupDropZone() {
-  const zone = document.getElementById('image-drop-zone');
-  if (!zone) return;
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor = 'var(--green)'; });
-  zone.addEventListener('dragleave', () => { zone.style.borderColor = ''; });
-  zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.style.borderColor = '';
-    const file = e.dataTransfer.files[0];
-    if (file) uploadBild(file, activeEditKey);
-  });
+// ── UNIVERSELLER MEDIA UPLOAD ──
+async function mediaUpload(key, file) {
+  if (!key || !file) return;
+  if (file.size > 50 * 1024 * 1024) { zeigeError('Datei zu gross (max. 50 MB)'); return; }
+
+  try {
+    zeigeInfo('Wird hochgeladen…');
+    const ext = file.name.split('.').pop().toLowerCase();
+    const filePath = key + '_' + Date.now() + '.' + ext;
+
+    const { error: upErr } = await sb.storage.from('bilder').upload(filePath, file, { upsert: true });
+    if (upErr) throw upErr;
+
+    const { data } = sb.storage.from('bilder').getPublicUrl(filePath);
+    const url = data.publicUrl;
+
+    const { error: saveErr } = await sb.from('content').upsert(
+      { key, value: url, updated_at: new Date().toISOString() },
+      { onConflict: 'key' }
+    );
+    if (saveErr) throw saveErr;
+
+    updateAdminPreview(key, url, ext);
+    sendToIframe('update_media', key, url);
+    setPublishStatus(false);
+    zeigeErfolg('✓ Gespeichert');
+    loadBilder();
+    return url;
+  } catch (err) {
+    zeigeError('Fehler: ' + err.message);
+    console.error(err);
+  }
 }
 
-function handleImageFileSelect(input) {
-  const file = input.files[0];
-  if (file) uploadBild(file, activeEditKey);
-}
-
-async function uploadBild(file, key) {
+async function mediaEntfernen(key) {
   if (!key) return;
-  if (file.size > 5 * 1024 * 1024) {
-    zeigeError('Bild zu gross. Maximale Grösse: 5 MB');
-    return;
-  }
-
-  const progressWrap = document.getElementById('image-progress');
-  const progressFill = document.getElementById('image-progress-fill');
-  document.getElementById('image-save-success').style.display = 'none';
-  document.getElementById('image-save-error').style.display = 'none';
-  progressWrap.style.display = 'block';
-  progressFill.style.width = '20%';
-
-  const ext = file.name.split('.').pop().toLowerCase();
-  const filename = key + '_' + Date.now() + '.' + ext;
-
-  progressFill.style.width = '50%';
-  const { error: uploadError } = await sb.storage.from('bilder').upload(filename, file, { upsert: true });
-  progressFill.style.width = '80%';
-
-  if (uploadError) {
-    progressWrap.style.display = 'none';
-    zeigeError('Upload fehlgeschlagen: ' + uploadError.message);
-    return;
-  }
-
-  const { data: urlData } = sb.storage.from('bilder').getPublicUrl(filename);
-  const url = urlData.publicUrl;
-  progressFill.style.width = '100%';
-  setTimeout(() => { progressWrap.style.display = 'none'; progressFill.style.width = '0'; }, 600);
-
-  const { error: upsertErr } = await sb.from('content').upsert(
-    { key, value: url, updated_at: new Date().toISOString() },
-    { onConflict: 'key' }
-  );
-  if (upsertErr) {
-    zeigeError('Speichern fehlgeschlagen: ' + upsertErr.message);
-    return;
-  }
-
-  const preview = document.getElementById('image-panel-preview');
-  preview.src = url;
-  preview.style.display = 'block';
-  document.getElementById('image-panel-placeholder').style.display = 'none';
-  document.getElementById('btn-bild-entfernen').style.display = '';
-
-  sendToIframe({ action: 'update', key, value: url, type: 'image' });
-  setPublishStatus(false);
-  zeigeErfolg('✓ Bild gespeichert');
-  loadBilder();
-}
-
-async function bildEntfernen(key) {
-  key = key || activeEditKey;
-  if (!key) return;
-  if (!confirm('Bild für "' + key + '" wirklich entfernen?')) return;
-
+  if (!confirm('Inhalt für "' + key + '" wirklich entfernen?')) return;
   const { error } = await sb.from('content').upsert(
     { key, value: '', updated_at: new Date().toISOString() },
     { onConflict: 'key' }
   );
   if (error) { zeigeError('Fehler: ' + error.message); return; }
-
-  // Per-Key Vorschau aktualisieren (falls vorhanden)
-  const keyPreview = document.getElementById('preview-' + key);
-  if (keyPreview) { keyPreview.src = ''; keyPreview.style.display = 'none'; }
-
-  // Geteiltes Edit-Panel aktualisieren
-  if (key === activeEditKey) {
-    document.getElementById('image-panel-preview').style.display = 'none';
-    document.getElementById('image-panel-placeholder').style.display = 'flex';
-    document.getElementById('btn-bild-entfernen').style.display = 'none';
-  }
-
-  sendToIframe({ action: 'update', key, value: '', type: 'image' });
+  updateAdminPreview(key, '', '');
+  sendToIframe('update_media', key, '');
   setPublishStatus(false);
-  zeigeErfolg('✓ Bild entfernt');
+  zeigeErfolg('✓ Entfernt');
+}
+
+function updateAdminPreview(key, url, ext) {
+  const container = document.getElementById('admin-preview-' + key);
+  if (!container) return;
+  const isVideo = ['mp4', 'webm', 'ogg'].includes((ext || '').toLowerCase());
+  if (!url) {
+    container.innerHTML = '<div style="height:120px;background:#f0f0ec;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:13px;font-family:Montserrat,sans-serif;">Kein Inhalt</div>';
+  } else if (isVideo) {
+    container.innerHTML = '<video src="' + esc(url) + '" muted autoplay loop playsinline style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block;"></video>';
+  } else {
+    container.innerHTML = '<img src="' + esc(url) + '" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block;">';
+  }
+}
+
+function renderMediaSlot(key, label) {
+  return `
+    <div style="margin-bottom:16px; padding:14px; background:#f8f8f6; border-radius:10px; border:1px solid #e0e0d8;">
+      <div style="font-family:Montserrat,sans-serif; font-weight:600; font-size:12px; margin-bottom:8px; color:#555; text-transform:uppercase; letter-spacing:0.06em;">${esc(label || key)}</div>
+      <div id="admin-preview-${esc(key)}">
+        <div style="height:120px;background:#f0f0ec;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:13px;font-family:Montserrat,sans-serif;">Kein Inhalt</div>
+      </div>
+      <label style="display:block;margin-top:10px;padding:12px;border:2px dashed var(--green);border-radius:8px;text-align:center;cursor:pointer;color:var(--green);font-size:13px;font-family:Montserrat,sans-serif;font-weight:600;">
+        + Bild oder Video wählen
+        <input type="file" accept="image/*,video/mp4,video/webm" style="display:none;"
+          onchange="if(this.files[0]) mediaUpload('${key}', this.files[0]); this.value='';">
+      </label>
+      <button onclick="openImageLibrary('${key}')"
+        style="width:100%;margin-top:8px;padding:9px;background:transparent;border:1px solid var(--border);color:var(--text);border-radius:6px;font-size:12px;font-family:Montserrat,sans-serif;font-weight:600;cursor:pointer;">
+        Aus Bibliothek wählen
+      </button>
+      <button onclick="mediaEntfernen('${key}')"
+        style="width:100%;margin-top:6px;padding:8px;background:transparent;border:1px solid #e74c3c;color:#e74c3c;border-radius:6px;font-size:12px;font-family:Montserrat,sans-serif;cursor:pointer;">
+        × Entfernen
+      </button>
+    </div>`;
+}
+
+async function loadCurrentPreview(key) {
+  const { data } = await sb.from('content').select('value').eq('key', key).maybeSingle();
+  if (data?.value) {
+    const ext = data.value.split('.').pop().split('?')[0].toLowerCase();
+    updateAdminPreview(key, data.value, ext);
+  }
+}
+
+async function loadAdminPreviews() {
+  const { data } = await sb.from('content').select('key, value');
+  if (!data) return;
+  data.forEach(({ key, value }) => {
+    if (!value) return;
+    const ext = value.split('.').pop().split('?')[0].toLowerCase();
+    updateAdminPreview(key, value, ext);
+  });
+}
+
+// Bildbibliotek — unterstützt jetzt auch Key-Argument
+async function handleImageFileSelect(input) {
+  const file = input.files[0];
+  if (file) mediaUpload(activeEditKey, file);
 }
 
 // ── IMAGE LIBRARY ──
-async function openImageLibrary() {
+let _libraryTargetKey = null;
+async function openImageLibrary(key) {
+  _libraryTargetKey = key || activeEditKey;
   document.getElementById('modal-image-library').classList.add('active');
   const grid = document.getElementById('library-grid');
   grid.innerHTML = '<div class="loading-state"><div class="spinner"></div> Lade Bilder…</div>';
@@ -1332,23 +1314,18 @@ async function openImageLibrary() {
 }
 
 async function selectFromLibrary(url) {
-  const key = activeEditKey;
+  const key = _libraryTargetKey || activeEditKey;
   if (!key) return;
-  console.log('Bild URL (Bibliothek):', url);
+  const ext = url.split('.').pop().split('?')[0].toLowerCase();
   await sb.from('content').upsert(
     { key, value: url, updated_at: new Date().toISOString() },
     { onConflict: 'key' }
   );
-  console.log('CMS: Bild aus Bibliothek gespeichert – key:', key, 'url:', url);
-  sendToIframe({ action: 'update', key, value: url, type: 'image' });
-  const preview = document.getElementById('image-panel-preview');
-  preview.src = url;
-  preview.style.display = 'block';
-  document.getElementById('image-panel-placeholder').style.display = 'none';
-  document.getElementById('btn-bild-entfernen').style.display = '';
+  updateAdminPreview(key, url, ext);
+  sendToIframe('update_media', key, url);
   setPublishStatus(false);
   closeModal('modal-image-library');
-  zeigeErfolg('✓ Bild gespeichert');
+  zeigeErfolg('✓ Gespeichert');
 }
 
 async function deleteLibraryImage(name, el) {
@@ -1359,7 +1336,7 @@ async function deleteLibraryImage(name, el) {
 
 // ── BEFORE/AFTER ──
 async function loadBACurrentImages() {
-  const keys = ['referenz_1_vorher', 'referenz_1_nachher'];
+  const keys = ['referenz_vorher', 'referenz_nachher'];
   const { data } = await sb.from('content').select('key,value').in('key', keys);
   if (!data) return;
   data.forEach(({ key, value }) => {
@@ -1396,11 +1373,9 @@ async function handleBAUpload(input, side) {
   progressFill.style.width = '100%';
   setTimeout(() => { progressWrap.style.display = 'none'; progressFill.style.width = '0'; }, 600);
 
-  const contentKey = 'referenz_1_' + side;
-  await sb.from('content').upsert({ key: contentKey, value: url }, { onConflict: 'key' });
-
-  // Live-Update im iframe: Hintergrund-Bild des Sliders aktualisieren
-  sendToIframe({ action: 'update', key: contentKey, value: url });
+  const contentKey = 'referenz_' + side;
+  await sb.from('content').upsert({ key: contentKey, value: url, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+  sendToIframe('update_media', contentKey, url);
 
   const img = document.getElementById('ba-' + side + '-preview');
   img.src = url; img.style.display = 'block';
