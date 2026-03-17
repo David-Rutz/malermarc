@@ -93,7 +93,8 @@
     pointer-events: none; z-index: 9999;
     transform-origin: 12px 14px;
     transition: transform 0.15s ease, opacity 0.1s ease;
-    will-change: left, top, transform;
+    /* KEIN transition auf left/top – Dreieck folgt Maus sofort */
+    will-change: transform;
   }
   #cursor-tri polygon { fill: var(--green); }
   #cursor-tri.hovered { opacity: 0; }
@@ -2016,50 +2017,56 @@
   const circle = document.getElementById('cursor-circle');
   const trails = [0,1,2,3,4].map(i => document.getElementById('trail-' + i));
 
-  let mx = 0, my = 0, cx = 0, cy = 0;
+  let mouseX = 0, mouseY = 0;
+  let trailX = 0, trailY = 0;
   let isHovered = false;
   const trailPos = trails.map(() => ({ x: 0, y: 0 }));
   const trailLag = [0.22, 0.18, 0.14, 0.10, 0.07];
+  let prevX = 0, prevY = 0;
 
+  // Dreieck folgt Maus SOFORT – kein Lag
   document.addEventListener('mousemove', e => {
-    mx = e.clientX;
-    my = e.clientY;
-    // Kreis folgt sofort (kein Lag)
-    if (circle) {
-      circle.style.left = mx + 'px';
-      circle.style.top  = my + 'px';
-    }
-  });
+    mouseX = e.clientX;
+    mouseY = e.clientY;
 
-  function animCursor() {
-    const dx = mx - cx, dy = my - cy;
-    cx += dx * 0.08;
-    cy += dy * 0.08;
+    tri.style.left = mouseX + 'px';
+    tri.style.top  = mouseY + 'px';
 
-    // Dreieck
-    tri.style.left = cx + 'px';
-    tri.style.top  = cy + 'px';
-
-    // Neigung beim Bewegen (nur wenn nicht gehovered)
+    // Neigung beim Bewegen
     if (!isHovered) {
-      const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+      const dx = mouseX - prevX, dy = mouseY - prevY;
       const speed = Math.sqrt(dx*dx + dy*dy);
       if (speed > 0.5) {
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
         tri.style.transform = `rotate(${angle + 90}deg)`;
       }
     }
+    prevX = mouseX; prevY = mouseY;
 
-    // Trail
+    // Kreis folgt ebenfalls sofort
+    if (circle) {
+      circle.style.left = mouseX + 'px';
+      circle.style.top  = mouseY + 'px';
+    }
+  });
+
+  // Trail verzögert per rAF
+  function animateTrail() {
+    trailX += (mouseX - trailX) * 0.12;
+    trailY += (mouseY - trailY) * 0.12;
+
     trails.forEach((el, i) => {
-      trailPos[i].x += ((i === 0 ? cx : trailPos[i-1].x) - trailPos[i].x) * trailLag[i];
-      trailPos[i].y += ((i === 0 ? cy : trailPos[i-1].y) - trailPos[i].y) * trailLag[i];
+      const srcX = i === 0 ? trailX : trailPos[i-1].x;
+      const srcY = i === 0 ? trailY : trailPos[i-1].y;
+      trailPos[i].x += (srcX - trailPos[i].x) * trailLag[i];
+      trailPos[i].y += (srcY - trailPos[i].y) * trailLag[i];
       el.style.left = trailPos[i].x + 'px';
       el.style.top  = trailPos[i].y + 'px';
     });
 
-    requestAnimationFrame(animCursor);
+    requestAnimationFrame(animateTrail);
   }
-  animCursor();
+  animateTrail();
 
   // Hover-Handler: Dreieck → Kreis
   function addHoverCursor(els) {
