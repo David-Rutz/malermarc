@@ -74,6 +74,8 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after, a, button, input, textarea, select,
+  label, [role="button"] { cursor: none !important; }
 
   html { scroll-behavior: smooth; }
 
@@ -89,8 +91,8 @@
   #cursor-tri {
     position: fixed; top: 0; left: 0;
     pointer-events: none; z-index: 9999;
-    transform: translate(-2px, -2px);
-    transition: transform 0.25s ease;
+    transform-origin: 12px 14px;
+    transition: transform 0.15s ease;
     will-change: left, top, transform;
   }
   #cursor-tri polygon {
@@ -98,19 +100,31 @@
     transition: fill 0.2s ease;
   }
   #cursor-tri.hovered {
-    transform: translate(-2px, -2px) scale(1.8) rotate(180deg);
+    transform: scale(1.6) rotate(180deg);
   }
   #cursor-tri.hovered polygon { fill: var(--orange); }
-  #cursor-tri.clicked { transform: translate(-2px, -2px) scale(0.7); }
+  #cursor-tri.clicked { transform: scale(0.6); transition: transform 0.1s ease; }
   #cursor-tri-ring {
     position: fixed; top: 0; left: 0;
     pointer-events: none; z-index: 9998;
-    transform: translate(-5px, -5px);
-    opacity: 0.4;
+    opacity: 0;
     transition: opacity 0.2s;
     will-change: left, top;
   }
   #cursor-tri-ring polygon { transition: stroke 0.2s ease; }
+  @keyframes tri-pulse {
+    0% { transform: translate(-5px,-5px) scale(1); opacity: 1; }
+    100% { transform: translate(-5px,-5px) scale(1.8); opacity: 0; }
+  }
+  #cursor-tri-ring.pulsing {
+    animation: tri-pulse 1s ease-out infinite;
+  }
+  .cursor-trail {
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9996;
+    will-change: left, top;
+    transform-origin: 7px 8px;
+  }
 
   /* ── NAVBAR ── */
   nav {
@@ -801,6 +815,212 @@
     font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem;
   }
   .testimonial-location { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── HERO SLIDESHOW ── */
+  #hero-slideshow {
+    position: absolute; inset: 0; z-index: 0;
+  }
+  .hero-slide {
+    position: absolute; inset: 0;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+    background-size: cover; background-position: center;
+    overflow: hidden;
+  }
+  .hero-slide.active { opacity: 1; }
+  .hero-slide img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .hero-slide.active img {
+    animation: kenburns 10s ease-out forwards;
+  }
+  @keyframes kenburns {
+    0%   { transform: scale(1) translate(0,0); }
+    100% { transform: scale(1.08) translate(-1%,-1%); }
+  }
+  .hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: rgba(0,0,0,0.45);
+    pointer-events: none;
+  }
+  .hero-dots {
+    position: absolute; bottom: 5.5rem; left: 50%;
+    transform: translateX(-50%);
+    z-index: 10; display: flex; gap: 0.6rem;
+  }
+  .hero-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    border: none; padding: 0;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .hero-dot.active {
+    background: var(--green);
+    transform: scale(1.4);
+  }
+
+  /* ── MASONRY GALERIE ── */
+  #galerie { background: var(--bg); position: relative; }
+  .galerie-filter {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; margin: 2rem 0;
+  }
+  .filter-btn {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(0,0,0,0.12); border-radius: 4px;
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.5rem 1.2rem;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    color: var(--anthrazit);
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--green); border-color: var(--green); color: #000;
+  }
+  .masonry-grid {
+    columns: 3; column-gap: 1rem;
+  }
+  @media (max-width: 900px) { .masonry-grid { columns: 2; } }
+  @media (max-width: 600px) { .masonry-grid { columns: 1; } }
+  .masonry-tile {
+    break-inside: avoid; margin-bottom: 1rem;
+    position: relative; border-radius: 10px; overflow: hidden;
+    transition: opacity 0.4s ease;
+  }
+  .masonry-tile.hidden {
+    opacity: 0; pointer-events: none; position: absolute; visibility: hidden;
+    height: 0; margin: 0; overflow: hidden;
+  }
+  .masonry-tile-inner {
+    position: relative; overflow: hidden; border-radius: 10px;
+  }
+  .tile-placeholder {
+    width: 100%; display: flex; align-items: center; justify-content: center;
+    color: rgba(46,190,110,0.45);
+  }
+  .masonry-tile:hover .tile-placeholder,
+  .masonry-tile:hover .masonry-tile-inner img {
+    transform: scale(1.08);
+  }
+  .tile-placeholder, .masonry-tile-inner img {
+    transition: transform 0.5s ease;
+  }
+  .tile-overlay {
+    position: absolute; inset: 0; border-radius: 10px;
+    background: rgba(46,190,110,0);
+    transition: background 0.4s;
+  }
+  .masonry-tile:hover .tile-overlay { background: rgba(46,190,110,0.3); }
+  .tile-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.75), transparent);
+    padding: 1.5rem 1rem 0.75rem;
+    transform: translateY(100%);
+    transition: transform 0.35s ease;
+    border-radius: 0 0 10px 10px;
+  }
+  .masonry-tile:hover .tile-label { transform: translateY(0); }
+  .tile-label span {
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #fff;
+  }
+
+  /* ── LIGHTBOX ── */
+  #lightbox {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(0,0,0,0.92);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  #lightbox.open { opacity: 1; pointer-events: all; }
+  #lightbox-img {
+    max-width: 90vw; max-height: 85vh;
+    border-radius: 8px; object-fit: contain;
+    transform: scale(0.8);
+    transition: transform 0.35s ease;
+    display: none;
+  }
+  #lightbox.open #lightbox-img { transform: scale(1); }
+  #lightbox-placeholder {
+    max-width: 90vw; max-height: 85vh;
+    width: 700px; height: 500px;
+    border-radius: 8px;
+    transform: scale(0.8);
+    transition: transform 0.35s ease;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #lightbox.open #lightbox-placeholder { transform: scale(1); }
+  .lb-close {
+    position: absolute; top: 1.5rem; right: 2rem;
+    background: none; border: none; color: #fff; font-size: 2rem;
+    opacity: 0.7; transition: opacity 0.2s;
+    font-family: 'Montserrat', sans-serif; font-weight: 900; line-height: 1;
+  }
+  .lb-close:hover { opacity: 1; }
+  .lb-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%; width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; transition: background 0.2s;
+  }
+  .lb-arrow:hover { background: rgba(255,255,255,0.25); }
+  .lb-prev { left: 1.5rem; }
+  .lb-next { right: 1.5rem; }
+
+  /* ── ARBEITSFOTOS MARC ── */
+  .work-photos {
+    display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap;
+  }
+  .work-photo {
+    width: 80px; height: 80px; border-radius: 8px;
+    overflow: hidden; flex-shrink: 0;
+    border: 2px solid transparent;
+    transition: border-color 0.2s, transform 0.2s;
+    background: linear-gradient(135deg, #1a3a27, #0d2b1a);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(46,190,110,0.4);
+  }
+  .work-photo:hover { border-color: var(--green); transform: scale(1.07); }
+  .work-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* ── LEISTUNG KARTE MIT HINTERGRUNDBILD ── */
+  .leistung-card { position: relative; }
+  .leistung-card-bg {
+    position: absolute; inset: 0; background-size: cover; background-position: center;
+    border-radius: inherit; z-index: 0; opacity: 0; transition: opacity 0.4s;
+  }
+  .leistung-card-bg.loaded { opacity: 1; }
+  .leistung-card-bg::after {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(0,0,0,0.55); border-radius: inherit;
+  }
+  .leistung-card.has-bg .leistung-title,
+  .leistung-card.has-bg .leistung-desc,
+  .leistung-card.has-bg .leistung-tag { color: #fff !important; position: relative; z-index: 1; }
+  .leistung-card.has-bg .leistung-icon { position: relative; z-index: 1; }
+
+  /* ── EINBLICKE FILMSTRIP ── */
+  #einblicke { background: var(--bg2); padding: 7rem 0; overflow: hidden; position: relative; }
+  #einblicke > .section-label, #einblicke > h2, #einblicke > p { padding: 0 2.5rem; }
+  .filmstrip-wrap { margin-top: 3rem; overflow: hidden; position: relative; }
+  .filmstrip-track {
+    display: flex; gap: 1rem; width: max-content;
+    animation: filmscroll 30s linear infinite;
+  }
+  .filmstrip-wrap:hover .filmstrip-track { animation-play-state: paused; }
+  @keyframes filmscroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .film-frame {
+    width: 320px; height: 220px; border-radius: 12px;
+    overflow: hidden; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(46,190,110,0.4); position: relative;
+  }
+  .film-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
 </style>
 </head>
 <body>
@@ -812,6 +1032,12 @@
 <svg id="cursor-tri-ring" width="40" height="46" viewBox="0 0 40 46" fill="none" xmlns="http://www.w3.org/2000/svg">
   <polygon points="3,3 37,16 16,43" fill="none" stroke="#2EBE6E" stroke-width="1.5"/>
 </svg>
+<!-- CURSOR TRAIL -->
+<svg class="cursor-trail" id="trail-0" width="14" height="16" viewBox="0 0 14 16" fill="none"><polygon points="1,1 13,5 6,15" fill="#2EBE6E" opacity="0.4"/></svg>
+<svg class="cursor-trail" id="trail-1" width="12" height="14" viewBox="0 0 12 14" fill="none"><polygon points="1,1 11,5 5,13" fill="#2EBE6E" opacity="0.3"/></svg>
+<svg class="cursor-trail" id="trail-2" width="10" height="12" viewBox="0 0 10 12" fill="none"><polygon points="1,1 9,4 4,11" fill="#2EBE6E" opacity="0.2"/></svg>
+<svg class="cursor-trail" id="trail-3" width="8" height="10" viewBox="0 0 8 10" fill="none"><polygon points="1,1 7,3 3,9" fill="#2EBE6E" opacity="0.12"/></svg>
+<svg class="cursor-trail" id="trail-4" width="6" height="8" viewBox="0 0 6 8" fill="none"><polygon points="1,1 5,3 2,7" fill="#2EBE6E" opacity="0.06"/></svg>
 
 <!-- NAV -->
 <nav id="navbar">
@@ -835,8 +1061,24 @@
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-bg" data-editable="image" data-key="bild_hero_bg"></div>
+  <!-- Hero Slideshow -->
+  <div id="hero-slideshow">
+    <div class="hero-slide active" data-editable="image" data-key="hero_bg_1" style="background:linear-gradient(135deg,#0d2b1a 0%,#1a3a27 60%,#0a4020 100%)"></div>
+    <div class="hero-slide" data-editable="image" data-key="hero_bg_2" style="background:linear-gradient(155deg,#0f3020 0%,#1a4a2a 50%,#0d2b1a 100%)"></div>
+    <div class="hero-slide" data-editable="image" data-key="hero_bg_3" style="background:linear-gradient(120deg,#0a2e1a 0%,#163a22 40%,#0d2b1a 100%)"></div>
+    <div class="hero-slide" data-editable="image" data-key="hero_bg_4" style="background:linear-gradient(140deg,#0d1f15 0%,#1a3a27 70%,#111f15 100%)"></div>
+    <div class="hero-slide" data-editable="image" data-key="hero_bg_5" style="background:linear-gradient(160deg,#162e1f 0%,#0d2b1a 50%,#0a2518 100%)"></div>
+  </div>
+  <div class="hero-overlay"></div>
   <div class="hero-grid"></div>
+  <!-- Dot-Navigation -->
+  <div class="hero-dots" id="hero-dots">
+    <button class="hero-dot active" data-idx="0"></button>
+    <button class="hero-dot" data-idx="1"></button>
+    <button class="hero-dot" data-idx="2"></button>
+    <button class="hero-dot" data-idx="3"></button>
+    <button class="hero-dot" data-idx="4"></button>
+  </div>
 
   <!-- Glow Blobs -->
   <div class="glow-blob" style="width:600px;height:600px;background:var(--green);top:-120px;right:-80px;opacity:0.35;animation-delay:0s;"></div>
@@ -965,7 +1207,8 @@
 
   <div class="leistungen-grid reveal reveal-delay-3">
 
-    <div class="leistung-card">
+    <div class="leistung-card" data-editable="image" data-key="leistung_bild_1">
+      <div class="leistung-card-bg" id="leistung-bg-1"></div>
       <div class="leistung-icon">
         <i data-lucide="home" width="22" height="22"></i>
       </div>
@@ -974,7 +1217,8 @@
       <div class="leistung-tag">Beliebteste Leistung</div>
     </div>
 
-    <div class="leistung-card">
+    <div class="leistung-card" data-editable="image" data-key="leistung_bild_2">
+      <div class="leistung-card-bg" id="leistung-bg-2"></div>
       <div class="leistung-icon">
         <i data-lucide="building-2" width="22" height="22"></i>
       </div>
@@ -983,7 +1227,8 @@
       <div class="leistung-tag">Auch für Fassaden</div>
     </div>
 
-    <div class="leistung-card">
+    <div class="leistung-card" data-editable="image" data-key="leistung_bild_3">
+      <div class="leistung-card-bg" id="leistung-bg-3"></div>
       <div class="leistung-icon">
         <i data-lucide="sparkles" width="22" height="22"></i>
       </div>
@@ -992,7 +1237,8 @@
       <div class="leistung-tag">Kreativität pur</div>
     </div>
 
-    <div class="leistung-card">
+    <div class="leistung-card" data-editable="image" data-key="leistung_bild_4">
+      <div class="leistung-card-bg" id="leistung-bg-4"></div>
       <div class="leistung-icon">
         <i data-lucide="layers" width="22" height="22"></i>
       </div>
@@ -1001,7 +1247,8 @@
       <div class="leistung-tag">Grundlagenarbeiten</div>
     </div>
 
-    <div class="leistung-card">
+    <div class="leistung-card" data-editable="image" data-key="leistung_bild_5">
+      <div class="leistung-card-bg" id="leistung-bg-5"></div>
       <div class="leistung-icon">
         <i data-lucide="scroll-text" width="22" height="22"></i>
       </div>
@@ -1010,7 +1257,8 @@
       <div class="leistung-tag">Klassisch & Modern</div>
     </div>
 
-    <div class="leistung-card">
+    <div class="leistung-card" data-editable="image" data-key="leistung_bild_6">
+      <div class="leistung-card-bg" id="leistung-bg-6"></div>
       <div class="leistung-icon">
         <i data-lucide="shield-check" width="22" height="22"></i>
       </div>
@@ -1064,6 +1312,131 @@
   </div>
 </section>
 
+<!-- GALERIE REFERENZGALERIE -->
+<div class="glow-line"></div>
+<section id="galerie">
+  <div class="section-label reveal">Referenzgalerie</div>
+  <h2 class="reveal reveal-delay-1">Unsere <span style="color:var(--green)">Arbeiten</span></h2>
+  <p class="reveal reveal-delay-2" style="color:rgba(26,26,26,0.6); max-width:520px; line-height:1.8; font-size:0.95rem;">
+    Einblicke in abgeschlossene Projekte – von der klassischen Renovierung bis zur kreativen Wandgestaltung.
+  </p>
+
+  <!-- Kategorie-Filter -->
+  <div class="galerie-filter reveal reveal-delay-3">
+    <button class="filter-btn active" data-filter="alle">Alle</button>
+    <button class="filter-btn" data-filter="innen">Innen</button>
+    <button class="filter-btn" data-filter="aussen">Aussen</button>
+    <button class="filter-btn" data-filter="wandgestaltung">Wandgestaltung</button>
+    <button class="filter-btn" data-filter="gipser">Gipser</button>
+  </div>
+
+  <!-- Masonry Grid -->
+  <div class="masonry-grid reveal reveal-delay-4" id="masonry-grid">
+
+    <div class="masonry-tile" data-category="innen" data-idx="0">
+      <div class="masonry-tile-inner">
+        <div class="tile-placeholder" style="height:280px;background:linear-gradient(135deg,#1a3a27,#0d2b1a);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="tile-overlay"></div>
+        <div class="tile-label"><span>Innenmalerei</span></div>
+      </div>
+    </div>
+
+    <div class="masonry-tile" data-category="aussen" data-idx="1">
+      <div class="masonry-tile-inner">
+        <div class="tile-placeholder" style="height:380px;background:linear-gradient(155deg,#0f3020,#1a4a2a);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <div class="tile-overlay"></div>
+        <div class="tile-label"><span>Aussenmalerei</span></div>
+      </div>
+    </div>
+
+    <div class="masonry-tile" data-category="wandgestaltung" data-idx="2">
+      <div class="masonry-tile-inner">
+        <div class="tile-placeholder" style="height:320px;background:linear-gradient(120deg,#0a2e1a,#163a22);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="tile-overlay"></div>
+        <div class="tile-label"><span>Wandgestaltung</span></div>
+      </div>
+    </div>
+
+    <div class="masonry-tile" data-category="gipser" data-idx="3">
+      <div class="masonry-tile-inner">
+        <div class="tile-placeholder" style="height:280px;background:linear-gradient(140deg,#0d1f15,#1a3a27);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="tile-overlay"></div>
+        <div class="tile-label"><span>Gipserarbeiten</span></div>
+      </div>
+    </div>
+
+    <div class="masonry-tile" data-category="innen" data-idx="4">
+      <div class="masonry-tile-inner">
+        <div class="tile-placeholder" style="height:380px;background:linear-gradient(160deg,#162e1f,#0d2b1a);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20h20M4 20V10l8-6 8 6v10"/><path d="M10 20v-5h4v5"/></svg>
+        </div>
+        <div class="tile-overlay"></div>
+        <div class="tile-label"><span>Innenmalerei</span></div>
+      </div>
+    </div>
+
+    <div class="masonry-tile" data-category="wandgestaltung" data-idx="5">
+      <div class="masonry-tile-inner">
+        <div class="tile-placeholder" style="height:320px;background:linear-gradient(135deg,#1a3a27,#0a4020);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <div class="tile-overlay"></div>
+        <div class="tile-label"><span>Effektfarben</span></div>
+      </div>
+    </div>
+
+    <div class="masonry-tile" data-category="aussen" data-idx="6">
+      <div class="masonry-tile-inner">
+        <div class="tile-placeholder" style="height:280px;background:linear-gradient(150deg,#0f2d1c,#1a3a27);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M3 7v14M21 7v14M3 7a9 9 0 0 1 18 0"/></svg>
+        </div>
+        <div class="tile-overlay"></div>
+        <div class="tile-label"><span>Fassade</span></div>
+      </div>
+    </div>
+
+    <div class="masonry-tile" data-category="gipser" data-idx="7">
+      <div class="masonry-tile-inner">
+        <div class="tile-placeholder" style="height:380px;background:linear-gradient(125deg,#0a2e1a,#1a4a2a);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div class="tile-overlay"></div>
+        <div class="tile-label"><span>Verputzarbeiten</span></div>
+      </div>
+    </div>
+
+    <div class="masonry-tile" data-category="innen" data-idx="8">
+      <div class="masonry-tile-inner">
+        <div class="tile-placeholder" style="height:320px;background:linear-gradient(145deg,#162e1f,#0d2b1a);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="tile-overlay"></div>
+        <div class="tile-label"><span>Renovierung</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button class="lb-close" id="lb-close">&#x2715;</button>
+  <button class="lb-arrow lb-prev" id="lb-prev"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+  <img id="lightbox-img" src="" alt="">
+  <div id="lightbox-placeholder" style="background:linear-gradient(135deg,#1a3a27,#0d2b1a);color:rgba(46,190,110,0.4);">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+  </div>
+  <button class="lb-arrow lb-next" id="lb-next"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+</div>
+
 <!-- ÜBER MICH -->
 <div class="glow-line"></div>
 <section id="ueber-mich">
@@ -1109,43 +1482,98 @@
     </div>
   </div>
 
-  <div class="about-visual reveal reveal-delay-2">
-    <div class="about-visual-inner">
-      <img id="bild-marc-img" data-editable="image" data-key="bild_marc"
-           src="" alt="Marc – MalerMarc"
-           style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:2; border-radius:12px;">
-      <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:340px;">
-        <!-- Background blobs -->
-        <ellipse cx="200" cy="250" rx="180" ry="220" fill="rgba(46,190,110,0.05)"/>
-        <!-- Paint can -->
-        <g transform="translate(100, 120)">
-          <!-- Can body -->
-          <rect x="30" y="80" width="140" height="160" rx="12" fill="#1a3a27" stroke="#2EBE6E" stroke-width="2"/>
-          <!-- Label area -->
-          <rect x="40" y="100" width="120" height="100" rx="6" fill="rgba(46,190,110,0.15)"/>
-          <!-- M letter -->
-          <text x="100" y="165" text-anchor="middle" font-family="Montserrat" font-weight="900" font-size="52" fill="#2EBE6E" opacity="0.8">M</text>
-          <!-- Can lid -->
-          <ellipse cx="100" cy="80" rx="75" ry="14" fill="#2EBE6E" opacity="0.8"/>
-          <ellipse cx="100" cy="80" rx="60" ry="10" fill="#1a9a52"/>
-          <!-- Handle -->
-          <path d="M50 75 Q50 40 100 40 Q150 40 150 75" stroke="#2EBE6E" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.6"/>
-          <!-- Paint drip from can -->
-          <path d="M90 240 Q92 270 88 300 Q87 310 92 315" stroke="#2EBE6E" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>
-          <circle cx="92" cy="318" r="8" fill="#2EBE6E" opacity="0.5"/>
-          <!-- Splatter dots -->
-          <circle cx="35" cy="200" r="5" fill="#FF7A00" opacity="0.5"/>
-          <circle cx="175" cy="185" r="4" fill="#2EBE6E" opacity="0.6"/>
-          <circle cx="20" cy="250" r="3" fill="#2EBE6E" opacity="0.4"/>
-          <circle cx="185" cy="240" r="6" fill="#FF7A00" opacity="0.3"/>
-        </g>
-        <!-- Floating elements -->
-        <circle cx="60" cy="100" r="12" fill="#2EBE6E" opacity="0.12" style="animation: float 4s ease-in-out infinite;"/>
-        <circle cx="340" cy="380" r="18" fill="#FF7A00" opacity="0.1" style="animation: float 5s 1s ease-in-out infinite;"/>
-        <circle cx="360" cy="150" r="8" fill="#2EBE6E" opacity="0.2" style="animation: float 3s 2s ease-in-out infinite;"/>
-      </svg>
+  <div style="display:flex;flex-direction:column;gap:0.75rem;" class="reveal reveal-delay-2">
+    <div class="about-visual">
+      <div class="about-visual-inner" id="marc-portrait-wrap">
+        <!-- Echtes Portrait-Foto -->
+        <img id="bild-marc-img"
+             data-editable="image" data-key="bild_marc" data-cms="bild_marc"
+             src="" alt="Marc – MalerMarc"
+             style="width:100%; height:100%; object-fit:cover; border-radius:20px; position:absolute; inset:0; z-index:2; display:none;">
+        <!-- Fallback: grüner Gradient mit Initial -->
+        <div id="marc-fallback" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a3a27,#0d2b1a);border-radius:20px;z-index:1;">
+          <span style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:7rem;color:rgba(46,190,110,0.45);line-height:1;">M</span>
+        </div>
+      </div>
+      <div class="about-accent"></div>
     </div>
-    <div class="about-accent"></div>
+    <!-- 3 Arbeitsfotos -->
+    <div class="work-photos">
+      <div class="work-photo" data-editable="image" data-key="bild_marc_arbeit_1">
+        <i data-lucide="camera" width="20" height="20"></i>
+      </div>
+      <div class="work-photo" data-editable="image" data-key="bild_marc_arbeit_2">
+        <i data-lucide="paintbrush" width="20" height="20"></i>
+      </div>
+      <div class="work-photo" data-editable="image" data-key="bild_marc_arbeit_3">
+        <i data-lucide="hard-hat" width="20" height="20"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EINBLICKE FILMSTRIP -->
+<div class="glow-line"></div>
+<section id="einblicke">
+  <div class="section-label reveal">Aus unserem Alltag</div>
+  <h2 class="reveal reveal-delay-1">Einblicke in unsere<br><span style="color:var(--green)">Arbeit</span></h2>
+  <p class="reveal reveal-delay-2" style="color:rgba(26,26,26,0.6); max-width:560px; line-height:1.8; font-size:0.95rem;">
+    Momente aus dem Berufsalltag – von der Vorbereitung bis zur fertigen Wand.
+  </p>
+
+  <div class="filmstrip-wrap">
+    <div class="filmstrip-track" id="filmstrip-track">
+      <!-- Originale 8 Frames -->
+      <div class="film-frame" data-editable="image" data-key="einblick_1" style="background:linear-gradient(135deg,#0d2b1a,#1a3a27);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_2" style="background:linear-gradient(155deg,#0f3020,#1a4a2a);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l7.65 7.65a.5.5 0 0 0 .71 0l7.65-7.65a5.4 5.4 0 0 0 0-7.65z"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_3" style="background:linear-gradient(120deg,#0a2e1a,#163a22);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_4" style="background:linear-gradient(140deg,#0d1f15,#1a3a27);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_5" style="background:linear-gradient(160deg,#162e1f,#0d2b1a);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_6" style="background:linear-gradient(135deg,#1a3a27,#0a4020);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_7" style="background:linear-gradient(150deg,#0f2d1c,#1a3a27);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_8" style="background:linear-gradient(125deg,#0a2e1a,#1a4a2a);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <!-- Duplikat für Loop -->
+      <div class="film-frame" data-editable="image" data-key="einblick_1" style="background:linear-gradient(135deg,#0d2b1a,#1a3a27);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_2" style="background:linear-gradient(155deg,#0f3020,#1a4a2a);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l7.65 7.65a.5.5 0 0 0 .71 0l7.65-7.65a5.4 5.4 0 0 0 0-7.65z"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_3" style="background:linear-gradient(120deg,#0a2e1a,#163a22);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_4" style="background:linear-gradient(140deg,#0d1f15,#1a3a27);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_5" style="background:linear-gradient(160deg,#162e1f,#0d2b1a);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_6" style="background:linear-gradient(135deg,#1a3a27,#0a4020);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_7" style="background:linear-gradient(150deg,#0f2d1c,#1a3a27);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <div class="film-frame" data-editable="image" data-key="einblick_8" style="background:linear-gradient(125deg,#0a2e1a,#1a4a2a);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1545,43 +1973,82 @@
   // Init Lucide icons
   lucide.createIcons();
 
-  // ── CUSTOM CURSOR TRIANGLE ──
+  // ── CUSTOM CURSOR TRIANGLE (überarbeitet) ──
   const tri = document.getElementById('cursor-tri');
   const triRing = document.getElementById('cursor-tri-ring');
-  let mx = 0, my = 0, rx = 0, ry = 0;
+  // Trail
+  const trails = [0,1,2,3,4].map(i => document.getElementById('trail-' + i));
+  const trailDelays = [20, 40, 60, 70, 80];
+
+  let mx = 0, my = 0;
+  let prevMx = 0, prevMy = 0;
+  // Positions für Cursor (Lag 0.08) und Trail
+  let cx = 0, cy = 0;
+  const trailPos = trails.map(() => ({ x: 0, y: 0 }));
+  const trailLag = [0.22, 0.18, 0.14, 0.10, 0.07];
 
   document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    tri.style.left = mx + 'px';
-    tri.style.top = my + 'px';
+    mx = e.clientX;
+    my = e.clientY;
   });
 
-  // Smooth ring follow (lag factor 0.1)
-  function animateRing() {
-    rx += (mx - rx) * 0.1;
-    ry += (my - ry) * 0.1;
-    triRing.style.left = rx + 'px';
-    triRing.style.top = ry + 'px';
-    requestAnimationFrame(animateRing);
+  function animCursor() {
+    const dx = mx - cx, dy = my - cy;
+
+    // Cursor folgt mit Lag 0.08
+    cx += dx * 0.08;
+    cy += dy * 0.08;
+    tri.style.left = cx + 'px';
+    tri.style.top  = cy + 'px';
+    triRing.style.left = (cx - 8) + 'px';
+    triRing.style.top  = (cy - 9) + 'px';
+
+    // Neigung basierend auf Bewegungsvektor
+    if (!tri.classList.contains('hovered')) {
+      const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+      const speed = Math.sqrt(dx*dx + dy*dy);
+      const tilt  = Math.min(speed * 2, 30);
+      tri.style.transform = `rotate(${angle + 90}deg) scale(${tri.classList.contains('clicked') ? 0.6 : 1})`;
+    }
+
+    // Trail folgt
+    trails.forEach((el, i) => {
+      trailPos[i].x += ((i === 0 ? cx : trailPos[i-1].x) - trailPos[i].x) * trailLag[i];
+      trailPos[i].y += ((i === 0 ? cy : trailPos[i-1].y) - trailPos[i].y) * trailLag[i];
+      el.style.left = trailPos[i].x + 'px';
+      el.style.top  = trailPos[i].y + 'px';
+    });
+
+    requestAnimationFrame(animCursor);
   }
-  animateRing();
+  animCursor();
 
-  // Hover: scale + rotate + color change
-  document.querySelectorAll('a, button, input, textarea, select, .ba-container').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      tri.classList.add('hovered');
-      triRing.style.opacity = '0';
+  // Hover: scale + rotate 180 + orange + pulsierender Ring
+  function addHoverCursor(els) {
+    els.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        tri.classList.add('hovered');
+        tri.style.transform = '';
+        triRing.classList.add('pulsing');
+        triRing.style.opacity = '1';
+      });
+      el.addEventListener('mouseleave', () => {
+        tri.classList.remove('hovered');
+        triRing.classList.remove('pulsing');
+        triRing.style.opacity = '0';
+      });
     });
-    el.addEventListener('mouseleave', () => {
-      tri.classList.remove('hovered');
-      triRing.style.opacity = '0.4';
-    });
-  });
+  }
+  addHoverCursor(document.querySelectorAll('a, button, input, textarea, select, .ba-container, .masonry-tile'));
 
-  // Click: scale-down pulse
+  // Click: scale 0.6 kurz
   document.addEventListener('mousedown', () => {
     tri.classList.add('clicked');
-    setTimeout(() => tri.classList.remove('clicked'), 200);
+    if (!tri.classList.contains('hovered')) tri.style.transform += ' scale(0.6)';
+    setTimeout(() => {
+      tri.classList.remove('clicked');
+      if (!tri.classList.contains('hovered')) tri.style.transform = '';
+    }, 150);
   });
 
   // ── NAVBAR SCROLL ──
@@ -1792,7 +2259,114 @@
     const marcImg = document.getElementById('bild-marc-img');
     if (marcImg && marcImg.src && marcImg.src !== window.location.href) {
       marcImg.style.display = 'block';
+      const fallback = document.getElementById('marc-fallback');
+      if (fallback) fallback.style.display = 'none';
     }
+  })();
+
+  // ── HERO SLIDESHOW ──
+  (function() {
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots   = document.querySelectorAll('.hero-dot');
+    if (!slides.length) return;
+    let current = 0, paused = false, timer;
+
+    function goTo(idx) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = (idx + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+    }
+
+    function next() { if (!paused) goTo(current + 1); }
+
+    function startTimer() { timer = setInterval(next, 5000); }
+    startTimer();
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        clearInterval(timer);
+        goTo(parseInt(dot.dataset.idx));
+        startTimer();
+      });
+    });
+
+    const hero = document.getElementById('hero');
+    if (hero) {
+      hero.addEventListener('mouseenter', () => paused = true);
+      hero.addEventListener('mouseleave', () => paused = false);
+    }
+  })();
+
+  // ── GALERIE FILTER + LIGHTBOX ──
+  (function() {
+    const tiles = document.querySelectorAll('.masonry-tile');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+    const lbPlaceholder = document.getElementById('lightbox-placeholder');
+    const lbClose = document.getElementById('lb-close');
+    const lbPrev = document.getElementById('lb-prev');
+    const lbNext = document.getElementById('lb-next');
+    let lbTiles = [], lbIdx = 0;
+
+    // Filter
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        tiles.forEach(tile => {
+          if (f === 'alle' || tile.dataset.category === f) {
+            tile.classList.remove('hidden');
+          } else {
+            tile.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // Lightbox öffnen
+    function openLb(idx) {
+      lbIdx = idx;
+      lbTiles = Array.from(tiles).filter(t => !t.classList.contains('hidden'));
+      const tile = lbTiles[lbIdx];
+      const img = tile ? tile.querySelector('img') : null;
+      if (img && img.src) {
+        lbImg.src = img.src;
+        lbImg.style.display = 'block';
+        lbPlaceholder.style.display = 'none';
+      } else {
+        lbImg.style.display = 'none';
+        lbPlaceholder.style.display = 'flex';
+        // Kopiere den Gradient aus dem Tile
+        const ph = tile ? tile.querySelector('.tile-placeholder') : null;
+        if (ph) lbPlaceholder.style.background = ph.style.background || 'linear-gradient(135deg,#1a3a27,#0d2b1a)';
+      }
+      lightbox.classList.add('open');
+    }
+
+    function closeLb() { lightbox.classList.remove('open'); }
+    function prevLb() { openLb((lbIdx - 1 + lbTiles.length) % lbTiles.length); }
+    function nextLb() { openLb((lbIdx + 1) % lbTiles.length); }
+
+    tiles.forEach((tile, idx) => {
+      tile.addEventListener('click', () => openLb(idx));
+    });
+    if (lbClose) lbClose.addEventListener('click', closeLb);
+    if (lbPrev)  lbPrev.addEventListener('click', e => { e.stopPropagation(); prevLb(); });
+    if (lbNext)  lbNext.addEventListener('click', e => { e.stopPropagation(); nextLb(); });
+    lightbox && lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLb(); });
+    document.addEventListener('keydown', e => {
+      if (!lightbox || !lightbox.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLb();
+      if (e.key === 'ArrowLeft') prevLb();
+      if (e.key === 'ArrowRight') nextLb();
+    });
+
+    // Hover-Cursor auf neu erzeugten Tiles ebenfalls hinzufügen
+    addHoverCursor(document.querySelectorAll('.masonry-tile'));
   })();
 </script>
 <script src="cms-bridge.js"></script>
