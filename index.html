@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- JSON-LD Schema – Business + FAQ (AEO/GEO) -->
 <script type="application/ld+json">
@@ -851,8 +852,8 @@
 
   <div class="hero-content">
     <div class="hero-eyebrow">Maler & Gipserarbeiten · Bern · Schweiz</div>
-    <h1>Farbe.<br>Qualität.<br><span class="highlight">Handwerk.</span></h1>
-    <p class="hero-sub">MalerMarc verwandelt Räume in Erlebnisse. Innen- und Aussenmalerei, Wandgestaltung und Gipserarbeiten – ausgeführt mit Präzision und Leidenschaft.</p>
+    <h1 data-cms="hero_titel">Farbe.<br>Qualität.<br><span class="highlight">Handwerk.</span></h1>
+    <p class="hero-sub" data-cms="hero_sub">MalerMarc verwandelt Räume in Erlebnisse. Innen- und Aussenmalerei, Wandgestaltung und Gipserarbeiten – ausgeführt mit Präzision und Leidenschaft.</p>
     <div class="hero-actions">
       <a href="#kontakt" class="btn-primary">
         <i data-lucide="send" width="16" height="16"></i>
@@ -913,11 +914,11 @@
 
   <div class="hero-stats">
     <div class="stat-item">
-      <div class="stat-num">200+</div>
+      <div class="stat-num" data-cms="stat_projekte">200+</div>
       <div class="stat-label">Projekte</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num">20+</div>
+      <div class="stat-num" data-cms="stat_jahre">20+</div>
       <div class="stat-label">Jahre Erfahrung</div>
     </div>
     <div class="stat-item">
@@ -1068,8 +1069,8 @@
 <section id="ueber-mich">
   <div>
     <div class="section-label reveal">Über mich</div>
-    <h2 class="reveal reveal-delay-1">Handwerk mit<br><span style="color:var(--green)">Herzblut.</span></h2>
-    <p class="reveal reveal-delay-2" style="color:rgba(26,26,26,0.6); line-height:1.8; font-size:0.95rem; max-width:480px; margin-bottom:0.5rem;">
+    <h2 class="reveal reveal-delay-1" data-cms="ueber_titel">Handwerk mit<br><span style="color:var(--green)">Herzblut.</span></h2>
+    <p class="reveal reveal-delay-2" data-cms="ueber_text" style="color:rgba(26,26,26,0.6); line-height:1.8; font-size:0.95rem; max-width:480px; margin-bottom:0.5rem;">
       MalerMarc steht für Malerarbeiten, bei denen jedes Detail stimmt. Gegründet mit der Vision, Handwerk neu zu denken – weg vom Klischee, hin zum Design-Anspruch.
     </p>
     <p class="reveal reveal-delay-3" style="color:rgba(26,26,26,0.6); line-height:1.8; font-size:0.95rem; max-width:480px;">
@@ -1341,7 +1342,7 @@
   <div class="section-label reveal">Häufige Fragen</div>
   <h2 class="reveal reveal-delay-1">Was Sie<br>wissen möchten</h2>
 
-  <div class="faq-grid">
+  <div class="faq-grid" id="faq-dynamic">
     <div class="faq-item reveal">
       <button class="faq-q" onclick="toggleFaq(this)">
         Was kostet ein Maler in Bern?
@@ -1405,21 +1406,28 @@
           <div class="contact-icon-wrap"><i data-lucide="phone" width="18" height="18"></i></div>
           <div>
             <div class="contact-item-label">Telefon</div>
-            <div class="contact-item-value" itemprop="telephone">+41 XX XXX XX XX</div>
+            <div class="contact-item-value" itemprop="telephone" data-cms="kontakt_telefon">+41 XX XXX XX XX</div>
           </div>
         </div>
         <div class="contact-item">
           <div class="contact-icon-wrap"><i data-lucide="mail" width="18" height="18"></i></div>
           <div>
             <div class="contact-item-label">E-Mail</div>
-            <div class="contact-item-value" itemprop="email">info@malermarc.ch</div>
+            <div class="contact-item-value" itemprop="email" data-cms="kontakt_email">info@malermarc.ch</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon-wrap"><i data-lucide="map-pin" width="18" height="18"></i></div>
+          <div>
+            <div class="contact-item-label">Adresse</div>
+            <div class="contact-item-value" data-cms="kontakt_adresse">Musterstrasse 1, 3000 Bern</div>
           </div>
         </div>
         <div class="contact-item">
           <div class="contact-icon-wrap"><i data-lucide="clock" width="18" height="18"></i></div>
           <div>
             <div class="contact-item-label">Öffnungszeiten</div>
-            <div class="contact-item-value">Mo–Fr, 07:00–17:00 Uhr</div>
+            <div class="contact-item-value" data-cms="kontakt_zeiten">Mo–Fr, 07:00–17:00 Uhr</div>
           </div>
         </div>
       </div>
@@ -1649,6 +1657,132 @@
 
   // Reinit icons after dynamic changes
   setTimeout(() => lucide.createIcons(), 100);
+
+  // ══════════════════════════════════════════════
+  // SUPABASE CMS INTEGRATION
+  // ══════════════════════════════════════════════
+  const SUPABASE_URL = 'https://DEIN-PROJEKT.supabase.co';
+  const SUPABASE_ANON_KEY = 'DEIN-ANON-KEY';
+
+  (async () => {
+    try {
+      const { createClient } = supabase;
+      const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // ── 1. Content-Texte laden und in DOM schreiben ──
+      const { data: contentData } = await sb.from('content').select('key,value');
+      if (contentData) {
+        contentData.forEach(({ key, value }) => {
+          if (!value) return;
+          document.querySelectorAll(`[data-cms="${key}"]`).forEach(el => {
+            // Hero-Titel: Formatierung mit Zeilenumbrüchen und Highlight erhalten
+            if (key === 'hero_titel') {
+              const parts = value.split('.').map(s => s.trim()).filter(Boolean);
+              if (parts.length >= 2) {
+                el.innerHTML = parts.slice(0, -1).map(p => p + '.').join('<br>') +
+                  `<br><span class="highlight">${parts[parts.length-1]}.</span>`;
+              } else {
+                el.textContent = value;
+              }
+            }
+            // Über mich Titel: letztes Wort grün hervorheben
+            else if (key === 'ueber_titel') {
+              const words = value.trim().split(' ');
+              if (words.length > 1) {
+                el.innerHTML = words.slice(0, -1).join(' ') +
+                  ` <span style="color:var(--green)">${words[words.length-1]}</span>`;
+              } else {
+                el.textContent = value;
+              }
+            }
+            // Alle anderen: textContent
+            else {
+              el.textContent = value;
+            }
+          });
+        });
+      }
+
+      // ── 2. Projekte laden und in Referenzen-Sektion rendern ──
+      const { data: projekte } = await sb
+        .from('projekte')
+        .select('*')
+        .eq('aktiv', true)
+        .order('reihenfolge');
+
+      if (projekte && projekte.length > 0) {
+        // Projekte als Karten-Grid unterhalb des Sliders einfügen
+        const refSection = document.getElementById('referenzen');
+        if (refSection) {
+          const existing = refSection.querySelector('#projekte-cards');
+          if (existing) existing.remove();
+
+          const grid = document.createElement('div');
+          grid.id = 'projekte-cards';
+          grid.style.cssText = 'margin-top:3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;';
+
+          projekte.forEach(p => {
+            const card = document.createElement('div');
+            card.style.cssText = 'background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);border-radius:12px;overflow:hidden;transition:box-shadow 0.2s;';
+            card.onmouseenter = () => card.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)';
+            card.onmouseleave = () => card.style.boxShadow = '';
+            const img = p.bild_nachher || p.bild_vorher;
+            card.innerHTML = `
+              ${img ? `<div style="height:180px;overflow:hidden;background:#e8e8e2;">
+                <img src="${img}" alt="${escHtml(p.titel)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
+              </div>` : `<div style="height:180px;background:linear-gradient(135deg,rgba(46,190,110,0.1),rgba(46,190,110,0.05));display:flex;align-items:center;justify-content:center;color:rgba(46,190,110,0.4);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>`}
+              <div style="padding:1.25rem;">
+                ${p.kategorie ? `<span style="font-size:0.68rem;font-family:Montserrat,sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);opacity:0.8;">${escHtml(p.kategorie)}</span>` : ''}
+                <div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:1rem;margin-top:0.35rem;">${escHtml(p.titel)}</div>
+                ${p.beschreibung ? `<div style="font-size:0.84rem;color:rgba(26,26,26,0.6);margin-top:0.5rem;line-height:1.6;">${escHtml(p.beschreibung)}</div>` : ''}
+              </div>`;
+            grid.appendChild(card);
+          });
+          refSection.appendChild(grid);
+
+          // Reveal-Observer für neue Cards
+          grid.querySelectorAll('div[style]').forEach(el => {
+            el.classList.add('reveal');
+            revealObserver.observe(el);
+          });
+        }
+      }
+
+      // ── 3. FAQ laden und statische Einträge ersetzen ──
+      const { data: faqData } = await sb
+        .from('faq')
+        .select('*')
+        .eq('aktiv', true)
+        .order('reihenfolge');
+
+      if (faqData && faqData.length > 0) {
+        const faqGrid = document.getElementById('faq-dynamic');
+        if (faqGrid) {
+          faqGrid.innerHTML = faqData.map((f, i) => `
+            <div class="faq-item reveal${i > 0 ? ' reveal-delay-' + Math.min(i,4) : ''}">
+              <button class="faq-q" onclick="toggleFaq(this)">
+                ${escHtml(f.frage)}
+                <i data-lucide="plus" width="20" height="20" class="faq-icon"></i>
+              </button>
+              <div class="faq-a">${escHtml(f.antwort)}</div>
+            </div>`).join('');
+          // Neue FAQ-Items zum Reveal-Observer hinzufügen
+          faqGrid.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+          lucide.createIcons();
+        }
+      }
+
+    } catch (e) {
+      // Graceful degradation: statische Fallback-Inhalte bleiben sichtbar
+      console.warn('Supabase nicht erreichbar, statische Inhalte werden angezeigt.', e);
+    }
+  })();
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
 </script>
 </body>
 </html>
