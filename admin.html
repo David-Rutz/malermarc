@@ -489,7 +489,7 @@
 
           <div class="toolbar-right">
             <div class="status-badge published" id="publish-status">Alles publiziert</div>
-            <button class="btn btn-primary btn-sm" onclick="publishChanges()">
+            <button class="btn btn-primary btn-sm" id="publish-btn" onclick="veroeffentlichen()">
               <i data-lucide="upload-cloud" width="14" height="14"></i>
               Veröffentlichen
             </button>
@@ -609,6 +609,10 @@
             <button class="btn btn-ghost btn-sm btn-full mt-2" onclick="openImageLibrary()">
               <i data-lucide="grid" width="13" height="13"></i>
               Aus Bibliothek wählen
+            </button>
+            <button class="btn btn-danger btn-sm btn-full mt-1" id="btn-bild-entfernen" style="display:none" onclick="bildEntfernen()">
+              <i data-lucide="trash-2" width="13" height="13"></i>
+              Bild entfernen
             </button>
             <div class="success-msg mt-1" id="image-save-success">✓ Bild gespeichert</div>
             <div class="error-msg mt-1" id="image-save-error"></div>
@@ -896,6 +900,7 @@
 
 <!-- Toast -->
 <div class="copy-toast" id="copy-toast">✓ URL kopiert!</div>
+<div id="toast" style="display:none; position:fixed; bottom:24px; right:24px; padding:12px 20px; border-radius:8px; font-family:Montserrat,sans-serif; font-weight:600; font-size:14px; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,0.15); max-width:340px; word-break:break-word;"></div>
 
 <script>
 // ══════════════════════════════════════
@@ -1047,20 +1052,54 @@ function setDevice(device) {
 // ══════════════════════════════════════
 // PUBLISH
 // ══════════════════════════════════════
-async function publishChanges() {
-  const btn = document.querySelector('[onclick="publishChanges()"]');
+async function veroeffentlichen() {
+  const btn = document.getElementById('publish-btn');
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div>';
+
   const { error } = await sb.from('content').upsert(
-    { key: '_published_at', value: new Date().toISOString() },
+    { key: '_published_at', value: new Date().toISOString(), updated_at: new Date().toISOString() },
     { onConflict: 'key' }
   );
+
   btn.disabled = false;
   btn.innerHTML = '<i data-lucide="upload-cloud" width="14" height="14"></i> Veröffentlichen';
   lucide.createIcons();
-  if (!error) {
-    setPublishStatus(true);
+
+  if (error) {
+    zeigeError('Fehler beim Veröffentlichen: ' + error.message);
+    return;
   }
+
+  setPublishStatus(true);
+  zeigeErfolg('✓ Änderungen veröffentlicht');
+
+  // iframe neu laden mit Cache-Busting
+  const iframe = document.getElementById('preview-iframe');
+  const url = new URL(iframe.src, window.location.href);
+  url.searchParams.set('t', Date.now());
+  url.searchParams.set('cms', 'true');
+  iframe.src = url.toString();
+}
+
+function zeigeErfolg(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = '#2EBE6E';
+  t.style.color = '#000';
+  t.style.display = 'block';
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+function zeigeError(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = '#e53e3e';
+  t.style.color = '#fff';
+  t.style.display = 'block';
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => { t.style.display = 'none'; }, 5000);
 }
 
 function setPublishStatus(published) {
@@ -1101,7 +1140,8 @@ function openEditPanel(key, type, currentValue, label) {
     document.getElementById('image-panel-title').textContent = 'Bild bearbeiten';
     const preview = document.getElementById('image-panel-preview');
     const placeholder = document.getElementById('image-panel-placeholder');
-    if (currentValue && currentValue.startsWith('http')) {
+    const hasImage = currentValue && currentValue.startsWith('http');
+    if (hasImage) {
       preview.src = currentValue;
       preview.style.display = 'block';
       placeholder.style.display = 'none';
@@ -1109,6 +1149,7 @@ function openEditPanel(key, type, currentValue, label) {
       preview.style.display = 'none';
       placeholder.style.display = 'flex';
     }
+    document.getElementById('btn-bild-entfernen').style.display = hasImage ? '' : 'none';
     document.getElementById('image-save-success').style.display = 'none';
     document.getElementById('image-save-error').style.display = 'none';
     document.getElementById('image-file-input').value = '';
@@ -1173,25 +1214,26 @@ function setupDropZone() {
     e.preventDefault();
     zone.style.borderColor = '';
     const file = e.dataTransfer.files[0];
-    if (file) processImageFile(file);
+    if (file) uploadBild(file, activeEditKey);
   });
 }
 
 function handleImageFileSelect(input) {
   const file = input.files[0];
-  if (file) processImageFile(file);
+  if (file) uploadBild(file, activeEditKey);
 }
 
-async function processImageFile(file) {
+async function uploadBild(file, key) {
+  if (!key) return;
   if (file.size > 5 * 1024 * 1024) {
-    alert('Bild zu gross. Maximale Grösse: 5 MB');
+    zeigeError('Bild zu gross. Maximale Grösse: 5 MB');
     return;
   }
-  const key = activeEditKey;
-  if (!key) return;
 
   const progressWrap = document.getElementById('image-progress');
   const progressFill = document.getElementById('image-progress-fill');
+  document.getElementById('image-save-success').style.display = 'none';
+  document.getElementById('image-save-error').style.display = 'none';
   progressWrap.style.display = 'block';
   progressFill.style.width = '20%';
 
@@ -1199,49 +1241,58 @@ async function processImageFile(file) {
   const filename = key + '_' + Date.now() + '.' + ext;
 
   progressFill.style.width = '50%';
-  const { error } = await sb.storage.from('bilder').upload(filename, file, { upsert: true });
+  const { error: uploadError } = await sb.storage.from('bilder').upload(filename, file, { upsert: true });
   progressFill.style.width = '80%';
 
-  if (error) {
+  if (uploadError) {
     progressWrap.style.display = 'none';
-    document.getElementById('image-save-error').textContent = 'Upload fehlgeschlagen: ' + error.message;
-    document.getElementById('image-save-error').style.display = 'block';
+    zeigeError('Upload fehlgeschlagen: ' + uploadError.message);
     return;
   }
 
   const { data: urlData } = sb.storage.from('bilder').getPublicUrl(filename);
   const url = urlData.publicUrl;
-  console.log('Bild URL:', url);
   progressFill.style.width = '100%';
   setTimeout(() => { progressWrap.style.display = 'none'; progressFill.style.width = '0'; }, 600);
 
-  // In content-Tabelle speichern (mit updated_at)
   const { error: upsertErr } = await sb.from('content').upsert(
     { key, value: url, updated_at: new Date().toISOString() },
     { onConflict: 'key' }
   );
   if (upsertErr) {
-    console.error('CMS: Upsert fehlgeschlagen:', upsertErr.message);
-    document.getElementById('image-save-error').textContent = 'Speichern fehlgeschlagen: ' + upsertErr.message;
-    document.getElementById('image-save-error').style.display = 'block';
+    zeigeError('Speichern fehlgeschlagen: ' + upsertErr.message);
     return;
   }
-  console.log('CMS: Bild gespeichert – key:', key, 'url:', url);
 
-  // Preview aktualisieren
   const preview = document.getElementById('image-panel-preview');
   preview.src = url;
   preview.style.display = 'block';
   document.getElementById('image-panel-placeholder').style.display = 'none';
+  document.getElementById('btn-bild-entfernen').style.display = '';
 
-  // iframe live aktualisieren (mit type: 'image')
   sendToIframe({ action: 'update', key, value: url, type: 'image' });
   setPublishStatus(false);
-
-  document.getElementById('image-save-success').style.display = 'block';
-  setTimeout(() => document.getElementById('image-save-success').style.display = 'none', 3000);
-
+  zeigeErfolg('✓ Bild gespeichert');
   loadBilder();
+}
+
+async function bildEntfernen() {
+  const key = activeEditKey;
+  if (!key) return;
+  if (!confirm('Bild für "' + key + '" wirklich entfernen?')) return;
+
+  const { error } = await sb.from('content').upsert(
+    { key, value: null, updated_at: new Date().toISOString() },
+    { onConflict: 'key' }
+  );
+  if (error) { zeigeError('Fehler: ' + error.message); return; }
+
+  document.getElementById('image-panel-preview').style.display = 'none';
+  document.getElementById('image-panel-placeholder').style.display = 'flex';
+  document.getElementById('btn-bild-entfernen').style.display = 'none';
+  sendToIframe({ action: 'update', key, value: null, type: 'image' });
+  setPublishStatus(false);
+  zeigeErfolg('✓ Bild entfernt');
 }
 
 // ── IMAGE LIBRARY ──
@@ -1286,10 +1337,10 @@ async function selectFromLibrary(url) {
   preview.src = url;
   preview.style.display = 'block';
   document.getElementById('image-panel-placeholder').style.display = 'none';
+  document.getElementById('btn-bild-entfernen').style.display = '';
   setPublishStatus(false);
   closeModal('modal-image-library');
-  document.getElementById('image-save-success').style.display = 'block';
-  setTimeout(() => document.getElementById('image-save-success').style.display = 'none', 3000);
+  zeigeErfolg('✓ Bild gespeichert');
 }
 
 async function deleteLibraryImage(name, el) {

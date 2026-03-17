@@ -85,7 +85,34 @@
 
   // Einen einzelnen Key/Value auf den DOM anwenden
   function applyContentEntry(key, value) {
-    if (!value) return;
+    // Null/leer: Platzhalter wiederherstellen
+    if (!value) {
+      // Hero-Slide zurücksetzen
+      var emptySlide = document.querySelector('.hero-slide[data-key="' + key + '"]');
+      if (emptySlide) emptySlide.style.backgroundImage = '';
+
+      // Leistungskarte zurücksetzen
+      var emptyCard = document.querySelector('.leistung-card[data-key="' + key + '"]');
+      if (emptyCard) {
+        var emptyBg = emptyCard.querySelector('.leistung-card-bg');
+        if (emptyBg) { emptyBg.style.backgroundImage = ''; emptyBg.classList.remove('loaded'); }
+        emptyCard.classList.remove('has-bg');
+      }
+
+      // Galerie-Kachel zurücksetzen
+      var emptyTile = document.querySelector('.masonry-tile[data-key="' + key + '"]');
+      if (emptyTile) {
+        var emptyPh = emptyTile.querySelector('.tile-placeholder');
+        if (emptyPh) { emptyPh.style.backgroundImage = ''; var svg = emptyPh.querySelector('svg'); if (svg) svg.style.display = ''; }
+      }
+
+      // img[data-key] zurücksetzen
+      document.querySelectorAll('img[data-key="' + key + '"]').forEach(function(img) {
+        img.src = ''; img.style.display = 'none';
+      });
+      if (key === 'bild_marc') { var fb = document.getElementById('marc-fallback'); if (fb) fb.style.display = ''; }
+      return;
+    }
 
     // ── Text-Elemente [data-cms="key"] ──
     document.querySelectorAll('[data-cms="' + key + '"]').forEach(function(el) {
