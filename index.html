@@ -88,39 +88,24 @@
   }
 
   /* ── CURSOR TRIANGLE ── */
+  @keyframes cursor-pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
+    50% { transform: translate(-50%, -50%) scale(1.25); opacity: 0.5; }
+  }
   #cursor-tri {
     position: fixed; top: 0; left: 0;
     pointer-events: none; z-index: 9999;
     transform-origin: 12px 14px;
-    transition: transform 0.15s ease, opacity 0.1s ease;
-    /* KEIN transition auf left/top – Dreieck folgt Maus sofort */
-    will-change: transform;
-  }
-  #cursor-tri polygon { fill: var(--green); }
-  #cursor-tri.hovered { opacity: 0; }
-  #cursor-tri.clicked { transform: scale(0.6); transition: transform 0.1s ease; }
-
-  /* ── CURSOR KREIS (Hover-Zustand) ── */
-  #cursor-circle {
-    position: fixed; top: 0; left: 0;
-    pointer-events: none; z-index: 9999;
-    width: 44px; height: 44px; border-radius: 50%;
-    background: #fff;
-    border: 2px solid var(--green);
-    display: flex; align-items: center; justify-content: center;
-    transform: translate(-22px, -22px) scale(0);
-    transition: transform 0.1s ease, opacity 0.1s ease;
-    opacity: 0;
+    transition: opacity 0.15s ease;
     will-change: left, top;
   }
-  #cursor-circle.visible {
-    transform: translate(-22px, -22px) scale(1);
-    opacity: 1;
-  }
-  #cursor-circle .cursor-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--green); flex-shrink: 0;
-  }
+  #cursor-tri polygon { fill: var(--green); transition: fill 0.15s ease; }
+  #cursor-tri.hovered polygon { fill: #FF7A00; }
+  #cursor-tri.hovered { animation: cursor-pulse 0.9s ease-in-out infinite; transform-origin: 50% 50%; }
+  #cursor-tri.clicked polygon { opacity: 0.6; }
+
+  /* ── CURSOR KREIS (versteckt – nicht mehr genutzt) ── */
+  #cursor-circle { display: none; }
 
   /* ── CURSOR TRAIL ── */
   .cursor-trail {
@@ -150,12 +135,11 @@
     border-bottom: 1px solid rgba(46,190,110,0.15);
   }
   .nav-logo {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 900; font-size: 1.5rem;
-    color: var(--anthrazit); text-decoration: none;
-    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none;
+    display: flex; align-items: center;
   }
-  .nav-logo span { color: var(--green); }
+  .nav-logo img { height: 48px; width: auto; object-fit: contain; transition: height 0.3s; }
+  nav.scrolled .nav-logo img { height: 38px; }
   .nav-links { display: flex; gap: 2.5rem; list-style: none; }
   .nav-links a {
     color: rgba(26,26,26,0.65);
@@ -1079,7 +1063,7 @@
 
 <!-- NAV -->
 <nav id="navbar">
-  <a href="#" class="nav-logo">Maler<span>Marc</span></a>
+  <a href="#" class="nav-logo"><img src="Logo_Malermark_Transparent.png" alt="MalerMarc"></a>
   <ul class="nav-links">
     <li><a href="#leistungen">Leistungen</a></li>
     <li><a href="#referenzen">Referenzen</a></li>
@@ -2067,40 +2051,19 @@
 
   // ── CUSTOM CURSOR ──
   const tri    = document.getElementById('cursor-tri');
-  const circle = document.getElementById('cursor-circle');
   const trails = [0,1,2,3,4].map(i => document.getElementById('trail-' + i));
 
   let mouseX = 0, mouseY = 0;
   let trailX = 0, trailY = 0;
-  let isHovered = false;
   const trailPos = trails.map(() => ({ x: 0, y: 0 }));
   const trailLag = [0.22, 0.18, 0.14, 0.10, 0.07];
-  let prevX = 0, prevY = 0;
 
   // Dreieck folgt Maus SOFORT – kein Lag
   document.addEventListener('mousemove', e => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-
     tri.style.left = mouseX + 'px';
     tri.style.top  = mouseY + 'px';
-
-    // Neigung beim Bewegen
-    if (!isHovered) {
-      const dx = mouseX - prevX, dy = mouseY - prevY;
-      const speed = Math.sqrt(dx*dx + dy*dy);
-      if (speed > 0.5) {
-        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-        tri.style.transform = `rotate(${angle + 90}deg)`;
-      }
-    }
-    prevX = mouseX; prevY = mouseY;
-
-    // Kreis folgt ebenfalls sofort
-    if (circle) {
-      circle.style.left = mouseX + 'px';
-      circle.style.top  = mouseY + 'px';
-    }
   });
 
   // Trail verzögert per rAF
@@ -2121,20 +2084,15 @@
   }
   animateTrail();
 
-  // Hover-Handler: Dreieck → Kreis
+  // Hover-Handler: Dreieck pulsiert orange
   function addHoverCursor(els) {
     els.forEach(el => {
       el.addEventListener('mouseenter', () => {
-        isHovered = true;
         tri.classList.add('hovered');
-        tri.style.transform = '';
-        circle.classList.add('visible');
         trails.forEach(t => t.classList.add('hidden'));
       });
       el.addEventListener('mouseleave', () => {
-        isHovered = false;
         tri.classList.remove('hovered');
-        circle.classList.remove('visible');
         trails.forEach(t => t.classList.remove('hidden'));
       });
     });
@@ -2143,10 +2101,8 @@
 
   // Click: kurz verkleinern
   document.addEventListener('mousedown', () => {
-    if (!isHovered) {
-      tri.classList.add('clicked');
-      setTimeout(() => tri.classList.remove('clicked'), 150);
-    }
+    tri.classList.add('clicked');
+    setTimeout(() => tri.classList.remove('clicked'), 150);
   });
 
   // ── NAVBAR SCROLL ──

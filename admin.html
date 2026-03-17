@@ -105,11 +105,9 @@
     position: sticky; top: 0; overflow-y: auto;
   }
   .sidebar-logo {
-    font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.25rem;
-    color: var(--text); padding: 1.5rem 1.25rem 1rem;
+    padding: 1.25rem 1.25rem 1rem;
     border-bottom: 1px solid var(--border);
   }
-  .sidebar-logo span { color: var(--green); }
   .sidebar-logo small { display: block; font-size: 0.62rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
   .sidebar-nav { flex: 1; padding: 0.75rem 0; }
   .nav-item {
@@ -390,7 +388,7 @@
 <!-- ══════════ LOGIN ══════════ -->
 <div id="login-screen">
   <div class="login-card">
-    <div class="login-logo">Maler<span>Marc</span></div>
+    <div class="login-logo"><img src="Logo_Malermark_Transparent.png" alt="MalerMarc" style="height:56px; width:auto; object-fit:contain;"></div>
     <div class="login-sub">Admin · Live-Editor</div>
     <div class="error-msg" id="login-error"></div>
     <div id="login-form">
@@ -416,7 +414,7 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      Maler<span>Marc</span>
+      <img src="Logo_Malermark_Transparent.png" alt="MalerMarc" style="height:40px; width:auto; object-fit:contain; display:block; margin-bottom:4px;">
       <small>Admin Panel</small>
     </div>
     <nav class="sidebar-nav">
@@ -1124,6 +1122,7 @@ function openEditPanel(key, type, currentValue, label) {
   } else if (type === 'image') {
     document.getElementById('image-panel-breadcrumb').textContent = label || key;
     document.getElementById('image-panel-slot-container').innerHTML = renderMediaSlot(key, label || key);
+    bindAllMediaSlots();
     loadCurrentPreview(key);
     document.getElementById('panel-image').style.display = 'flex';
   } else if (type === 'beforeafter') {
@@ -1245,18 +1244,32 @@ function renderMediaSlot(key, label) {
       </div>
       <label style="display:block;margin-top:10px;padding:12px;border:2px dashed var(--green);border-radius:8px;text-align:center;cursor:pointer;color:var(--green);font-size:13px;font-family:Montserrat,sans-serif;font-weight:600;">
         + Bild oder Video wählen
-        <input type="file" accept="image/*,video/mp4,video/webm" style="display:none;"
-          onchange="if(this.files[0]) mediaUpload('${key}', this.files[0]); this.value='';">
+        <input type="file" class="media-upload-input" data-key="${esc(key)}" accept="image/*,video/mp4,video/webm" style="display:none;">
       </label>
-      <button onclick="openImageLibrary('${key}')"
+      <button class="media-library-btn" data-key="${esc(key)}"
         style="width:100%;margin-top:8px;padding:9px;background:transparent;border:1px solid var(--border);color:var(--text);border-radius:6px;font-size:12px;font-family:Montserrat,sans-serif;font-weight:600;cursor:pointer;">
         Aus Bibliothek wählen
       </button>
-      <button onclick="mediaEntfernen('${key}')"
+      <button class="media-remove-btn" data-key="${esc(key)}"
         style="width:100%;margin-top:6px;padding:8px;background:transparent;border:1px solid #e74c3c;color:#e74c3c;border-radius:6px;font-size:12px;font-family:Montserrat,sans-serif;cursor:pointer;">
         × Entfernen
       </button>
     </div>`;
+}
+
+function bindAllMediaSlots() {
+  document.querySelectorAll('.media-upload-input').forEach(input => {
+    input.addEventListener('change', function() {
+      if (this.files[0]) mediaUpload(this.dataset.key, this.files[0]);
+      this.value = '';
+    });
+  });
+  document.querySelectorAll('.media-library-btn').forEach(btn => {
+    btn.addEventListener('click', function() { openImageLibrary(this.dataset.key); });
+  });
+  document.querySelectorAll('.media-remove-btn').forEach(btn => {
+    btn.addEventListener('click', function() { mediaEntfernen(this.dataset.key); });
+  });
 }
 
 async function loadCurrentPreview(key) {
