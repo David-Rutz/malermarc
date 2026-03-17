@@ -835,7 +835,7 @@
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-bg"></div>
+  <div class="hero-bg" data-editable="image" data-key="bild_hero_bg"></div>
   <div class="hero-grid"></div>
 
   <!-- Glow Blobs -->
@@ -852,8 +852,8 @@
 
   <div class="hero-content">
     <div class="hero-eyebrow">Maler & Gipserarbeiten · Bern · Schweiz</div>
-    <h1 data-cms="hero_titel">Farbe.<br>Qualität.<br><span class="highlight">Handwerk.</span></h1>
-    <p class="hero-sub" data-cms="hero_sub">MalerMarc verwandelt Räume in Erlebnisse. Innen- und Aussenmalerei, Wandgestaltung und Gipserarbeiten – ausgeführt mit Präzision und Leidenschaft.</p>
+    <h1 data-cms="hero_titel" data-editable="text" data-key="hero_titel">Farbe.<br>Qualität.<br><span class="highlight">Handwerk.</span></h1>
+    <p class="hero-sub" data-cms="hero_sub" data-editable="text" data-key="hero_sub">MalerMarc verwandelt Räume in Erlebnisse. Innen- und Aussenmalerei, Wandgestaltung und Gipserarbeiten – ausgeführt mit Präzision und Leidenschaft.</p>
     <div class="hero-actions">
       <a href="#kontakt" class="btn-primary">
         <i data-lucide="send" width="16" height="16"></i>
@@ -1031,7 +1031,7 @@
     Ziehen Sie den Regler und erleben Sie die Transformation. Jedes Projekt ist ein Beweis für handwerkliche Perfektion.
   </p>
 
-  <div class="ba-container reveal reveal-delay-3" id="ba-slider">
+  <div class="ba-container reveal reveal-delay-3" id="ba-slider" data-editable="beforeafter" data-key="referenz_1">
     <!-- BEFORE -->
     <div class="ba-before">
       <div class="room-before">
@@ -1069,8 +1069,8 @@
 <section id="ueber-mich">
   <div>
     <div class="section-label reveal">Über mich</div>
-    <h2 class="reveal reveal-delay-1" data-cms="ueber_titel">Handwerk mit<br><span style="color:var(--green)">Herzblut.</span></h2>
-    <p class="reveal reveal-delay-2" data-cms="ueber_text" style="color:rgba(26,26,26,0.6); line-height:1.8; font-size:0.95rem; max-width:480px; margin-bottom:0.5rem;">
+    <h2 class="reveal reveal-delay-1" data-cms="ueber_titel" data-editable="text" data-key="ueber_titel">Handwerk mit<br><span style="color:var(--green)">Herzblut.</span></h2>
+    <p class="reveal reveal-delay-2" data-cms="ueber_text" data-editable="text" data-key="ueber_text" style="color:rgba(26,26,26,0.6); line-height:1.8; font-size:0.95rem; max-width:480px; margin-bottom:0.5rem;">
       MalerMarc steht für Malerarbeiten, bei denen jedes Detail stimmt. Gegründet mit der Vision, Handwerk neu zu denken – weg vom Klischee, hin zum Design-Anspruch.
     </p>
     <p class="reveal reveal-delay-3" style="color:rgba(26,26,26,0.6); line-height:1.8; font-size:0.95rem; max-width:480px;">
@@ -1111,6 +1111,9 @@
 
   <div class="about-visual reveal reveal-delay-2">
     <div class="about-visual-inner">
+      <img id="bild-marc-img" data-editable="image" data-key="bild_marc"
+           src="" alt="Marc – MalerMarc"
+           style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:2; border-radius:12px;">
       <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:340px;">
         <!-- Background blobs -->
         <ellipse cx="200" cy="250" rx="180" ry="220" fill="rgba(46,190,110,0.05)"/>
@@ -1406,28 +1409,28 @@
           <div class="contact-icon-wrap"><i data-lucide="phone" width="18" height="18"></i></div>
           <div>
             <div class="contact-item-label">Telefon</div>
-            <div class="contact-item-value" itemprop="telephone" data-cms="kontakt_telefon">+41 XX XXX XX XX</div>
+            <div class="contact-item-value" itemprop="telephone" data-cms="kontakt_telefon" data-editable="text" data-key="kontakt_telefon">+41 XX XXX XX XX</div>
           </div>
         </div>
         <div class="contact-item">
           <div class="contact-icon-wrap"><i data-lucide="mail" width="18" height="18"></i></div>
           <div>
             <div class="contact-item-label">E-Mail</div>
-            <div class="contact-item-value" itemprop="email" data-cms="kontakt_email">info@malermarc.ch</div>
+            <div class="contact-item-value" itemprop="email" data-cms="kontakt_email" data-editable="text" data-key="kontakt_email">info@malermarc.ch</div>
           </div>
         </div>
         <div class="contact-item">
           <div class="contact-icon-wrap"><i data-lucide="map-pin" width="18" height="18"></i></div>
           <div>
             <div class="contact-item-label">Adresse</div>
-            <div class="contact-item-value" data-cms="kontakt_adresse">Musterstrasse 1, 3000 Bern</div>
+            <div class="contact-item-value" data-cms="kontakt_adresse" data-editable="text" data-key="kontakt_adresse">Musterstrasse 1, 3000 Bern</div>
           </div>
         </div>
         <div class="contact-item">
           <div class="contact-icon-wrap"><i data-lucide="clock" width="18" height="18"></i></div>
           <div>
             <div class="contact-item-label">Öffnungszeiten</div>
-            <div class="contact-item-value" data-cms="kontakt_zeiten">Mo–Fr, 07:00–17:00 Uhr</div>
+            <div class="contact-item-value" data-cms="kontakt_zeiten" data-editable="text" data-key="kontakt_zeiten">Mo–Fr, 07:00–17:00 Uhr</div>
           </div>
         </div>
       </div>
@@ -1783,6 +1786,15 @@
   function escHtml(str) {
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
+
+  // bild_marc: Foto anzeigen wenn URL gesetzt
+  (function() {
+    const marcImg = document.getElementById('bild-marc-img');
+    if (marcImg && marcImg.src && marcImg.src !== window.location.href) {
+      marcImg.style.display = 'block';
+    }
+  })();
 </script>
+<script src="cms-bridge.js"></script>
 </body>
 </html>

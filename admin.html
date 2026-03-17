@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MalerMarc Admin</title>
+<title>MalerMarc – Live-Editor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
@@ -14,45 +14,64 @@
     --green: #2EBE6E;
     --green-dark: #1a9a52;
     --orange: #FF7A00;
-    --bg: #f5f5f0;
-    --sidebar-bg: #1a1a1a;
-    --sidebar-text: rgba(255,255,255,0.75);
-    --sidebar-active: rgba(46,190,110,0.15);
+    --bg: #f8f8f6;
     --white: #ffffff;
     --text: #1a1a1a;
     --text-muted: #666;
-    --border: rgba(0,0,0,0.09);
+    --border: #e0e0d8;
     --card-bg: #ffffff;
     --danger: #e53e3e;
+    --sidebar-w: 220px;
+    --panel-w: 320px;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  html, body { height: 100%; }
+  body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); }
 
-  /* ── LOGIN ── */
+  /* ══════════ LOGIN ══════════ */
   #login-screen {
     min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #f5f5f0 0%, #eeeee8 100%);
+    background: linear-gradient(135deg, #f8f8f6 0%, #eeeee8 100%);
   }
   .login-card {
     background: var(--white); border-radius: 16px; padding: 3rem 2.5rem;
     width: 100%; max-width: 420px;
     box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
   }
-  .login-logo {
-    font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.8rem;
-    text-align: center; margin-bottom: 0.25rem;
-  }
+  .login-logo { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.8rem; text-align: center; margin-bottom: 0.25rem; }
   .login-logo span { color: var(--green); }
   .login-sub { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 2rem; }
-  .form-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.1rem; }
+
+  /* ══════════ BUTTONS ══════════ */
+  .btn {
+    font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.82rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.7rem 1.4rem; border-radius: 8px; border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--green); color: #000; }
+  .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(46,190,110,0.3); }
+  .btn-secondary { background: rgba(0,0,0,0.06); color: var(--text); }
+  .btn-secondary:hover { background: rgba(0,0,0,0.1); }
+  .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: rgba(0,0,0,0.04); color: var(--text); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #c53030; }
+  .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.73rem; }
+  .btn-full { width: 100%; justify-content: center; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+  /* ══════════ FORMS ══════════ */
+  .form-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
   .form-field label {
-    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.72rem;
+    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.7rem;
     letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
   }
   .form-field input, .form-field textarea, .form-field select {
-    border: 1.5px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem;
-    font-family: 'Open Sans', sans-serif; font-size: 0.9rem; color: var(--text);
+    border: 1.5px solid var(--border); border-radius: 8px; padding: 0.7rem 0.9rem;
+    font-family: 'Open Sans', sans-serif; font-size: 0.88rem; color: var(--text);
     background: var(--white); outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
@@ -60,271 +79,319 @@
     border-color: var(--green); box-shadow: 0 0 0 3px rgba(46,190,110,0.12);
   }
   .form-field textarea { min-height: 90px; resize: vertical; }
-  .btn {
-    font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.82rem;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    padding: 0.75rem 1.5rem; border-radius: 8px; border: none; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-  }
-  .btn-primary { background: var(--green); color: #000; }
-  .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(46,190,110,0.35); }
-  .btn-secondary { background: rgba(0,0,0,0.06); color: var(--text); }
-  .btn-secondary:hover { background: rgba(0,0,0,0.1); }
-  .btn-danger { background: var(--danger); color: #fff; }
-  .btn-danger:hover { background: #c53030; }
-  .btn-sm { padding: 0.45rem 0.9rem; font-size: 0.75rem; }
-  .btn-full { width: 100%; justify-content: center; }
-  .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+  /* ══════════ MSGS ══════════ */
   .error-msg {
     background: #fff5f5; border: 1px solid #fed7d7; border-radius: 8px;
-    padding: 0.75rem 1rem; color: var(--danger); font-size: 0.85rem;
+    padding: 0.7rem 1rem; color: var(--danger); font-size: 0.85rem;
     margin-bottom: 1rem; display: none;
   }
   .success-msg {
     background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 8px;
-    padding: 0.75rem 1rem; color: #276749; font-size: 0.85rem;
+    padding: 0.7rem 1rem; color: #276749; font-size: 0.85rem;
     margin-bottom: 1rem; display: none;
   }
 
-  /* ── ADMIN LAYOUT ── */
-  #admin-app { display: none; min-height: 100vh; flex-direction: row; }
+  /* ══════════ ADMIN LAYOUT ══════════ */
+  #admin-app { display: none; height: 100vh; }
   #admin-app.active { display: flex; }
 
   /* ── SIDEBAR ── */
   .sidebar {
-    width: 240px; min-height: 100vh; background: var(--sidebar-bg);
+    width: var(--sidebar-w); height: 100vh; background: var(--white);
+    border-right: 1px solid var(--border);
     display: flex; flex-direction: column; flex-shrink: 0;
-    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    position: sticky; top: 0; overflow-y: auto;
   }
   .sidebar-logo {
-    font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.3rem;
-    color: #fff; padding: 1.8rem 1.5rem 1.2rem;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.25rem;
+    color: var(--text); padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
   }
   .sidebar-logo span { color: var(--green); }
-  .sidebar-logo small { display: block; font-size: 0.65rem; font-weight: 400; color: rgba(255,255,255,0.35); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
-  .sidebar-nav { flex: 1; padding: 1rem 0; }
+  .sidebar-logo small { display: block; font-size: 0.62rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+  .sidebar-nav { flex: 1; padding: 0.75rem 0; }
   .nav-item {
-    display: flex; align-items: center; gap: 0.75rem;
-    padding: 0.75rem 1.5rem; color: var(--sidebar-text);
-    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.82rem;
-    letter-spacing: 0.04em; cursor: pointer; border: none; background: none;
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.7rem 1.25rem; color: var(--text-muted);
+    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.8rem;
+    letter-spacing: 0.03em; cursor: pointer; border: none; background: none;
     width: 100%; text-align: left;
-    transition: background 0.2s, color 0.2s; border-radius: 0;
+    transition: background 0.15s, color 0.15s;
     position: relative;
   }
-  .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
-  .nav-item.active { background: var(--sidebar-active); color: var(--green); }
+  .nav-item:hover { background: rgba(46,190,110,0.06); color: var(--text); }
+  .nav-item.active { color: var(--green); background: rgba(46,190,110,0.08); }
   .nav-item.active::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0;
     width: 3px; background: var(--green); border-radius: 0 2px 2px 0;
   }
-  .nav-item svg { flex-shrink: 0; opacity: 0.7; }
-  .nav-item.active svg { opacity: 1; }
   .sidebar-footer {
-    padding: 1rem 1.5rem 1.5rem;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 1rem 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 0.5rem;
   }
   .sidebar-user {
-    display: flex; align-items: center; gap: 0.75rem;
-    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.5rem;
   }
   .sidebar-avatar {
-    width: 32px; height: 32px; border-radius: 50%; background: var(--green);
+    width: 30px; height: 30px; border-radius: 50%; background: var(--green);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 0.78rem; color: #000;
+    font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 0.75rem; color: #000;
   }
-  .sidebar-user-email { font-size: 0.75rem; color: rgba(255,255,255,0.45); word-break: break-all; }
+  .sidebar-user-email { font-size: 0.72rem; color: var(--text-muted); word-break: break-all; }
 
-  /* ── CONTENT AREA ── */
-  .content-area {
-    flex: 1; padding: 2.5rem; overflow-y: auto;
-    background: var(--bg); min-height: 100vh;
-  }
-  .view { display: none; }
+  /* ── MAIN AREA ── */
+  .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+  /* ── VIEWS (Dashboard, Projekte, etc.) ── */
+  .view { display: none; flex: 1; padding: 2rem; overflow-y: auto; }
   .view.active { display: block; }
   .view-header {
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 2rem; padding-bottom: 1.25rem;
+    margin-bottom: 1.75rem; padding-bottom: 1rem;
     border-bottom: 1.5px solid var(--border);
   }
-  .view-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.6rem; }
-  .view-sub { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
+  .view-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.5rem; }
+  .view-sub { color: var(--text-muted); font-size: 0.83rem; margin-top: 2px; }
 
   /* ── CARDS ── */
   .card {
-    background: var(--card-bg); border-radius: 12px;
-    border: 1px solid var(--border);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    padding: 1.75rem;
-    margin-bottom: 1.5rem;
+    background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04); padding: 1.5rem; margin-bottom: 1.25rem;
   }
-  .card-title {
-    font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.95rem;
-    margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;
-  }
+  .card-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; }
   .card-title svg { color: var(--green); }
 
-  /* ── DASHBOARD ── */
-  .stats-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
+  /* ── DASHBOARD STATS ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
   .stat-card {
     background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
-    padding: 1.5rem; text-align: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    padding: 1.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
-  .stat-card .num {
-    font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem;
-    color: var(--green); line-height: 1;
-  }
-  .stat-card .lbl { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Montserrat', sans-serif; font-weight: 600; }
+  .stat-card .num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2rem; color: var(--green); line-height: 1; }
+  .stat-card .lbl { font-size: 0.73rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Montserrat', sans-serif; font-weight: 600; }
 
   /* ── TABLE ── */
   .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-  th {
-    text-align: left; padding: 0.7rem 1rem; background: var(--bg);
-    font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.72rem;
-    text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);
-    border-bottom: 1.5px solid var(--border);
-  }
-  td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  th { text-align: left; padding: 0.65rem 0.9rem; background: var(--bg); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1.5px solid var(--border); }
+  td { padding: 0.8rem 0.9rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(46,190,110,0.03); }
-  .badge {
-    display: inline-block; padding: 0.25rem 0.65rem; border-radius: 20px;
-    font-size: 0.72rem; font-weight: 700; font-family: 'Montserrat', sans-serif;
-    letter-spacing: 0.05em;
-  }
+  tr:hover td { background: rgba(46,190,110,0.02); }
+  .badge { display: inline-block; padding: 0.22rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; font-family: 'Montserrat', sans-serif; letter-spacing: 0.05em; }
   .badge-green { background: rgba(46,190,110,0.12); color: var(--green-dark); }
-  .badge-gray { background: rgba(0,0,0,0.07); color: var(--text-muted); }
+  .badge-gray { background: rgba(0,0,0,0.06); color: var(--text-muted); }
   .badge-orange { background: rgba(255,122,0,0.12); color: #c05a00; }
-  .actions { display: flex; gap: 0.5rem; align-items: center; }
+  .actions { display: flex; gap: 0.4rem; align-items: center; }
 
   /* ── MODAL ── */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-    z-index: 1000; display: none; align-items: center; justify-content: center;
-    padding: 1.5rem;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+    z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1.5rem;
   }
   .modal-overlay.active { display: flex; }
-  .modal {
-    background: var(--white); border-radius: 16px; width: 100%; max-width: 580px;
-    max-height: 90vh; overflow-y: auto;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.18);
-  }
-  .modal-header {
-    padding: 1.5rem 1.75rem 1rem;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .modal-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.05rem; }
-  .modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 0.25rem; border-radius: 6px; transition: color 0.2s; }
+  .modal { background: var(--white); border-radius: 16px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); }
+  .modal-header { padding: 1.25rem 1.5rem 0.9rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .modal-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; }
+  .modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 0.2rem; border-radius: 6px; transition: color 0.2s; }
   .modal-close:hover { color: var(--text); }
-  .modal-body { padding: 1.5rem 1.75rem; }
-  .modal-footer { padding: 1rem 1.75rem 1.5rem; display: flex; gap: 0.75rem; justify-content: flex-end; border-top: 1px solid var(--border); }
+  .modal-body { padding: 1.25rem 1.5rem; }
+  .modal-footer { padding: 0.9rem 1.5rem 1.25rem; display: flex; gap: 0.65rem; justify-content: flex-end; border-top: 1px solid var(--border); }
 
-  /* ── IMAGE UPLOAD ── */
+  /* ── UPLOAD ZONE ── */
   .upload-zone {
-    border: 2px dashed rgba(46,190,110,0.35); border-radius: 10px;
+    border: 2px dashed rgba(46,190,110,0.4); border-radius: 10px;
     padding: 1.5rem; text-align: center; cursor: pointer;
-    transition: border-color 0.2s, background 0.2s; color: var(--text-muted);
-    font-size: 0.85rem;
+    transition: border-color 0.2s, background 0.2s; color: var(--text-muted); font-size: 0.85rem;
   }
   .upload-zone:hover { border-color: var(--green); background: rgba(46,190,110,0.04); }
   .upload-zone input[type=file] { display: none; }
   .img-preview { width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-top: 0.75rem; display: none; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-  /* ── BILDER GALERIE ── */
-  .gallery-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;
-    margin-top: 1rem;
-  }
-  .gallery-item {
-    position: relative; border-radius: 10px; overflow: hidden;
-    border: 1.5px solid var(--border); aspect-ratio: 1;
-    background: var(--bg);
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .gallery-item:hover { border-color: var(--green); box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { margin-top: 0.75rem; display: none; }
+  .progress-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.3s ease; width: 0; }
+
+  /* ── GALLERY ── */
+  .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.85rem; margin-top: 0.75rem; }
+  .gallery-item { position: relative; border-radius: 10px; overflow: hidden; border: 1.5px solid var(--border); aspect-ratio: 1; background: var(--bg); transition: border-color 0.2s; }
+  .gallery-item:hover { border-color: var(--green); }
   .gallery-item img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
-  .gallery-item-actions {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.65), transparent);
-    padding: 0.5rem; display: flex; gap: 0.35rem; justify-content: center;
-    opacity: 0; transition: opacity 0.2s;
-  }
+  .gallery-item-actions { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); padding: 0.4rem; display: flex; gap: 0.3rem; justify-content: center; opacity: 0; transition: opacity 0.2s; }
   .gallery-item:hover .gallery-item-actions { opacity: 1; }
-  .gallery-item-name { font-size: 0.7rem; color: var(--text-muted); padding: 0.4rem; word-break: break-all; text-align: center; }
+  .gallery-item-name { font-size: 0.68rem; color: var(--text-muted); padding: 0.35rem; word-break: break-all; text-align: center; }
 
   /* ── FAQ LIST ── */
-  .faq-list { display: flex; flex-direction: column; gap: 0.75rem; }
-  .faq-row {
-    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
-    padding: 1rem 1.25rem; display: flex; align-items: flex-start; gap: 1rem;
-  }
-  .faq-row .faq-q-text { font-weight: 600; font-size: 0.9rem; flex: 1; }
-  .faq-row .faq-a-text { font-size: 0.82rem; color: var(--text-muted); margin-top: 3px; }
-
-  /* ── LOADING ── */
-  .spinner {
-    width: 20px; height: 20px; border: 2px solid rgba(0,0,0,0.1);
-    border-top-color: var(--green); border-radius: 50%;
-    animation: spin 0.7s linear infinite; flex-shrink: 0;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-state { display: flex; align-items: center; gap: 0.75rem; color: var(--text-muted); font-size: 0.9rem; padding: 2rem 0; }
+  .faq-list { display: flex; flex-direction: column; gap: 0.65rem; }
+  .faq-row { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 0.85rem; }
+  .faq-row .faq-q-text { font-weight: 600; font-size: 0.88rem; flex: 1; }
+  .faq-row .faq-a-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 
   /* ── TOGGLE ── */
-  .toggle-wrap { display: flex; align-items: center; gap: 0.75rem; }
-  .toggle {
-    position: relative; width: 44px; height: 24px; cursor: pointer;
-    display: inline-block; flex-shrink: 0;
-  }
+  .toggle-wrap { display: flex; align-items: center; gap: 0.7rem; }
+  .toggle { position: relative; width: 40px; height: 22px; cursor: pointer; display: inline-block; flex-shrink: 0; }
   .toggle input { display: none; }
-  .toggle-slider {
-    position: absolute; inset: 0; background: rgba(0,0,0,0.15); border-radius: 24px;
-    transition: background 0.2s;
-  }
-  .toggle-slider::before {
-    content: ''; position: absolute; width: 18px; height: 18px;
-    left: 3px; top: 3px; background: #fff; border-radius: 50%;
-    transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-  }
+  .toggle-slider { position: absolute; inset: 0; background: rgba(0,0,0,0.15); border-radius: 22px; transition: background 0.2s; }
+  .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform 0.2s; }
   .toggle input:checked + .toggle-slider { background: var(--green); }
-  .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
-  .toggle-label { font-size: 0.85rem; color: var(--text); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+  .toggle-label { font-size: 0.84rem; }
+
+  /* ── SPINNER / LOADING ── */
+  .spinner { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.1); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-state { display: flex; align-items: center; gap: 0.65rem; color: var(--text-muted); font-size: 0.88rem; padding: 2rem 0; }
+  .empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); }
+  .empty-state svg { margin-bottom: 0.65rem; opacity: 0.35; }
 
   /* ── MISC ── */
-  .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
-  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
-  .empty-state svg { margin-bottom: 0.75rem; opacity: 0.35; }
-  .text-green { color: var(--green); }
-  .text-muted { color: var(--text-muted); font-size: 0.85rem; }
+  .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
+  .copy-toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.8rem; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 9999; }
+  .copy-toast.show { opacity: 1; }
   .mt-1 { margin-top: 0.5rem; }
   .mt-2 { margin-top: 1rem; }
-  .flex-row { display: flex; align-items: center; gap: 0.75rem; }
-  .copy-toast {
-    position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
-    background: #1a1a1a; color: #fff; padding: 0.6rem 1.25rem;
-    border-radius: 8px; font-size: 0.82rem; opacity: 0;
-    transition: opacity 0.3s; pointer-events: none; z-index: 9999;
+  .text-muted { color: var(--text-muted); font-size: 0.83rem; }
+
+  /* ═══════════════════════════════════════════
+     LIVE-EDITOR VIEW (3-spaltig)
+  ═══════════════════════════════════════════ */
+  #view-editor {
+    display: none; /* überschrieben durch .view.active */
+    flex: 1; flex-direction: row; overflow: hidden; padding: 0;
   }
-  .copy-toast.show { opacity: 1; }
+  #view-editor.active { display: flex; }
+
+  /* ── PREVIEW AREA (Mitte) ── */
+  .preview-area {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    background: #e8e8e4; min-width: 0;
+  }
+
+  /* ── TOOLBAR ── */
+  .preview-toolbar {
+    height: 52px; flex-shrink: 0;
+    background: var(--white); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0 1rem;
+  }
+  .device-toggle { display: flex; gap: 2px; background: var(--bg); border-radius: 8px; padding: 3px; }
+  .device-btn {
+    background: none; border: none; cursor: pointer; padding: 0.35rem 0.7rem;
+    border-radius: 6px; color: var(--text-muted); transition: background 0.15s, color 0.15s;
+    font-size: 0.75rem; font-family: 'Montserrat', sans-serif; font-weight: 600;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .device-btn.active { background: var(--white); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .toolbar-center { flex: 1; text-align: center; font-size: 0.78rem; color: var(--text-muted); font-family: 'Montserrat', sans-serif; font-weight: 600; letter-spacing: 0.06em; }
+  .toolbar-right { display: flex; align-items: center; gap: 0.75rem; margin-left: auto; }
+  .status-badge {
+    font-size: 0.7rem; font-family: 'Montserrat', sans-serif; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.3rem 0.75rem; border-radius: 20px;
+  }
+  .status-badge.published { background: rgba(46,190,110,0.12); color: var(--green-dark); }
+  .status-badge.unpublished { background: rgba(255,122,0,0.12); color: #c05a00; }
+
+  /* ── IFRAME WRAPPER ── */
+  .iframe-outer { flex: 1; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 0; position: relative; }
+  .iframe-inner {
+    width: 100%; height: 100%; transition: width 0.3s ease, max-width 0.3s ease;
+    position: relative;
+  }
+  .iframe-inner iframe {
+    width: 100%; height: 100%; border: none;
+    display: block;
+  }
+
+  /* ── EDIT PANEL (Rechts) ── */
+  .edit-panel {
+    width: var(--panel-w); flex-shrink: 0;
+    background: var(--white); border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .panel-header {
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-back {
+    background: none; border: none; cursor: pointer; color: var(--text-muted);
+    display: flex; align-items: center; gap: 0.3rem; font-size: 0.75rem;
+    font-family: 'Montserrat', sans-serif; font-weight: 600; padding: 0;
+    transition: color 0.15s;
+  }
+  .panel-back:hover { color: var(--text); }
+  .panel-body { flex: 1; overflow-y: auto; padding: 1.1rem 1.25rem; }
+
+  /* Area Tiles (Default Panel) */
+  .area-tiles { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; }
+  .area-tile {
+    background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 0.9rem 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .area-tile:hover { border-color: var(--green); background: rgba(46,190,110,0.04); }
+  .area-tile-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.83rem; }
+  .area-tile-desc { font-size: 0.73rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* Breadcrumb */
+  .editor-breadcrumb {
+    font-size: 0.72rem; color: var(--text-muted);
+    font-family: 'Montserrat', sans-serif; font-weight: 600;
+    letter-spacing: 0.05em; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .char-count { font-size: 0.72rem; color: var(--text-muted); text-align: right; margin-top: 0.3rem; }
+
+  /* Image panel */
+  .img-current-preview {
+    width: 100%; height: 180px; object-fit: cover; border-radius: 8px;
+    display: none; margin-bottom: 0.75rem; background: var(--bg);
+  }
+  .img-placeholder {
+    width: 100%; height: 180px; background: var(--bg); border: 1.5px dashed var(--border);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); font-size: 0.83rem; margin-bottom: 0.75rem;
+    flex-direction: column; gap: 0.5rem;
+  }
+
+  /* Before/After panel */
+  .ba-upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; }
+  .ba-upload-col label { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.4rem; }
+
+  /* Image library modal */
+  .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.65rem; margin-top: 0.75rem; }
+  .lib-item { position: relative; border-radius: 8px; overflow: hidden; border: 1.5px solid var(--border); aspect-ratio: 1; cursor: pointer; background: var(--bg); transition: border-color 0.15s; }
+  .lib-item:hover { border-color: var(--green); }
+  .lib-item img { width: 100%; height: 100%; object-fit: cover; }
+  .lib-item-name { font-size: 0.66rem; color: var(--text-muted); padding: 0.3rem; text-align: center; word-break: break-all; }
+  .lib-delete {
+    position: absolute; top: 4px; right: 4px;
+    background: rgba(229,62,62,0.85); border: none; border-radius: 5px;
+    cursor: pointer; color: #fff; padding: 3px; display: none; align-items: center;
+  }
+  .lib-item:hover .lib-delete { display: flex; }
+
+  /* Panel footer (save/cancel buttons) */
+  .panel-footer {
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 0.5rem;
+  }
 </style>
 </head>
 <body>
 
-<!-- ══════════ LOGIN SCREEN ══════════ -->
+<!-- ══════════ LOGIN ══════════ -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">Maler<span>Marc</span></div>
-    <div class="login-sub">Admin · Content Management</div>
-
+    <div class="login-sub">Admin · Live-Editor</div>
     <div class="error-msg" id="login-error"></div>
     <div id="login-form">
       <div class="form-field">
@@ -353,29 +420,29 @@
       <small>Admin Panel</small>
     </div>
     <nav class="sidebar-nav">
-      <button class="nav-item active" data-view="dashboard" onclick="showView('dashboard', this)">
-        <i data-lucide="layout-dashboard" width="16" height="16"></i>
+      <button class="nav-item active" data-view="editor" onclick="showView('editor', this)">
+        <i data-lucide="layout" width="15" height="15"></i>
+        Seiten-Editor
+      </button>
+      <button class="nav-item" data-view="dashboard" onclick="showView('dashboard', this)">
+        <i data-lucide="layout-dashboard" width="15" height="15"></i>
         Dashboard
       </button>
-      <button class="nav-item" data-view="texte" onclick="showView('texte', this)">
-        <i data-lucide="type" width="16" height="16"></i>
-        Texte
-      </button>
-      <button class="nav-item" data-view="kontakt" onclick="showView('kontakt', this)">
-        <i data-lucide="phone" width="16" height="16"></i>
-        Kontakt
-      </button>
       <button class="nav-item" data-view="projekte" onclick="showView('projekte', this)">
-        <i data-lucide="image" width="16" height="16"></i>
+        <i data-lucide="image" width="15" height="15"></i>
         Projekte
       </button>
       <button class="nav-item" data-view="faq" onclick="showView('faq', this)">
-        <i data-lucide="help-circle" width="16" height="16"></i>
+        <i data-lucide="help-circle" width="15" height="15"></i>
         FAQ
       </button>
       <button class="nav-item" data-view="bilder" onclick="showView('bilder', this)">
-        <i data-lucide="folder-open" width="16" height="16"></i>
+        <i data-lucide="folder-open" width="15" height="15"></i>
         Bilder
+      </button>
+      <button class="nav-item" data-view="kontakt" onclick="showView('kontakt', this)">
+        <i data-lucide="phone" width="15" height="15"></i>
+        Kontakt
       </button>
     </nav>
     <div class="sidebar-footer">
@@ -383,50 +450,244 @@
         <div class="sidebar-avatar" id="sidebar-avatar">M</div>
         <div class="sidebar-user-email" id="sidebar-email">–</div>
       </div>
+      <a href="index.html" target="_blank" class="btn btn-ghost btn-sm btn-full">
+        <i data-lucide="external-link" width="13" height="13"></i>
+        Website besuchen
+      </a>
       <button class="btn btn-secondary btn-sm btn-full" onclick="doLogout()">
-        <i data-lucide="log-out" width="14" height="14"></i>
+        <i data-lucide="log-out" width="13" height="13"></i>
         Logout
       </button>
     </div>
   </aside>
 
-  <!-- CONTENT AREA -->
-  <div class="content-area">
+  <!-- MAIN AREA -->
+  <div class="main-area">
 
-    <!-- ── DASHBOARD ── -->
-    <div class="view active" id="view-dashboard">
+    <!-- ══════ SEITEN-EDITOR (3-spaltig: Vorschau + Edit-Panel) ══════ -->
+    <div class="view active" id="view-editor">
+
+      <!-- Vorschau-Bereich -->
+      <div class="preview-area">
+        <div class="preview-toolbar">
+          <!-- Geräte-Toggle -->
+          <div class="device-toggle">
+            <button class="device-btn active" id="device-desktop" onclick="setDevice('desktop')">
+              <i data-lucide="monitor" width="14" height="14"></i> Desktop
+            </button>
+            <button class="device-btn" id="device-tablet" onclick="setDevice('tablet')">
+              <i data-lucide="tablet" width="14" height="14"></i> Tablet
+            </button>
+            <button class="device-btn" id="device-mobile" onclick="setDevice('mobile')">
+              <i data-lucide="smartphone" width="14" height="14"></i> Mobile
+            </button>
+          </div>
+
+          <div class="toolbar-center" id="toolbar-hint">
+            Klicke auf ein Element um es zu bearbeiten
+          </div>
+
+          <div class="toolbar-right">
+            <div class="status-badge published" id="publish-status">Alles publiziert</div>
+            <button class="btn btn-primary btn-sm" onclick="publishChanges()">
+              <i data-lucide="upload-cloud" width="14" height="14"></i>
+              Veröffentlichen
+            </button>
+          </div>
+        </div>
+
+        <!-- iframe -->
+        <div class="iframe-outer">
+          <div class="iframe-inner" id="iframe-inner">
+            <iframe id="preview-iframe" src="index.html?cms=true" title="Website Vorschau"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Panel -->
+      <div class="edit-panel">
+        <!-- DEFAULT: Bereiche-Übersicht -->
+        <div id="panel-default" style="display:flex; flex-direction:column; height:100%;">
+          <div class="panel-header">
+            Bereiche bearbeiten
+          </div>
+          <div class="panel-body">
+            <div class="text-muted" style="margin-bottom:0.75rem;">Klicke auf einen Bereich oder direkt auf der Vorschau auf ein Element.</div>
+            <div class="area-tiles">
+              <div class="area-tile" onclick="scrollToArea('hero_titel')">
+                <div>
+                  <div class="area-tile-name">Hero</div>
+                  <div class="area-tile-desc">Titel, Untertitel, Hintergrundbild</div>
+                </div>
+                <i data-lucide="chevron-right" width="16" height="16" style="color:var(--text-muted);"></i>
+              </div>
+              <div class="area-tile" onclick="scrollToArea('ueber_titel')">
+                <div>
+                  <div class="area-tile-name">Über mich</div>
+                  <div class="area-tile-desc">Titel, Text, Foto von Marc</div>
+                </div>
+                <i data-lucide="chevron-right" width="16" height="16" style="color:var(--text-muted);"></i>
+              </div>
+              <div class="area-tile" onclick="scrollToArea('referenz_1')">
+                <div>
+                  <div class="area-tile-name">Referenzen</div>
+                  <div class="area-tile-desc">Vorher/Nachher Slider</div>
+                </div>
+                <i data-lucide="chevron-right" width="16" height="16" style="color:var(--text-muted);"></i>
+              </div>
+              <div class="area-tile" onclick="scrollToArea('kontakt_telefon')">
+                <div>
+                  <div class="area-tile-name">Kontakt</div>
+                  <div class="area-tile-desc">Telefon, E-Mail, Adresse, Zeiten</div>
+                </div>
+                <i data-lucide="chevron-right" width="16" height="16" style="color:var(--text-muted);"></i>
+              </div>
+              <div class="area-tile" onclick="showView('faq', document.querySelector('[data-view=faq]'))">
+                <div>
+                  <div class="area-tile-name">FAQ</div>
+                  <div class="area-tile-desc">Häufig gestellte Fragen</div>
+                </div>
+                <i data-lucide="chevron-right" width="16" height="16" style="color:var(--text-muted);"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEXT EDITOR PANEL -->
+        <div id="panel-text" style="display:none; flex-direction:column; height:100%;">
+          <div class="panel-header">
+            <div id="text-panel-title">Text bearbeiten</div>
+            <button class="panel-back" onclick="closeEditPanel()">
+              <i data-lucide="x" width="14" height="14"></i>
+            </button>
+          </div>
+          <div class="panel-body">
+            <div class="editor-breadcrumb" id="text-panel-breadcrumb">—</div>
+            <div class="form-field">
+              <textarea id="text-panel-input" rows="6" oninput="updateCharCount()" placeholder="Text eingeben…"></textarea>
+            </div>
+            <div class="char-count" id="text-char-count">0 Zeichen</div>
+            <div class="success-msg mt-1" id="text-save-success">✓ Gespeichert</div>
+            <div class="error-msg mt-1" id="text-save-error"></div>
+          </div>
+          <div class="panel-footer">
+            <button class="btn btn-secondary btn-sm" onclick="closeEditPanel()">Abbrechen</button>
+            <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center;" onclick="saveTextEdit()">
+              <i data-lucide="save" width="13" height="13"></i>
+              Speichern
+            </button>
+          </div>
+        </div>
+
+        <!-- IMAGE EDITOR PANEL -->
+        <div id="panel-image" style="display:none; flex-direction:column; height:100%;">
+          <div class="panel-header">
+            <div id="image-panel-title">Bild bearbeiten</div>
+            <button class="panel-back" onclick="closeEditPanel()">
+              <i data-lucide="x" width="14" height="14"></i>
+            </button>
+          </div>
+          <div class="panel-body">
+            <div class="editor-breadcrumb" id="image-panel-breadcrumb">—</div>
+            <img id="image-panel-preview" class="img-current-preview" alt="Vorschau">
+            <div id="image-panel-placeholder" class="img-placeholder">
+              <i data-lucide="image" width="28" height="28"></i>
+              <span>Noch kein Bild gesetzt</span>
+            </div>
+
+            <div class="upload-zone" id="image-drop-zone" onclick="document.getElementById('image-file-input').click()">
+              <i data-lucide="upload-cloud" width="24" height="24" style="margin-bottom:0.4rem;"></i><br>
+              <strong>Bild hier ablegen oder klicken</strong><br>
+              <span style="font-size:0.78rem;">JPG, PNG, WebP · max. 5 MB</span>
+              <input type="file" id="image-file-input" accept="image/jpeg,image/png,image/webp,image/gif" onchange="handleImageFileSelect(this)">
+            </div>
+            <div class="progress-wrap" id="image-progress">
+              <div class="progress-track"><div class="progress-fill" id="image-progress-fill"></div></div>
+              <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">Wird hochgeladen…</div>
+            </div>
+
+            <button class="btn btn-ghost btn-sm btn-full mt-2" onclick="openImageLibrary()">
+              <i data-lucide="grid" width="13" height="13"></i>
+              Aus Bibliothek wählen
+            </button>
+            <div class="success-msg mt-1" id="image-save-success">✓ Bild gespeichert</div>
+            <div class="error-msg mt-1" id="image-save-error"></div>
+          </div>
+          <div class="panel-footer">
+            <button class="btn btn-secondary btn-sm" onclick="closeEditPanel()">Abbrechen</button>
+          </div>
+        </div>
+
+        <!-- BEFORE/AFTER PANEL -->
+        <div id="panel-beforeafter" style="display:none; flex-direction:column; height:100%;">
+          <div class="panel-header">
+            <div>Vorher / Nachher</div>
+            <button class="panel-back" onclick="closeEditPanel()">
+              <i data-lucide="x" width="14" height="14"></i>
+            </button>
+          </div>
+          <div class="panel-body">
+            <div class="editor-breadcrumb">Referenzen › Vorher/Nachher Slider</div>
+            <div class="ba-upload-grid">
+              <div class="ba-upload-col">
+                <label>Vorher-Bild</label>
+                <img id="ba-vorher-preview" class="img-current-preview" style="height:120px;" alt="">
+                <div class="upload-zone" style="padding:1rem;" onclick="document.getElementById('ba-vorher-input').click()">
+                  <i data-lucide="image" width="18" height="18"></i><br>
+                  <span style="font-size:0.72rem;">Klicken</span>
+                  <input type="file" id="ba-vorher-input" accept="image/*" onchange="handleBAUpload(this, 'vorher')">
+                </div>
+                <div class="progress-wrap" id="ba-vorher-progress">
+                  <div class="progress-track"><div class="progress-fill" id="ba-vorher-fill"></div></div>
+                </div>
+              </div>
+              <div class="ba-upload-col">
+                <label>Nachher-Bild</label>
+                <img id="ba-nachher-preview" class="img-current-preview" style="height:120px;" alt="">
+                <div class="upload-zone" style="padding:1rem;" onclick="document.getElementById('ba-nachher-input').click()">
+                  <i data-lucide="image" width="18" height="18"></i><br>
+                  <span style="font-size:0.72rem;">Klicken</span>
+                  <input type="file" id="ba-nachher-input" accept="image/*" onchange="handleBAUpload(this, 'nachher')">
+                </div>
+                <div class="progress-wrap" id="ba-nachher-progress">
+                  <div class="progress-track"><div class="progress-fill" id="ba-nachher-fill"></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="success-msg mt-2" id="ba-save-success">✓ Bilder gespeichert</div>
+            <div class="error-msg mt-1" id="ba-save-error"></div>
+          </div>
+          <div class="panel-footer">
+            <button class="btn btn-secondary btn-sm" onclick="closeEditPanel()">Abbrechen</button>
+          </div>
+        </div>
+      </div><!-- /edit-panel -->
+    </div><!-- /view-editor -->
+
+    <!-- ══════ DASHBOARD ══════ -->
+    <div class="view" id="view-dashboard">
       <div class="view-header">
         <div>
-          <div class="view-title">Willkommen, Marc 👋</div>
-          <div class="view-sub">Hier ein Überblick über Ihre Website-Inhalte.</div>
+          <div class="view-title">Dashboard</div>
+          <div class="view-sub">Übersicht über Ihre Website-Inhalte</div>
         </div>
-        <a href="index.html" target="_blank" class="btn btn-secondary">
-          <i data-lucide="external-link" width="14" height="14"></i>
-          Website ansehen
-        </a>
+        <button class="btn btn-secondary btn-sm" onclick="showView('editor', document.querySelector('[data-view=editor]'))">
+          <i data-lucide="layout" width="13" height="13"></i>
+          Zum Editor
+        </button>
       </div>
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="num" id="dash-projekte">–</div>
-          <div class="lbl">Projekte</div>
-        </div>
-        <div class="stat-card">
-          <div class="num" id="dash-faq">–</div>
-          <div class="lbl">FAQ-Einträge</div>
-        </div>
-        <div class="stat-card">
-          <div class="num" id="dash-content">–</div>
-          <div class="lbl">Text-Felder</div>
-        </div>
-        <div class="stat-card">
-          <div class="num" id="dash-bilder">–</div>
-          <div class="lbl">Bilder</div>
-        </div>
+        <div class="stat-card"><div class="num" id="dash-projekte">–</div><div class="lbl">Projekte</div></div>
+        <div class="stat-card"><div class="num" id="dash-faq">–</div><div class="lbl">FAQ-Einträge</div></div>
+        <div class="stat-card"><div class="num" id="dash-content">–</div><div class="lbl">Text-Felder</div></div>
+        <div class="stat-card"><div class="num" id="dash-bilder">–</div><div class="lbl">Bilder</div></div>
       </div>
       <div class="card">
-        <div class="card-title"><i data-lucide="info" width="16" height="16"></i> Schnellzugriff</div>
-        <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-          <button class="btn btn-secondary btn-sm" onclick="showView('texte', document.querySelector('[data-view=texte]'))">Texte bearbeiten</button>
+        <div class="card-title"><i data-lucide="zap" width="15" height="15"></i> Schnellzugriff</div>
+        <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+          <button class="btn btn-secondary btn-sm" onclick="showView('editor', document.querySelector('[data-view=editor]'))">
+            <i data-lucide="layout" width="13" height="13"></i> Seiten bearbeiten
+          </button>
           <button class="btn btn-secondary btn-sm" onclick="showView('projekte', document.querySelector('[data-view=projekte]'))">Projekte verwalten</button>
           <button class="btn btn-secondary btn-sm" onclick="showView('faq', document.querySelector('[data-view=faq]'))">FAQ bearbeiten</button>
           <button class="btn btn-secondary btn-sm" onclick="showView('bilder', document.querySelector('[data-view=bilder]'))">Bilder hochladen</button>
@@ -434,99 +695,15 @@
       </div>
     </div>
 
-    <!-- ── TEXTE ── -->
-    <div class="view" id="view-texte">
-      <div class="view-header">
-        <div>
-          <div class="view-title">Texte</div>
-          <div class="view-sub">Hero-Bereich und Über-mich-Texte bearbeiten</div>
-        </div>
-        <button class="btn btn-primary" onclick="saveTexte()">
-          <i data-lucide="save" width="14" height="14"></i>
-          Speichern
-        </button>
-      </div>
-      <div class="success-msg" id="texte-success">✓ Texte erfolgreich gespeichert.</div>
-      <div class="error-msg" id="texte-error"></div>
-      <div class="card">
-        <div class="card-title"><i data-lucide="layout" width="16" height="16"></i> Hero-Bereich</div>
-        <div class="form-field">
-          <label>Hero Titel</label>
-          <input type="text" id="f-hero_titel" placeholder="Farbe. Qualität. Handwerk.">
-        </div>
-        <div class="form-field">
-          <label>Hero Untertitel</label>
-          <textarea id="f-hero_sub" placeholder="MalerMarc verwandelt Räume in Erlebnisse…"></textarea>
-        </div>
-        <div class="form-row">
-          <div class="form-field">
-            <label>Statistik: Projekte</label>
-            <input type="text" id="f-stat_projekte" placeholder="200+">
-          </div>
-          <div class="form-field">
-            <label>Statistik: Jahre Erfahrung</label>
-            <input type="text" id="f-stat_jahre" placeholder="20+">
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title"><i data-lucide="user" width="16" height="16"></i> Über mich</div>
-        <div class="form-field">
-          <label>Über mich – Titel</label>
-          <input type="text" id="f-ueber_titel" placeholder="Hallo, ich bin Marc.">
-        </div>
-        <div class="form-field">
-          <label>Über mich – Text</label>
-          <textarea id="f-ueber_text" style="min-height:120px;" placeholder="Was als Neugier für Farben begann…"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── KONTAKT ── -->
-    <div class="view" id="view-kontakt">
-      <div class="view-header">
-        <div>
-          <div class="view-title">Kontakt</div>
-          <div class="view-sub">Kontaktdaten und Öffnungszeiten</div>
-        </div>
-        <button class="btn btn-primary" onclick="saveKontakt()">
-          <i data-lucide="save" width="14" height="14"></i>
-          Speichern
-        </button>
-      </div>
-      <div class="success-msg" id="kontakt-success">✓ Kontaktdaten gespeichert.</div>
-      <div class="error-msg" id="kontakt-error"></div>
-      <div class="card">
-        <div class="form-row">
-          <div class="form-field">
-            <label>Telefon</label>
-            <input type="text" id="f-kontakt_telefon" placeholder="+41 XX XXX XX XX">
-          </div>
-          <div class="form-field">
-            <label>E-Mail</label>
-            <input type="email" id="f-kontakt_email" placeholder="info@malermarc.ch">
-          </div>
-        </div>
-        <div class="form-field">
-          <label>Adresse</label>
-          <input type="text" id="f-kontakt_adresse" placeholder="Musterstrasse 1, 3000 Bern">
-        </div>
-        <div class="form-field">
-          <label>Öffnungszeiten</label>
-          <input type="text" id="f-kontakt_zeiten" placeholder="Mo–Fr, 07:00–17:00 Uhr">
-        </div>
-      </div>
-    </div>
-
-    <!-- ── PROJEKTE ── -->
+    <!-- ══════ PROJEKTE ══════ -->
     <div class="view" id="view-projekte">
       <div class="view-header">
         <div>
           <div class="view-title">Projekte</div>
           <div class="view-sub">Referenzprojekte verwalten</div>
         </div>
-        <button class="btn btn-primary" onclick="openProjektModal(null)">
-          <i data-lucide="plus" width="14" height="14"></i>
+        <button class="btn btn-primary btn-sm" onclick="openProjektModal(null)">
+          <i data-lucide="plus" width="13" height="13"></i>
           Neues Projekt
         </button>
       </div>
@@ -535,30 +712,26 @@
           <table>
             <thead>
               <tr>
-                <th>Titel</th>
-                <th>Kategorie</th>
-                <th>Reihenfolge</th>
-                <th>Status</th>
-                <th>Aktionen</th>
+                <th>Titel</th><th>Kategorie</th><th>Reihenfolge</th><th>Status</th><th>Aktionen</th>
               </tr>
             </thead>
             <tbody id="projekte-tbody">
-              <tr><td colspan="5"><div class="loading-state"><div class="spinner"></div> Lade Projekte…</div></td></tr>
+              <tr><td colspan="5"><div class="loading-state"><div class="spinner"></div> Lade…</div></td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- ── FAQ ── -->
+    <!-- ══════ FAQ ══════ -->
     <div class="view" id="view-faq">
       <div class="view-header">
         <div>
           <div class="view-title">FAQ</div>
           <div class="view-sub">Häufig gestellte Fragen verwalten</div>
         </div>
-        <button class="btn btn-primary" onclick="openFaqModal(null)">
-          <i data-lucide="plus" width="14" height="14"></i>
+        <button class="btn btn-primary btn-sm" onclick="openFaqModal(null)">
+          <i data-lucide="plus" width="13" height="13"></i>
           Neue Frage
         </button>
       </div>
@@ -567,15 +740,15 @@
       </div>
     </div>
 
-    <!-- ── BILDER ── -->
+    <!-- ══════ BILDER ══════ -->
     <div class="view" id="view-bilder">
       <div class="view-header">
         <div>
           <div class="view-title">Bilder</div>
-          <div class="view-sub">Bilder aus dem Storage-Bucket "bilder"</div>
+          <div class="view-sub">Storage-Bucket "bilder"</div>
         </div>
-        <label class="btn btn-primary" style="cursor:pointer;">
-          <i data-lucide="upload" width="14" height="14"></i>
+        <label class="btn btn-primary btn-sm" style="cursor:pointer;">
+          <i data-lucide="upload" width="13" height="13"></i>
           Hochladen
           <input type="file" id="bulk-upload" accept="image/*" multiple style="display:none;" onchange="bulkUpload(this)">
         </label>
@@ -587,7 +760,31 @@
       </div>
     </div>
 
-  </div><!-- /content-area -->
+    <!-- ══════ KONTAKT ══════ -->
+    <div class="view" id="view-kontakt">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Kontakt</div>
+          <div class="view-sub">Kontaktdaten und Öffnungszeiten</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveKontakt()">
+          <i data-lucide="save" width="13" height="13"></i>
+          Speichern
+        </button>
+      </div>
+      <div class="success-msg" id="kontakt-success">✓ Kontaktdaten gespeichert.</div>
+      <div class="error-msg" id="kontakt-error"></div>
+      <div class="card">
+        <div class="form-row">
+          <div class="form-field"><label>Telefon</label><input type="text" id="f-kontakt_telefon" placeholder="+41 XX XXX XX XX"></div>
+          <div class="form-field"><label>E-Mail</label><input type="email" id="f-kontakt_email" placeholder="info@malermarc.ch"></div>
+        </div>
+        <div class="form-field"><label>Adresse</label><input type="text" id="f-kontakt_adresse" placeholder="Musterstrasse 1, 3000 Bern"></div>
+        <div class="form-field"><label>Öffnungszeiten</label><input type="text" id="f-kontakt_zeiten" placeholder="Mo–Fr, 07:00–17:00 Uhr"></div>
+      </div>
+    </div>
+
+  </div><!-- /main-area -->
 </div><!-- /admin-app -->
 
 <!-- ══════════ MODAL: PROJEKT ══════════ -->
@@ -595,20 +792,12 @@
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="modal-projekt-title">Neues Projekt</div>
-      <button class="modal-close" onclick="closeModal('modal-projekt')">
-        <i data-lucide="x" width="18" height="18"></i>
-      </button>
+      <button class="modal-close" onclick="closeModal('modal-projekt')"><i data-lucide="x" width="17" height="17"></i></button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="p-id">
-      <div class="form-field">
-        <label>Titel *</label>
-        <input type="text" id="p-titel" placeholder="z.B. Wohnzimmer Renovation Bern">
-      </div>
-      <div class="form-field">
-        <label>Beschreibung</label>
-        <textarea id="p-beschreibung" placeholder="Kurze Projektbeschreibung…"></textarea>
-      </div>
+      <div class="form-field"><label>Titel *</label><input type="text" id="p-titel" placeholder="z.B. Wohnzimmer Renovation Bern"></div>
+      <div class="form-field"><label>Beschreibung</label><textarea id="p-beschreibung" placeholder="Kurze Projektbeschreibung…"></textarea></div>
       <div class="form-row">
         <div class="form-field">
           <label>Kategorie</label>
@@ -619,18 +808,14 @@
             <option value="Gipser">Gipserarbeiten</option>
           </select>
         </div>
-        <div class="form-field">
-          <label>Reihenfolge</label>
-          <input type="number" id="p-reihenfolge" value="0" min="0">
-        </div>
+        <div class="form-field"><label>Reihenfolge</label><input type="number" id="p-reihenfolge" value="0" min="0"></div>
       </div>
       <div class="form-row">
         <div class="form-field">
           <label>Bild Vorher</label>
           <div class="upload-zone" onclick="this.querySelector('input').click()">
-            <i data-lucide="image" width="20" height="20"></i><br>
-            Bild auswählen
-            <input type="file" id="p-bild-vorher" accept="image/*" onchange="previewImg(this, 'p-prev-vorher')">
+            <i data-lucide="image" width="18" height="18"></i><br>Bild auswählen
+            <input type="file" id="p-bild-vorher" accept="image/*" onchange="previewImg(this,'p-prev-vorher')">
           </div>
           <img id="p-prev-vorher" class="img-preview">
           <input type="hidden" id="p-bild_vorher">
@@ -638,29 +823,24 @@
         <div class="form-field">
           <label>Bild Nachher</label>
           <div class="upload-zone" onclick="this.querySelector('input').click()">
-            <i data-lucide="image" width="20" height="20"></i><br>
-            Bild auswählen
-            <input type="file" id="p-bild-nachher" accept="image/*" onchange="previewImg(this, 'p-prev-nachher')">
+            <i data-lucide="image" width="18" height="18"></i><br>Bild auswählen
+            <input type="file" id="p-bild-nachher" accept="image/*" onchange="previewImg(this,'p-prev-nachher')">
           </div>
           <img id="p-prev-nachher" class="img-preview">
           <input type="hidden" id="p-bild_nachher">
         </div>
       </div>
-      <div class="toggle-wrap mt-2">
-        <label class="toggle">
-          <input type="checkbox" id="p-aktiv" checked>
-          <span class="toggle-slider"></span>
-        </label>
+      <div class="toggle-wrap mt-1">
+        <label class="toggle"><input type="checkbox" id="p-aktiv" checked><span class="toggle-slider"></span></label>
         <span class="toggle-label">Aktiv (auf Website sichtbar)</span>
       </div>
-      <div class="error-msg mt-2" id="projekt-error"></div>
-      <div class="success-msg mt-2" id="projekt-success"></div>
+      <div class="error-msg mt-1" id="projekt-error"></div>
+      <div class="success-msg mt-1" id="projekt-success"></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-projekt')">Abbrechen</button>
-      <button class="btn btn-primary" id="save-projekt-btn" onclick="saveProjekt()">
-        <i data-lucide="save" width="14" height="14"></i>
-        Speichern
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-projekt')">Abbrechen</button>
+      <button class="btn btn-primary btn-sm" id="save-projekt-btn" onclick="saveProjekt()">
+        <i data-lucide="save" width="13" height="13"></i> Speichern
       </button>
     </div>
   </div>
@@ -671,32 +851,18 @@
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="modal-faq-title">Neue FAQ</div>
-      <button class="modal-close" onclick="closeModal('modal-faq')">
-        <i data-lucide="x" width="18" height="18"></i>
-      </button>
+      <button class="modal-close" onclick="closeModal('modal-faq')"><i data-lucide="x" width="17" height="17"></i></button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="faq-id">
-      <div class="form-field">
-        <label>Frage *</label>
-        <input type="text" id="faq-frage" placeholder="z.B. Was kostet ein Maler in Bern?">
-      </div>
-      <div class="form-field">
-        <label>Antwort *</label>
-        <textarea id="faq-antwort" style="min-height:120px;" placeholder="Die ausführliche Antwort…"></textarea>
-      </div>
+      <div class="form-field"><label>Frage *</label><input type="text" id="faq-frage" placeholder="Was kostet ein Maler in Bern?"></div>
+      <div class="form-field"><label>Antwort *</label><textarea id="faq-antwort" style="min-height:120px;" placeholder="Die ausführliche Antwort…"></textarea></div>
       <div class="form-row">
+        <div class="form-field"><label>Reihenfolge</label><input type="number" id="faq-reihenfolge" value="0" min="0"></div>
         <div class="form-field">
-          <label>Reihenfolge</label>
-          <input type="number" id="faq-reihenfolge" value="0" min="0">
-        </div>
-        <div class="form-field" style="justify-content:flex-end;">
           <label>&nbsp;</label>
-          <div class="toggle-wrap" style="margin-top:0.5rem;">
-            <label class="toggle">
-              <input type="checkbox" id="faq-aktiv" checked>
-              <span class="toggle-slider"></span>
-            </label>
+          <div class="toggle-wrap" style="margin-top:0.3rem;">
+            <label class="toggle"><input type="checkbox" id="faq-aktiv" checked><span class="toggle-slider"></span></label>
             <span class="toggle-label">Aktiv</span>
           </div>
         </div>
@@ -704,11 +870,26 @@
       <div class="error-msg" id="faq-error"></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-faq')">Abbrechen</button>
-      <button class="btn btn-primary" onclick="saveFaq()">
-        <i data-lucide="save" width="14" height="14"></i>
-        Speichern
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-faq')">Abbrechen</button>
+      <button class="btn btn-primary btn-sm" onclick="saveFaq()">
+        <i data-lucide="save" width="13" height="13"></i> Speichern
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: BILD-BIBLIOTHEK ══════════ -->
+<div class="modal-overlay" id="modal-image-library">
+  <div class="modal" style="max-width:720px;">
+    <div class="modal-header">
+      <div class="modal-title">Bild-Bibliothek</div>
+      <button class="modal-close" onclick="closeModal('modal-image-library')"><i data-lucide="x" width="17" height="17"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="text-muted" style="margin-bottom:0.75rem;">Klicke auf ein Bild um es auszuwählen.</div>
+      <div id="library-grid" class="lib-grid">
+        <div class="loading-state"><div class="spinner"></div> Lade…</div>
+      </div>
     </div>
   </div>
 </div>
@@ -718,7 +899,7 @@
 
 <script>
 // ══════════════════════════════════════
-// KONFIGURATION – eigene Credentials eintragen
+// SUPABASE INIT
 // ══════════════════════════════════════
 const SUPABASE_URL = 'https://zfyesnrezqupxolslbgx.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmeWVzbnJlenF1cHhvbHNsYmd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyOTIxOTcsImV4cCI6MjA4ODg2ODE5N30.8BeDmPJjYV7_UfGEW3E3wniq1HBx1_W85c-oxQuNuck';
@@ -726,16 +907,34 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ── INIT ──
+// ── STATE ──
+let activeEditKey = null;
+let activeEditType = null;
+let projekteListe = [];
+let faqListe = [];
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
 document.addEventListener('DOMContentLoaded', async () => {
   lucide.createIcons();
   const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    showApp(session.user);
-  }
+  if (session) showApp(session.user);
+
+  sb.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') location.reload();
+  });
+
+  // postMessage vom iframe empfangen
+  window.addEventListener('message', handleIframeMessage);
+
+  // Drag & Drop auf Upload-Zone
+  setupDropZone();
 });
 
-// ── LOGIN ──
+// ══════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pw = document.getElementById('login-password').value;
@@ -757,36 +956,37 @@ async function doLogin() {
   showApp(data.user);
 }
 
-document.getElementById('login-password').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('login-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
 });
 
-// ── LOGOUT ──
 async function doLogout() {
   await sb.auth.signOut();
-  document.getElementById('admin-app').classList.remove('active');
-  document.getElementById('login-screen').style.display = 'flex';
+  location.reload();
 }
 
-// ── SHOW APP ──
 function showApp(user) {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-app').classList.add('active');
   document.getElementById('sidebar-email').textContent = user.email;
   document.getElementById('sidebar-avatar').textContent = (user.email || 'M')[0].toUpperCase();
   loadDashboard();
-  loadTexte();
-  loadKontakt();
   loadProjekte();
   loadFaq();
   loadBilder();
+  loadKontakt();
 }
 
-// ── NAVIGATION ──
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
 function showView(viewId, btn) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('view-' + viewId).classList.add('active');
+  const view = document.getElementById('view-' + viewId);
+  if (view) view.classList.add('active');
   if (btn) btn.classList.add('active');
 }
 
@@ -794,7 +994,349 @@ function closeModal(id) {
   document.getElementById(id).classList.remove('active');
 }
 
-// ── DASHBOARD ──
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+});
+
+// ══════════════════════════════════════
+// POSTMESSAGE ↔ IFRAME
+// ══════════════════════════════════════
+function sendToIframe(msg) {
+  const iframe = document.getElementById('preview-iframe');
+  if (iframe && iframe.contentWindow) {
+    iframe.contentWindow.postMessage(msg, '*');
+  }
+}
+
+function handleIframeMessage(e) {
+  const msg = e.data;
+  if (!msg || !msg.action) return;
+  if (msg.action === 'select') {
+    openEditPanel(msg.key, msg.type, msg.currentValue, msg.label);
+  }
+}
+
+function scrollToArea(key) {
+  sendToIframe({ action: 'highlight', key: key });
+}
+
+// ══════════════════════════════════════
+// GERÄT-TOGGLE
+// ══════════════════════════════════════
+function setDevice(device) {
+  document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('device-' + device).classList.add('active');
+  const inner = document.getElementById('iframe-inner');
+  if (device === 'desktop') {
+    inner.style.width = '100%';
+    inner.style.maxWidth = '100%';
+    inner.style.margin = '0 auto';
+  } else if (device === 'tablet') {
+    inner.style.width = '768px';
+    inner.style.maxWidth = '768px';
+    inner.style.margin = '0 auto';
+  } else {
+    inner.style.width = '390px';
+    inner.style.maxWidth = '390px';
+    inner.style.margin = '0 auto';
+  }
+}
+
+// ══════════════════════════════════════
+// PUBLISH
+// ══════════════════════════════════════
+async function publishChanges() {
+  const btn = document.querySelector('[onclick="publishChanges()"]');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div>';
+  const { error } = await sb.from('content').upsert(
+    { key: '_published_at', value: new Date().toISOString() },
+    { onConflict: 'key' }
+  );
+  btn.disabled = false;
+  btn.innerHTML = '<i data-lucide="upload-cloud" width="14" height="14"></i> Veröffentlichen';
+  lucide.createIcons();
+  if (!error) {
+    setPublishStatus(true);
+  }
+}
+
+function setPublishStatus(published) {
+  const badge = document.getElementById('publish-status');
+  if (published) {
+    badge.className = 'status-badge published';
+    badge.textContent = 'Alles publiziert';
+  } else {
+    badge.className = 'status-badge unpublished';
+    badge.textContent = 'Unveröffentlichte Änderungen';
+  }
+}
+
+// ══════════════════════════════════════
+// EDIT PANEL
+// ══════════════════════════════════════
+function openEditPanel(key, type, currentValue, label) {
+  activeEditKey = key;
+  activeEditType = type;
+
+  // Alle Panels ausblenden
+  ['default', 'text', 'image', 'beforeafter'].forEach(id => {
+    const el = document.getElementById('panel-' + id);
+    if (el) el.style.display = 'none';
+  });
+
+  if (type === 'text') {
+    document.getElementById('text-panel-breadcrumb').textContent = label || key;
+    document.getElementById('text-panel-title').textContent = 'Text bearbeiten';
+    const ta = document.getElementById('text-panel-input');
+    ta.value = currentValue || '';
+    updateCharCount();
+    document.getElementById('text-save-success').style.display = 'none';
+    document.getElementById('text-save-error').style.display = 'none';
+    document.getElementById('panel-text').style.display = 'flex';
+  } else if (type === 'image') {
+    document.getElementById('image-panel-breadcrumb').textContent = label || key;
+    document.getElementById('image-panel-title').textContent = 'Bild bearbeiten';
+    const preview = document.getElementById('image-panel-preview');
+    const placeholder = document.getElementById('image-panel-placeholder');
+    if (currentValue && currentValue.startsWith('http')) {
+      preview.src = currentValue;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+    } else {
+      preview.style.display = 'none';
+      placeholder.style.display = 'flex';
+    }
+    document.getElementById('image-save-success').style.display = 'none';
+    document.getElementById('image-save-error').style.display = 'none';
+    document.getElementById('image-file-input').value = '';
+    document.getElementById('image-progress').style.display = 'none';
+    document.getElementById('panel-image').style.display = 'flex';
+  } else if (type === 'beforeafter') {
+    // Vorher/Nachher Bilder aus DB laden
+    loadBACurrentImages();
+    document.getElementById('ba-save-success').style.display = 'none';
+    document.getElementById('ba-save-error').style.display = 'none';
+    document.getElementById('panel-beforeafter').style.display = 'flex';
+  }
+
+  lucide.createIcons();
+}
+
+function closeEditPanel() {
+  activeEditKey = null;
+  activeEditType = null;
+  ['text', 'image', 'beforeafter'].forEach(id => {
+    const el = document.getElementById('panel-' + id);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('panel-default').style.display = 'flex';
+  sendToIframe({ action: 'clearHighlight' });
+}
+
+// ── TEXT EDIT ──
+function updateCharCount() {
+  const val = document.getElementById('text-panel-input').value;
+  document.getElementById('text-char-count').textContent = val.length + ' Zeichen';
+}
+
+async function saveTextEdit() {
+  const key = activeEditKey;
+  const value = document.getElementById('text-panel-input').value;
+  const sucEl = document.getElementById('text-save-success');
+  const errEl = document.getElementById('text-save-error');
+  sucEl.style.display = 'none';
+  errEl.style.display = 'none';
+
+  const { error } = await sb.from('content').upsert({ key, value }, { onConflict: 'key' });
+  if (error) {
+    errEl.textContent = 'Fehler: ' + error.message;
+    errEl.style.display = 'block';
+    return;
+  }
+  sucEl.style.display = 'block';
+  setTimeout(() => sucEl.style.display = 'none', 3000);
+
+  sendToIframe({ action: 'update', key, value });
+  setPublishStatus(false);
+}
+
+// ── IMAGE EDIT ──
+function setupDropZone() {
+  const zone = document.getElementById('image-drop-zone');
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor = 'var(--green)'; });
+  zone.addEventListener('dragleave', () => { zone.style.borderColor = ''; });
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.style.borderColor = '';
+    const file = e.dataTransfer.files[0];
+    if (file) processImageFile(file);
+  });
+}
+
+function handleImageFileSelect(input) {
+  const file = input.files[0];
+  if (file) processImageFile(file);
+}
+
+async function processImageFile(file) {
+  if (file.size > 5 * 1024 * 1024) {
+    alert('Bild zu gross. Maximale Grösse: 5 MB');
+    return;
+  }
+  const key = activeEditKey;
+  if (!key) return;
+
+  const progressWrap = document.getElementById('image-progress');
+  const progressFill = document.getElementById('image-progress-fill');
+  progressWrap.style.display = 'block';
+  progressFill.style.width = '20%';
+
+  const ext = file.name.split('.').pop().toLowerCase();
+  const filename = key + '_' + Date.now() + '.' + ext;
+
+  progressFill.style.width = '50%';
+  const { error } = await sb.storage.from('bilder').upload(filename, file, { upsert: true });
+  progressFill.style.width = '80%';
+
+  if (error) {
+    progressWrap.style.display = 'none';
+    document.getElementById('image-save-error').textContent = 'Upload fehlgeschlagen: ' + error.message;
+    document.getElementById('image-save-error').style.display = 'block';
+    return;
+  }
+
+  const { data: urlData } = sb.storage.from('bilder').getPublicUrl(filename);
+  const url = urlData.publicUrl;
+  progressFill.style.width = '100%';
+  setTimeout(() => { progressWrap.style.display = 'none'; progressFill.style.width = '0'; }, 600);
+
+  // In content-Tabelle speichern
+  await sb.from('content').upsert({ key, value: url }, { onConflict: 'key' });
+
+  // Preview aktualisieren
+  const preview = document.getElementById('image-panel-preview');
+  preview.src = url;
+  preview.style.display = 'block';
+  document.getElementById('image-panel-placeholder').style.display = 'none';
+
+  // iframe live aktualisieren
+  sendToIframe({ action: 'update', key, value: url });
+  setPublishStatus(false);
+
+  document.getElementById('image-save-success').style.display = 'block';
+  setTimeout(() => document.getElementById('image-save-success').style.display = 'none', 3000);
+
+  loadBilder();
+}
+
+// ── IMAGE LIBRARY ──
+async function openImageLibrary() {
+  document.getElementById('modal-image-library').classList.add('active');
+  const grid = document.getElementById('library-grid');
+  grid.innerHTML = '<div class="loading-state"><div class="spinner"></div> Lade Bilder…</div>';
+
+  const { data } = await sb.storage.from('bilder').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
+  const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
+
+  if (!files.length) {
+    grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:2rem;">Noch keine Bilder vorhanden.</p>';
+    return;
+  }
+
+  grid.innerHTML = files.map(f => {
+    const { data: u } = sb.storage.from('bilder').getPublicUrl(f.name);
+    return `
+      <div class="lib-item" onclick="selectFromLibrary('${u.publicUrl}')">
+        <img src="${u.publicUrl}" alt="${esc(f.name)}" loading="lazy">
+        <div class="lib-item-name">${esc(f.name)}</div>
+        <button class="lib-delete" onclick="event.stopPropagation();deleteLibraryImage('${esc(f.name)}',this.closest('.lib-item'))">
+          <i data-lucide="trash-2" width="11" height="11"></i>
+        </button>
+      </div>`;
+  }).join('');
+  lucide.createIcons();
+}
+
+async function selectFromLibrary(url) {
+  const key = activeEditKey;
+  if (!key) return;
+  await sb.from('content').upsert({ key, value: url }, { onConflict: 'key' });
+  sendToIframe({ action: 'update', key, value: url });
+  const preview = document.getElementById('image-panel-preview');
+  preview.src = url;
+  preview.style.display = 'block';
+  document.getElementById('image-panel-placeholder').style.display = 'none';
+  setPublishStatus(false);
+  closeModal('modal-image-library');
+  document.getElementById('image-save-success').style.display = 'block';
+  setTimeout(() => document.getElementById('image-save-success').style.display = 'none', 3000);
+}
+
+async function deleteLibraryImage(name, el) {
+  if (!confirm('Bild "' + name + '" wirklich löschen?')) return;
+  await sb.storage.from('bilder').remove([name]);
+  if (el) el.remove();
+}
+
+// ── BEFORE/AFTER ──
+async function loadBACurrentImages() {
+  const keys = ['referenz_1_vorher', 'referenz_1_nachher'];
+  const { data } = await sb.from('content').select('key,value').in('key', keys);
+  if (!data) return;
+  data.forEach(({ key, value }) => {
+    const side = key.endsWith('_vorher') ? 'vorher' : 'nachher';
+    const img = document.getElementById('ba-' + side + '-preview');
+    if (img && value) { img.src = value; img.style.display = 'block'; }
+  });
+}
+
+async function handleBAUpload(input, side) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert('Max. 5 MB'); return; }
+
+  const progressWrap = document.getElementById('ba-' + side + '-progress');
+  const progressFill = document.getElementById('ba-' + side + '-fill');
+  progressWrap.style.display = 'block';
+  progressFill.style.width = '30%';
+
+  const ext = file.name.split('.').pop().toLowerCase();
+  const filename = 'referenz_1_' + side + '_' + Date.now() + '.' + ext;
+  const { error } = await sb.storage.from('bilder').upload(filename, file, { upsert: true });
+  progressFill.style.width = '75%';
+
+  if (error) {
+    progressWrap.style.display = 'none';
+    document.getElementById('ba-save-error').textContent = 'Upload fehlgeschlagen';
+    document.getElementById('ba-save-error').style.display = 'block';
+    return;
+  }
+
+  const { data: u } = sb.storage.from('bilder').getPublicUrl(filename);
+  const url = u.publicUrl;
+  progressFill.style.width = '100%';
+  setTimeout(() => { progressWrap.style.display = 'none'; progressFill.style.width = '0'; }, 600);
+
+  const contentKey = 'referenz_1_' + side;
+  await sb.from('content').upsert({ key: contentKey, value: url }, { onConflict: 'key' });
+
+  // Live-Update im iframe: Hintergrund-Bild des Sliders aktualisieren
+  sendToIframe({ action: 'update', key: contentKey, value: url });
+
+  const img = document.getElementById('ba-' + side + '-preview');
+  img.src = url; img.style.display = 'block';
+  setPublishStatus(false);
+  document.getElementById('ba-save-success').style.display = 'block';
+  setTimeout(() => document.getElementById('ba-save-success').style.display = 'none', 3000);
+}
+
+// ══════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════
 async function loadDashboard() {
   const [p, f, c, b] = await Promise.all([
     sb.from('projekte').select('id', { count: 'exact', head: true }),
@@ -808,25 +1350,9 @@ async function loadDashboard() {
   document.getElementById('dash-bilder').textContent = b.data ? b.data.filter(x => x.name !== '.emptyFolderPlaceholder').length : '–';
 }
 
-// ── TEXTE LADEN ──
-async function loadTexte() {
-  const keys = ['hero_titel','hero_sub','ueber_titel','ueber_text','stat_projekte','stat_jahre'];
-  const { data } = await sb.from('content').select('key,value').in('key', keys);
-  if (!data) return;
-  data.forEach(row => {
-    const el = document.getElementById('f-' + row.key);
-    if (el) el.value = row.value || '';
-  });
-}
-
-async function saveTexte() {
-  const keys = ['hero_titel','hero_sub','ueber_titel','ueber_text','stat_projekte','stat_jahre'];
-  const rows = keys.map(k => ({ key: k, value: document.getElementById('f-' + k).value }));
-  const { error } = await sb.from('content').upsert(rows, { onConflict: 'key' });
-  showFeedback('texte', error);
-}
-
-// ── KONTAKT LADEN ──
+// ══════════════════════════════════════
+// KONTAKT
+// ══════════════════════════════════════
 async function loadKontakt() {
   const keys = ['kontakt_telefon','kontakt_email','kontakt_adresse','kontakt_zeiten'];
   const { data } = await sb.from('content').select('key,value').in('key', keys);
@@ -842,11 +1368,12 @@ async function saveKontakt() {
   const rows = keys.map(k => ({ key: k, value: document.getElementById('f-' + k).value }));
   const { error } = await sb.from('content').upsert(rows, { onConflict: 'key' });
   showFeedback('kontakt', error);
+  if (!error) setPublishStatus(false);
 }
 
-// ── PROJEKTE ──
-let projekteListe = [];
-
+// ══════════════════════════════════════
+// PROJEKTE
+// ══════════════════════════════════════
 async function loadProjekte() {
   const { data, error } = await sb.from('projekte').select('*').order('reihenfolge');
   const tbody = document.getElementById('projekte-tbody');
@@ -856,9 +1383,8 @@ async function loadProjekte() {
   }
   projekteListe = data;
   if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i data-lucide="folder-open" width="32" height="32"></i><p>Noch keine Projekte vorhanden.</p></div></td></tr>`;
-    lucide.createIcons();
-    return;
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i data-lucide="folder-open" width="28" height="28"></i><p>Noch keine Projekte.</p></div></td></tr>`;
+    lucide.createIcons(); return;
   }
   tbody.innerHTML = data.map(p => `
     <tr>
@@ -869,10 +1395,10 @@ async function loadProjekte() {
       <td>
         <div class="actions">
           <button class="btn btn-secondary btn-sm" onclick="openProjektModal('${p.id}')">
-            <i data-lucide="edit-2" width="13" height="13"></i> Bearbeiten
+            <i data-lucide="edit-2" width="12" height="12"></i> Bearbeiten
           </button>
           <button class="btn btn-danger btn-sm" onclick="deleteProjekt('${p.id}')">
-            <i data-lucide="trash-2" width="13" height="13"></i>
+            <i data-lucide="trash-2" width="12" height="12"></i>
           </button>
         </div>
       </td>
@@ -881,24 +1407,17 @@ async function loadProjekte() {
 }
 
 function openProjektModal(id) {
-  const modal = document.getElementById('modal-projekt');
   const isEdit = !!id;
   document.getElementById('modal-projekt-title').textContent = isEdit ? 'Projekt bearbeiten' : 'Neues Projekt';
   document.getElementById('projekt-error').style.display = 'none';
   document.getElementById('projekt-success').style.display = 'none';
-
-  // Reset
-  ['p-id','p-titel','p-beschreibung','p-bild_vorher','p-bild_nachher'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
+  ['p-id','p-titel','p-beschreibung','p-bild_vorher','p-bild_nachher'].forEach(fid => {
+    const el = document.getElementById(fid); if (el) el.value = '';
   });
   document.getElementById('p-reihenfolge').value = 0;
   document.getElementById('p-aktiv').checked = true;
-  document.getElementById('p-bild-vorher').value = '';
-  document.getElementById('p-bild-nachher').value = '';
-  document.getElementById('p-prev-vorher').style.display = 'none';
-  document.getElementById('p-prev-nachher').style.display = 'none';
-
+  ['p-bild-vorher','p-bild-nachher'].forEach(fid => document.getElementById(fid).value = '');
+  ['p-prev-vorher','p-prev-nachher'].forEach(fid => document.getElementById(fid).style.display = 'none');
   if (isEdit) {
     const p = projekteListe.find(x => x.id === id);
     if (p) {
@@ -914,7 +1433,7 @@ function openProjektModal(id) {
       if (p.bild_nachher) { const img = document.getElementById('p-prev-nachher'); img.src = p.bild_nachher; img.style.display = 'block'; }
     }
   }
-  modal.classList.add('active');
+  document.getElementById('modal-projekt').classList.add('active');
   lucide.createIcons();
 }
 
@@ -928,21 +1447,13 @@ async function saveProjekt() {
   const titel = document.getElementById('p-titel').value.trim();
   if (!titel) { showElError(errEl, 'Titel ist erforderlich.'); btn.disabled = false; return; }
 
-  // Upload images if new files selected
   let bildVorher = document.getElementById('p-bild_vorher').value;
   let bildNachher = document.getElementById('p-bild_nachher').value;
-
   const fileVorher = document.getElementById('p-bild-vorher').files[0];
   const fileNachher = document.getElementById('p-bild-nachher').files[0];
 
-  if (fileVorher) {
-    const url = await uploadFile(fileVorher);
-    if (url) bildVorher = url; else { showElError(errEl, 'Fehler beim Hochladen (Vorher).'); btn.disabled = false; return; }
-  }
-  if (fileNachher) {
-    const url = await uploadFile(fileNachher);
-    if (url) bildNachher = url; else { showElError(errEl, 'Fehler beim Hochladen (Nachher).'); btn.disabled = false; return; }
-  }
+  if (fileVorher) { const url = await uploadFile(fileVorher); if (url) bildVorher = url; else { showElError(errEl, 'Fehler beim Upload (Vorher).'); btn.disabled = false; return; } }
+  if (fileNachher) { const url = await uploadFile(fileNachher); if (url) bildNachher = url; else { showElError(errEl, 'Fehler beim Upload (Nachher).'); btn.disabled = false; return; } }
 
   const row = {
     titel,
@@ -950,10 +1461,8 @@ async function saveProjekt() {
     kategorie: document.getElementById('p-kategorie').value,
     reihenfolge: parseInt(document.getElementById('p-reihenfolge').value) || 0,
     aktiv: document.getElementById('p-aktiv').checked,
-    bild_vorher: bildVorher,
-    bild_nachher: bildNachher
+    bild_vorher: bildVorher, bild_nachher: bildNachher
   };
-
   const pid = document.getElementById('p-id').value;
   if (pid) row.id = pid;
 
@@ -967,39 +1476,60 @@ async function saveProjekt() {
 async function deleteProjekt(id) {
   if (!confirm('Projekt wirklich löschen?')) return;
   await sb.from('projekte').delete().eq('id', id);
-  loadProjekte();
-  loadDashboard();
+  loadProjekte(); loadDashboard();
 }
 
-// ── FAQ ──
-let faqListe = [];
-
+// ══════════════════════════════════════
+// FAQ
+// ══════════════════════════════════════
 async function loadFaq() {
   const { data, error } = await sb.from('faq').select('*').order('reihenfolge');
   const container = document.getElementById('faq-list');
   if (error || !data) { container.innerHTML = `<p style="color:#e53e3e;">${error?.message}</p>`; return; }
   faqListe = data;
   if (!data.length) {
-    container.innerHTML = `<div class="empty-state"><i data-lucide="help-circle" width="32" height="32"></i><p>Noch keine FAQ-Einträge vorhanden.</p></div>`;
+    container.innerHTML = `<div class="empty-state"><i data-lucide="help-circle" width="28" height="28"></i><p>Noch keine FAQ-Einträge.</p></div>`;
     lucide.createIcons(); return;
   }
-  container.innerHTML = data.map(f => `
+  container.innerHTML = data.map((f, i) => `
     <div class="faq-row">
+      <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
+        <button class="btn btn-secondary btn-sm" style="padding:3px 6px;" onclick="moveFaq('${f.id}', -1)" ${i === 0 ? 'disabled' : ''}>
+          <i data-lucide="chevron-up" width="12" height="12"></i>
+        </button>
+        <button class="btn btn-secondary btn-sm" style="padding:3px 6px;" onclick="moveFaq('${f.id}', 1)" ${i === data.length-1 ? 'disabled' : ''}>
+          <i data-lucide="chevron-down" width="12" height="12"></i>
+        </button>
+      </div>
       <div style="flex:1;">
         <div class="faq-q-text">${esc(f.frage)}</div>
-        <div class="faq-a-text">${esc(f.antwort).substring(0, 100)}${f.antwort.length > 100 ? '…' : ''}</div>
+        <div class="faq-a-text">${esc(f.antwort).substring(0,100)}${f.antwort.length > 100 ? '…' : ''}</div>
       </div>
-      <div style="display:flex;gap:0.4rem;align-items:center;flex-shrink:0;">
+      <div style="display:flex;gap:0.35rem;align-items:center;flex-shrink:0;">
         <span class="badge ${f.aktiv ? 'badge-green' : 'badge-gray'}">${f.aktiv ? 'Aktiv' : 'Inaktiv'}</span>
         <button class="btn btn-secondary btn-sm" onclick="openFaqModal('${f.id}')">
-          <i data-lucide="edit-2" width="13" height="13"></i>
+          <i data-lucide="edit-2" width="12" height="12"></i>
         </button>
         <button class="btn btn-danger btn-sm" onclick="deleteFaq('${f.id}')">
-          <i data-lucide="trash-2" width="13" height="13"></i>
+          <i data-lucide="trash-2" width="12" height="12"></i>
         </button>
       </div>
     </div>`).join('');
   lucide.createIcons();
+}
+
+async function moveFaq(id, direction) {
+  const idx = faqListe.findIndex(f => f.id === id);
+  if (idx < 0) return;
+  const swapIdx = idx + direction;
+  if (swapIdx < 0 || swapIdx >= faqListe.length) return;
+  const a = faqListe[idx], b = faqListe[swapIdx];
+  const [ra, rb] = [a.reihenfolge, b.reihenfolge];
+  await Promise.all([
+    sb.from('faq').update({ reihenfolge: rb }).eq('id', a.id),
+    sb.from('faq').update({ reihenfolge: ra }).eq('id', b.id)
+  ]);
+  loadFaq();
 }
 
 function openFaqModal(id) {
@@ -1011,7 +1541,6 @@ function openFaqModal(id) {
   document.getElementById('faq-antwort').value = '';
   document.getElementById('faq-reihenfolge').value = 0;
   document.getElementById('faq-aktiv').checked = true;
-
   if (isEdit) {
     const f = faqListe.find(x => x.id === id);
     if (f) {
@@ -1032,51 +1561,44 @@ async function saveFaq() {
   const frage = document.getElementById('faq-frage').value.trim();
   const antwort = document.getElementById('faq-antwort').value.trim();
   if (!frage || !antwort) { showElError(errEl, 'Frage und Antwort sind erforderlich.'); return; }
-
-  const row = {
-    frage, antwort,
-    reihenfolge: parseInt(document.getElementById('faq-reihenfolge').value) || 0,
-    aktiv: document.getElementById('faq-aktiv').checked
-  };
+  const row = { frage, antwort, reihenfolge: parseInt(document.getElementById('faq-reihenfolge').value) || 0, aktiv: document.getElementById('faq-aktiv').checked };
   const fid = document.getElementById('faq-id').value;
   if (fid) row.id = fid;
-
   const { error } = await sb.from('faq').upsert(row);
   if (error) { showElError(errEl, error.message); return; }
   closeModal('modal-faq');
-  loadFaq();
-  loadDashboard();
+  loadFaq(); loadDashboard();
 }
 
 async function deleteFaq(id) {
   if (!confirm('FAQ-Eintrag wirklich löschen?')) return;
   await sb.from('faq').delete().eq('id', id);
-  loadFaq();
-  loadDashboard();
+  loadFaq(); loadDashboard();
 }
 
-// ── BILDER ──
+// ══════════════════════════════════════
+// BILDER
+// ══════════════════════════════════════
 async function loadBilder() {
   const { data, error } = await sb.storage.from('bilder').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
   const grid = document.getElementById('gallery-grid');
   if (error) { grid.innerHTML = `<p style="color:#e53e3e;">Fehler: ${error.message}</p>`; return; }
   const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
   if (!files.length) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i data-lucide="image" width="32" height="32"></i><p>Noch keine Bilder hochgeladen.</p></div>`;
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i data-lucide="image" width="28" height="28"></i><p>Noch keine Bilder.</p></div>`;
     lucide.createIcons(); return;
   }
   grid.innerHTML = files.map(f => {
-    const { data: urlData } = sb.storage.from('bilder').getPublicUrl(f.name);
-    const url = urlData.publicUrl;
+    const { data: u } = sb.storage.from('bilder').getPublicUrl(f.name);
     return `
       <div class="gallery-item">
-        <img src="${url}" alt="${esc(f.name)}" onclick="copyToClipboard('${url}')" loading="lazy">
+        <img src="${u.publicUrl}" alt="${esc(f.name)}" onclick="copyToClipboard('${u.publicUrl}')" loading="lazy">
         <div class="gallery-item-actions">
-          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('${url}')" title="URL kopieren">
-            <i data-lucide="copy" width="12" height="12"></i>
+          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('${u.publicUrl}')" title="URL kopieren">
+            <i data-lucide="copy" width="11" height="11"></i>
           </button>
-          <button class="btn btn-danger btn-sm" onclick="deleteBild('${f.name}')" title="Löschen">
-            <i data-lucide="trash-2" width="12" height="12"></i>
+          <button class="btn btn-danger btn-sm" onclick="deleteBild('${esc(f.name)}')" title="Löschen">
+            <i data-lucide="trash-2" width="11" height="11"></i>
           </button>
         </div>
         <div class="gallery-item-name">${esc(f.name)}</div>
@@ -1091,7 +1613,6 @@ async function bulkUpload(input) {
   const sucEl = document.getElementById('bilder-success');
   const errEl = document.getElementById('bilder-error');
   sucEl.style.display = 'none'; errEl.style.display = 'none';
-
   let ok = 0, fail = 0;
   for (const file of files) {
     const url = await uploadFile(file);
@@ -1100,8 +1621,7 @@ async function bulkUpload(input) {
   if (ok > 0) { sucEl.textContent = `✓ ${ok} Bild${ok > 1 ? 'er' : ''} hochgeladen.`; sucEl.style.display = 'block'; }
   if (fail > 0) { errEl.textContent = `${fail} Upload${fail > 1 ? 's' : ''} fehlgeschlagen.`; errEl.style.display = 'block'; }
   input.value = '';
-  loadBilder();
-  loadDashboard();
+  loadBilder(); loadDashboard();
 }
 
 async function deleteBild(name) {
@@ -1110,7 +1630,9 @@ async function deleteBild(name) {
   if (!error) loadBilder();
 }
 
-// ── FILE UPLOAD HELPER ──
+// ══════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════
 async function uploadFile(file) {
   const ext = file.name.split('.').pop();
   const name = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
@@ -1132,7 +1654,6 @@ function previewImg(input, previewId) {
   reader.readAsDataURL(file);
 }
 
-// ── CLIPBOARD ──
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
     const t = document.getElementById('copy-toast');
@@ -1141,10 +1662,10 @@ function copyToClipboard(text) {
   });
 }
 
-// ── HELPERS ──
 function esc(str) {
   return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
 function showFeedback(prefix, error) {
   const suc = document.getElementById(prefix + '-success');
   const err = document.getElementById(prefix + '-error');
@@ -1158,17 +1679,11 @@ function showFeedback(prefix, error) {
     setTimeout(() => suc.style.display = 'none', 3000);
   }
 }
+
 function showElError(el, msg) {
   el.textContent = msg;
   el.style.display = 'block';
 }
-
-// Close modal on overlay click
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) overlay.classList.remove('active');
-  });
-});
 </script>
 </body>
 </html>
