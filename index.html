@@ -721,6 +721,51 @@
     opacity: 0.06;
     animation: float 8s ease-in-out infinite;
   }
+
+  /* ── KUNDENSTIMMEN ── */
+  #kundenstimmen { background: var(--bg2); }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+  .testimonial-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .testimonial-card:hover {
+    border-color: rgba(46,190,110,0.25);
+    background: rgba(46,190,110,0.03);
+  }
+  .testimonial-quote {
+    font-size: 3.5rem; line-height: 1;
+    color: var(--green); opacity: 0.35;
+    font-family: 'Montserrat', sans-serif; font-weight: 900;
+    margin-bottom: 0.25rem;
+  }
+  .testimonial-text {
+    font-size: 0.93rem; color: rgba(255,255,255,0.7);
+    line-height: 1.8; margin-bottom: 1.5rem;
+  }
+  .testimonial-stars { display: flex; gap: 3px; margin-bottom: 0.75rem; }
+  .star { color: var(--orange); font-size: 0.9rem; }
+  .testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
+  .testimonial-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(46,190,110,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Montserrat', sans-serif; font-weight: 900;
+    font-size: 0.95rem; color: var(--green); flex-shrink: 0;
+  }
+  .testimonial-name {
+    font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem;
+  }
+  .testimonial-location { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -1072,6 +1117,110 @@
     <div class="palette-swatch" style="background:#FFFFFF;">
       <div class="swatch-label" style="color:#000;">Weiss<br>#FFFFFF</div>
     </div>
+  </div>
+</section>
+
+<!-- KUNDENSTIMMEN -->
+<div class="glow-line"></div>
+<section id="kundenstimmen">
+  <div class="section-label reveal">Kundenstimmen</div>
+  <h2 class="reveal reveal-delay-1">Was unsere Kunden<br><span style="color:var(--green)">sagen.</span></h2>
+  <p class="reveal reveal-delay-2" style="color:rgba(255,255,255,0.55); max-width:520px; line-height:1.8; font-size:0.95rem;">
+    Zufriedene Kunden sind unser grösster Erfolg. Lesen Sie, was andere über die Arbeit von MalerMarc berichten.
+  </p>
+
+  <div class="testimonials-grid">
+
+    <div class="testimonial-card reveal reveal-delay-1">
+      <div class="testimonial-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <div class="testimonial-quote">"</div>
+      <div class="testimonial-text">MalerMarc hat unsere Wohnung in Bern komplett renoviert – pünktlich, sauber und mit einem Ergebnis, das uns täglich begeistert. Absolute Empfehlung!</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">SB</div>
+        <div>
+          <div class="testimonial-name">Sandra B.</div>
+          <div class="testimonial-location">Bern</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal reveal-delay-2">
+      <div class="testimonial-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <div class="testimonial-quote">"</div>
+      <div class="testimonial-text">Die Fassadenrenovation war anspruchsvoll, aber Marc hat jeden Schritt professionell begleitet. Kommunikation war super, das Ergebnis übertrifft alle Erwartungen.</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">TK</div>
+        <div>
+          <div class="testimonial-name">Thomas K.</div>
+          <div class="testimonial-location">Thun</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal reveal-delay-3">
+      <div class="testimonial-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <div class="testimonial-quote">"</div>
+      <div class="testimonial-text">Kreative Wandgestaltung im Betonlook – genau das, was ich mir vorgestellt hatte. MalerMarc hat meine Ideen verstanden und perfekt umgesetzt. Danke!</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">LM</div>
+        <div>
+          <div class="testimonial-name">Laura M.</div>
+          <div class="testimonial-location">Biel</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal reveal-delay-1">
+      <div class="testimonial-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <div class="testimonial-quote">"</div>
+      <div class="testimonial-text">Sehr zuverlässig und transparent in der Offerte. Keine versteckten Kosten, saubere Arbeit und ein freundliches Team. So muss Handwerk sein.</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">RP</div>
+        <div>
+          <div class="testimonial-name">Reto P.</div>
+          <div class="testimonial-location">Solothurn</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal reveal-delay-2">
+      <div class="testimonial-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <div class="testimonial-quote">"</div>
+      <div class="testimonial-text">Wir haben MalerMarc für die Gipserarbeiten und anschliessende Innenmalerei engagiert. Perfekte Koordination, tadellose Ausführung – wir kommen definitiv wieder.</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">AF</div>
+        <div>
+          <div class="testimonial-name">Andrea F.</div>
+          <div class="testimonial-location">Bern</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal reveal-delay-3">
+      <div class="testimonial-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <div class="testimonial-quote">"</div>
+      <div class="testimonial-text">Schon zum zweiten Mal mit MalerMarc gearbeitet – beide Male top. Die Qualität der Materialien und die Sorgfalt bei der Arbeit sind auf einem anderen Level.</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">MH</div>
+        <div>
+          <div class="testimonial-name">Michael H.</div>
+          <div class="testimonial-location">Köniz</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
