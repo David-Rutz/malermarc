@@ -1036,19 +1036,6 @@
   </div>
   <!-- Overlay über dem Bild/Video -->
   <div id="hero-overlay" style="position:absolute; inset:0; z-index:1; background:linear-gradient(180deg,rgba(0,0,0,0.50) 0%,rgba(0,0,0,0.30) 40%,rgba(0,0,0,0.65) 100%); pointer-events:none; transition:background 0.5s;"></div>
-  <div class="hero-grid"></div>
-
-  <!-- Glow Blobs -->
-  <div class="glow-blob" style="width:600px;height:600px;background:var(--green);top:-120px;right:-80px;opacity:0.35;animation-delay:0s;"></div>
-  <div class="glow-blob" style="width:400px;height:400px;background:var(--orange);bottom:-100px;left:-100px;opacity:0.35;animation-delay:-3s;animation-duration:10s;"></div>
-
-  <!-- 6 Floating Shapes -->
-  <div class="hero-shape" style="width:60px;height:60px;background:var(--green);border-radius:12px;opacity:0.12;top:22%;left:14%;animation:float-rotate 7s ease-in-out infinite;"></div>
-  <div class="hero-shape" style="width:40px;height:40px;background:var(--green);border-radius:8px;opacity:0.12;top:62%;left:7%;animation:float-rotate-r 9s 1s ease-in-out infinite;"></div>
-  <div class="hero-shape" style="width:80px;height:80px;background:var(--green);border-radius:16px;opacity:0.12;top:30%;right:27%;animation:float-rotate 11s 2s ease-in-out infinite;"></div>
-  <div class="hero-shape" style="width:45px;height:45px;background:var(--orange);border-radius:50%;opacity:0.10;top:72%;right:34%;animation:float-rotate-r 6s 0.5s ease-in-out infinite;"></div>
-  <div class="hero-shape" style="width:30px;height:30px;background:var(--orange);border-radius:50%;opacity:0.10;top:14%;right:38%;animation:float-rotate 8s 3s ease-in-out infinite;"></div>
-  <div class="hero-shape" style="width:120px;height:120px;background:var(--green);border-radius:24px;opacity:0.06;top:48%;left:4%;animation:float-rotate-r 12s 4s ease-in-out infinite;"></div>
 
   <div class="hero-content">
     <div class="hero-eyebrow">Maler & Gipserarbeiten · Bern · Schweiz</div>
@@ -1064,52 +1051,6 @@
         Projekte ansehen
       </a>
     </div>
-  </div>
-
-  <!-- Animated SVG Splash visual -->
-  <div class="hero-visual">
-    <svg class="splash-svg" viewBox="0 0 600 550" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Paint splash blob -->
-      <ellipse cx="300" cy="280" rx="240" ry="200" fill="rgba(46,190,110,0.07)" style="animation: float 6s ease-in-out infinite;"/>
-      <path d="M180,200 Q250,100 330,160 Q400,80 460,180 Q520,200 500,300 Q490,370 420,380 Q380,420 300,400 Q220,420 180,370 Q120,320 140,260 Q155,230 180,200Z"
-        fill="rgba(46,190,110,0.12)" style="animation: float 7s 1s ease-in-out infinite;"/>
-
-      <!-- Paint drips -->
-      <rect x="290" y="400" width="5" height="0" rx="3" fill="#2EBE6E" opacity="0.6">
-        <animate attributeName="height" values="0;80;80;0" dur="4s" repeatCount="indefinite" begin="0.5s"/>
-        <animate attributeName="opacity" values="0;0.6;0.6;0" dur="4s" repeatCount="indefinite" begin="0.5s"/>
-      </rect>
-      <rect x="340" y="395" width="4" height="0" rx="3" fill="#2EBE6E" opacity="0.6">
-        <animate attributeName="height" values="0;60;60;0" dur="5s" repeatCount="indefinite" begin="1.5s"/>
-        <animate attributeName="opacity" values="0;0.5;0.5;0" dur="5s" repeatCount="indefinite" begin="1.5s"/>
-      </rect>
-      <rect x="260" y="398" width="3" height="0" rx="2" fill="#FF7A00" opacity="0.5">
-        <animate attributeName="height" values="0;50;50;0" dur="6s" repeatCount="indefinite" begin="3s"/>
-        <animate attributeName="opacity" values="0;0.5;0.5;0" dur="6s" repeatCount="indefinite" begin="3s"/>
-      </rect>
-
-      <!-- Paint roller icon stylized -->
-      <g transform="translate(220, 180)" style="animation: float 5s 0.5s ease-in-out infinite; transform-origin: 90px 120px;">
-        <!-- Handle -->
-        <line x1="90" y1="60" x2="90" y2="180" stroke="#2EBE6E" stroke-width="8" stroke-linecap="round"/>
-        <line x1="60" y1="60" x2="110" y2="60" stroke="#2EBE6E" stroke-width="6" stroke-linecap="round"/>
-        <!-- Roller -->
-        <rect x="30" y="40" width="80" height="30" rx="8" fill="#2EBE6E" opacity="0.9"/>
-        <rect x="30" y="42" width="80" height="10" rx="4" fill="rgba(255,255,255,0.2)"/>
-        <!-- Paint trail -->
-        <rect x="32" y="70" width="76" height="60" rx="4" fill="#2EBE6E" opacity="0.15"/>
-        <!-- Paint streaks -->
-        <line x1="45" y1="73" x2="45" y2="130" stroke="#2EBE6E" stroke-width="2" opacity="0.3"/>
-        <line x1="60" y1="73" x2="60" y2="120" stroke="#2EBE6E" stroke-width="2" opacity="0.3"/>
-        <line x1="75" y1="73" x2="75" y2="128" stroke="#2EBE6E" stroke-width="2" opacity="0.3"/>
-        <line x1="90" y1="73" x2="90" y2="115" stroke="#2EBE6E" stroke-width="2" opacity="0.3"/>
-      </g>
-
-      <!-- Floating color blobs -->
-      <circle cx="460" cy="200" r="20" fill="#FF7A00" opacity="0.15" style="animation: float 4s 2s ease-in-out infinite;"/>
-      <circle cx="140" cy="340" r="15" fill="#2EBE6E" opacity="0.2" style="animation: float 5s 1s ease-in-out infinite;"/>
-      <circle cx="490" cy="350" r="12" fill="#2EBE6E" opacity="0.15" style="animation: float 6s 0.5s ease-in-out infinite;"/>
-    </svg>
   </div>
 
   <div class="hero-stats">
