@@ -9,130 +9,254 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root {
-    --green: #2EBE6E;
-    --green-dark: #1a9a52;
-    --danger: #e74c3c;
-    --bg: #f0f0eb;
-    --white: #ffffff;
-    --text: #1a1a1a;
-    --text-muted: #888;
-    --border: #ddddd5;
-    --topbar-h: 48px;
-    --sidebar-w: 200px;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { height:100%; font-family:'Open Sans',sans-serif; background:var(--bg); color:var(--text); }
+:root {
+  --green: #2EBE6E;
+  --green-dark: #1a9a52;
+  --danger: #e74c3c;
+  --blue: #3B82F6;
+  --bg: #f0f0eb;
+  --white: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #888;
+  --border: #ddddd5;
+  --sidebar-w: 260px;
+  --topbar-h: 46px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; font-family:'Open Sans',sans-serif; background:var(--bg); color:var(--text); }
 
-  /* ── LOGIN ── */
-  #login-screen {
-    min-height:100vh; display:flex; align-items:center; justify-content:center;
-    background:linear-gradient(135deg,#f5f5f0,#eeeee8);
-  }
-  .login-card {
-    background:var(--white); border-radius:16px; padding:3rem 2.5rem;
-    width:100%; max-width:400px; box-shadow:0 8px 40px rgba(0,0,0,0.08);
-  }
-  .login-logo { font-family:'Montserrat',sans-serif; font-weight:900; font-size:1.8rem; text-align:center; margin-bottom:0.25rem; }
-  .login-logo span { color:var(--green); }
-  .login-sub { text-align:center; color:var(--text-muted); font-size:0.85rem; margin-bottom:2rem; }
-  .form-field { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1rem; }
-  .form-field label { font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); }
-  .form-field input { border:1.5px solid var(--border); border-radius:8px; padding:0.75rem 0.9rem; font-size:0.9rem; outline:none; transition:border-color 0.2s; }
-  .form-field input:focus { border-color:var(--green); }
-  .login-error { color:var(--danger); font-size:0.85rem; margin-bottom:0.75rem; display:none; }
-  .btn-login {
-    width:100%; padding:0.8rem; background:var(--green); color:#000; border:none;
-    border-radius:8px; font-family:'Montserrat',sans-serif; font-weight:700;
-    font-size:0.9rem; cursor:pointer; margin-top:0.5rem; transition:background 0.2s;
-  }
-  .btn-login:hover { background:var(--green-dark); }
+/* ══ LOGIN ══════════════════════════════════════════════ */
+#login-screen {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#f5f5f0,#eeeee8);
+}
+.login-card {
+  background:var(--white); border-radius:16px; padding:3rem 2.5rem;
+  width:100%; max-width:400px; box-shadow:0 8px 40px rgba(0,0,0,0.08);
+}
+.login-logo { font-family:'Montserrat',sans-serif; font-weight:900; font-size:1.8rem; text-align:center; margin-bottom:0.25rem; }
+.login-logo span { color:var(--green); }
+.login-sub { text-align:center; color:var(--text-muted); font-size:0.85rem; margin-bottom:2rem; }
+.form-field { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1rem; }
+.form-field label { font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); }
+.form-field input { border:1.5px solid var(--border); border-radius:8px; padding:0.75rem 0.9rem; font-size:0.9rem; outline:none; transition:border-color 0.2s; }
+.form-field input:focus { border-color:var(--green); }
+.login-error { color:var(--danger); font-size:0.85rem; margin-bottom:0.75rem; display:none; }
+.btn-login {
+  width:100%; padding:0.8rem; background:var(--green); color:#000; border:none;
+  border-radius:8px; font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:0.9rem; cursor:pointer; margin-top:0.5rem; transition:background 0.2s;
+}
+.btn-login:hover { background:var(--green-dark); }
 
-  /* ── ADMIN APP ── */
-  #admin-app { display:none; height:100vh; flex-direction:column; }
-  #admin-app.active { display:flex; }
+/* ══ ADMIN LAYOUT ═══════════════════════════════════════ */
+#admin-app { display:none; height:100vh; flex-direction:column; }
+#admin-app.active { display:flex; }
 
-  /* ── TOP BAR ── */
-  #topbar {
-    height:var(--topbar-h); background:var(--white); border-bottom:1px solid var(--border);
-    display:flex; align-items:center; padding:0 1rem; gap:1rem; flex-shrink:0; z-index:100;
-  }
-  .topbar-logo { font-family:'Montserrat',sans-serif; font-weight:900; font-size:1rem; margin-right:0.5rem; }
-  .topbar-logo span { color:var(--green); }
-  .topbar-sep { width:1px; height:24px; background:var(--border); }
-  .topbar-group { display:flex; align-items:center; gap:4px; }
-  .tb-btn {
-    background:none; border:1px solid var(--border); border-radius:6px;
-    padding:5px 10px; font-size:12px; cursor:pointer; color:var(--text);
-    font-family:'Montserrat',sans-serif; font-weight:600;
-    transition:background 0.15s, border-color 0.15s;
-    display:flex; align-items:center; gap:4px;
-  }
-  .tb-btn:hover { background:var(--bg); }
-  .tb-btn:disabled { opacity:0.4; cursor:not-allowed; }
-  .tb-btn.active { background:var(--text); color:#fff; border-color:var(--text); }
-  .topbar-spacer { flex:1; }
-  .tb-publish {
-    background:var(--green); color:#000; border:none; border-radius:6px;
-    padding:6px 16px; font-family:'Montserrat',sans-serif; font-weight:700;
-    font-size:12px; cursor:pointer; transition:background 0.2s;
-  }
-  .tb-publish:hover { background:var(--green-dark); color:#fff; }
-  .tb-logout {
-    background:none; border:none; color:var(--text-muted); cursor:pointer;
-    font-size:12px; font-family:'Open Sans',sans-serif; padding:4px 8px;
-  }
-  .tb-logout:hover { color:var(--danger); }
-  .undo-disabled { opacity:0.3 !important; }
+/* ── TOP BAR ── */
+#topbar {
+  height:var(--topbar-h); background:var(--white); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; padding:0 1rem; gap:0.75rem; flex-shrink:0; z-index:200;
+  box-shadow:0 1px 4px rgba(0,0,0,0.06);
+}
+.topbar-logo { font-family:'Montserrat',sans-serif; font-weight:900; font-size:1rem; }
+.topbar-logo span { color:var(--green); }
+.topbar-sep { width:1px; height:22px; background:var(--border); margin:0 0.25rem; }
+.topbar-spacer { flex:1; }
+.tb-btn {
+  background:none; border:1px solid var(--border); border-radius:6px;
+  padding:4px 10px; font-size:11.5px; cursor:pointer; color:var(--text);
+  font-family:'Montserrat',sans-serif; font-weight:600;
+  transition:background 0.15s; display:flex; align-items:center; gap:3px;
+}
+.tb-btn:hover { background:var(--bg); }
+.tb-btn.active { background:var(--text); color:#fff; border-color:var(--text); }
+.tb-btn:disabled { opacity:0.35; cursor:not-allowed; }
+.tb-publish {
+  background:var(--green); color:#000; border:none; border-radius:6px;
+  padding:6px 16px; font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:12px; cursor:pointer; transition:background 0.2s;
+}
+.tb-publish:hover { background:var(--green-dark); color:#fff; }
+.tb-logout { background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:12px; padding:4px 6px; }
+.tb-logout:hover { color:var(--danger); }
 
-  /* ── MAIN AREA ── */
-  #main-area { flex:1; display:flex; overflow:hidden; }
+/* ── MAIN ROW ── */
+#main-row { flex:1; display:flex; overflow:hidden; }
 
-  /* ── SIDEBAR ── */
-  #sidebar {
-    width:var(--sidebar-w); background:var(--white); border-right:1px solid var(--border);
-    display:flex; flex-direction:column; flex-shrink:0; overflow:hidden;
-  }
-  .sidebar-section { padding:1rem; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:0.5rem; }
-  .sidebar-link {
-    display:block; padding:8px 12px; border-radius:6px; font-size:0.82rem;
-    font-family:'Montserrat',sans-serif; font-weight:600; text-decoration:none;
-    color:var(--text); background:var(--bg); text-align:center;
-    transition:background 0.15s;
-  }
-  .sidebar-link:hover { background:var(--border); }
-  .sidebar-help {
-    padding:1rem; font-size:0.78rem; color:var(--text-muted); line-height:1.6;
-    flex:1; overflow-y:auto;
-  }
-  .sidebar-help strong { color:var(--text); display:block; margin-bottom:0.4rem; font-family:'Montserrat',sans-serif; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; }
-  .sidebar-help p { margin-bottom:0.75rem; }
+/* ══ SIDEBAR ════════════════════════════════════════════ */
+#sidebar {
+  width:var(--sidebar-w); background:var(--white); flex-shrink:0;
+  display:flex; flex-direction:column; overflow:hidden;
+  box-shadow:2px 0 12px rgba(0,0,0,0.08); z-index:100;
+}
+/* Three level panels stacked side by side, clip to sidebar width */
+#sidebar-panels-wrap { flex:1; overflow:hidden; position:relative; }
+.sidebar-panel {
+  position:absolute; top:0; left:0; right:0; bottom:0;
+  overflow-y:auto; transition:transform 0.25s cubic-bezier(0.4,0,0.2,1);
+  background:var(--white);
+}
+.sidebar-panel.level-hidden-right { transform:translateX(100%); }
+.sidebar-panel.level-hidden-left  { transform:translateX(-30%); opacity:0.5; }
+.sidebar-panel.level-active       { transform:translateX(0); opacity:1; }
 
-  /* ── IFRAME WRAP ── */
-  #iframe-outer {
-    flex:1; display:flex; align-items:center; justify-content:center;
-    overflow:hidden; background:#d8d8d2; position:relative;
-    transition:background 0.3s;
-  }
-  #iframe-wrap {
-    background:#fff; box-shadow:0 8px 40px rgba(0,0,0,0.12);
-    transition:width 0.35s cubic-bezier(0.4,0,0.2,1), height 0.35s;
-    width:100%; height:100%; overflow:hidden; position:relative;
-  }
-  #iframe-wrap.tablet { width:768px; height:100%; border-radius:4px; }
-  #iframe-wrap.mobile { width:390px; height:100%; border-radius:12px; }
-  #preview-iframe { width:100%; height:100%; border:none; }
+/* Panel header */
+.panel-back {
+  display:flex; align-items:center; gap:6px; padding:12px 16px 8px;
+  font-size:12px; color:var(--text-muted); cursor:pointer;
+  border-bottom:1px solid var(--border); background:var(--white);
+  position:sticky; top:0; z-index:10;
+}
+.panel-back:hover { color:var(--text); }
+.panel-back .back-arrow { font-size:14px; }
+.panel-section-title {
+  padding:8px 16px 4px; font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted);
+  margin-top:4px;
+}
 
-  /* device notch for mobile */
-  #iframe-wrap.mobile::before {
-    content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
-    width:80px; height:6px; background:#888; border-radius:0 0 4px 4px; z-index:10;
-  }
+/* Menu items */
+.menu-item {
+  display:flex; align-items:center; gap:10px; padding:10px 16px;
+  cursor:pointer; transition:background 0.12s; border-left:3px solid transparent;
+  font-size:13.5px; color:var(--text);
+}
+.menu-item:hover { background:rgba(46,190,110,0.06); }
+.menu-item.active { background:rgba(46,190,110,0.1); border-left-color:var(--green); color:var(--green); font-weight:600; }
+.menu-item .mi-icon { font-size:16px; width:22px; text-align:center; flex-shrink:0; }
+.menu-item .mi-label { flex:1; }
+.menu-item .mi-arrow { font-size:11px; color:var(--text-muted); }
+.menu-item.has-dot::after { content:''; width:7px; height:7px; border-radius:50%; background:var(--green); margin-left:4px; flex-shrink:0; }
+
+/* Sidebar bottom */
+.sidebar-bottom { padding:12px 16px; border-top:1px solid var(--border); }
+.sidebar-bottom button {
+  width:100%; padding:8px; background:none; border:1px solid var(--border);
+  border-radius:6px; font-size:12.5px; color:var(--text-muted); cursor:pointer;
+  font-family:'Open Sans',sans-serif; transition:background 0.15s;
+}
+.sidebar-bottom button:hover { background:var(--bg); color:var(--danger); border-color:var(--danger); }
+
+/* ══ FORMS IN SIDEBAR ═══════════════════════════════════ */
+.sf-body { padding:16px; display:flex; flex-direction:column; gap:12px; }
+.sf-label {
+  font-family:'Montserrat',sans-serif; font-weight:700; font-size:10px;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted);
+  margin-bottom:3px; display:block;
+}
+.sf-input {
+  width:100%; border:1.5px solid var(--border); border-radius:7px;
+  padding:8px 10px; font-size:13px; font-family:'Open Sans',sans-serif;
+  outline:none; transition:border-color 0.2s; color:var(--text);
+}
+.sf-input:focus { border-color:var(--green); }
+.sf-textarea {
+  width:100%; border:1.5px solid var(--border); border-radius:7px;
+  padding:8px 10px; font-size:13px; font-family:'Open Sans',sans-serif;
+  outline:none; min-height:80px; resize:vertical; transition:border-color 0.2s;
+}
+.sf-textarea:focus { border-color:var(--green); }
+.sf-btn {
+  padding:9px 16px; border:none; border-radius:7px; cursor:pointer;
+  font-family:'Montserrat',sans-serif; font-weight:700; font-size:12px;
+  letter-spacing:0.05em; transition:background 0.2s; width:100%;
+}
+.sf-btn-green { background:var(--green); color:#000; }
+.sf-btn-green:hover { background:var(--green-dark); color:#fff; }
+.sf-btn-red { background:var(--danger); color:#fff; }
+.sf-btn-red:hover { background:#c0392b; }
+.sf-btn-gray { background:var(--bg); color:var(--text); border:1px solid var(--border); }
+.sf-btn-gray:hover { background:var(--border); }
+
+/* Design swatches */
+.color-swatches { display:flex; gap:8px; flex-wrap:wrap; }
+.color-swatch {
+  width:52px; height:52px; border-radius:6px; cursor:pointer;
+  border:2px solid transparent; transition:transform 0.15s, border-color 0.15s;
+  position:relative;
+}
+.color-swatch:hover { transform:scale(1.08); border-color:var(--text); }
+.color-swatch.active { border-color:var(--blue); }
+
+/* Font preview box */
+.font-preview-box {
+  border:1.5px solid var(--border); border-radius:8px; padding:12px 14px;
+  background:var(--bg);
+}
+.fp-label { font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; font-family:'Montserrat',sans-serif; font-weight:700; }
+.fp-heading { font-size:20px; font-weight:700; line-height:1.2; margin-bottom:4px; }
+.fp-body { font-size:12px; color:var(--text-muted); line-height:1.5; }
+
+/* Fontsize buttons */
+.fontsize-btns { display:flex; gap:6px; }
+.fs-btn {
+  flex:1; padding:8px 0; border:1.5px solid var(--border); border-radius:6px;
+  background:none; cursor:pointer; font-family:'Montserrat',sans-serif;
+  font-weight:700; font-size:12px; color:var(--text); transition:border-color 0.15s;
+}
+.fs-btn.active { border-color:var(--green); color:var(--green); background:rgba(46,190,110,0.08); }
+.fs-btn:hover { border-color:var(--text); }
+
+/* Media preview */
+.media-preview-box {
+  width:100%; height:160px; background:var(--bg); border-radius:8px;
+  overflow:hidden; display:flex; align-items:center; justify-content:center;
+  border:1.5px dashed var(--border); color:var(--text-muted); font-size:13px;
+}
+.media-preview-box img, .media-preview-box video { width:100%; height:100%; object-fit:cover; border-radius:7px; }
+
+/* FAQ list */
+.faq-row {
+  display:flex; align-items:center; gap:8px; padding:10px 16px;
+  border-bottom:1px solid var(--border); cursor:pointer; transition:background 0.12s;
+}
+.faq-row:hover { background:var(--bg); }
+.faq-row .faq-q { flex:1; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.toggle-switch {
+  position:relative; width:36px; height:20px; flex-shrink:0;
+}
+.toggle-switch input { opacity:0; width:0; height:0; position:absolute; }
+.toggle-track {
+  position:absolute; inset:0; background:#ccc; border-radius:10px;
+  transition:background 0.2s; cursor:pointer;
+}
+.toggle-track::after {
+  content:''; position:absolute; top:2px; left:2px;
+  width:16px; height:16px; background:#fff; border-radius:50%; transition:left 0.2s;
+}
+.toggle-switch input:checked + .toggle-track { background:var(--green); }
+.toggle-switch input:checked + .toggle-track::after { left:18px; }
+
+/* ══ IFRAME ═════════════════════════════════════════════ */
+#iframe-outer {
+  flex:1; display:flex; align-items:stretch; justify-content:center;
+  overflow:hidden; background:#c8c8c0; position:relative;
+  flex-direction:column;
+}
+.publish-bar {
+  background:var(--green); color:#000; text-align:center;
+  padding:0; height:0; overflow:hidden; transition:height 0.3s;
+  font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+#iframe-scale-wrap {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  padding:0; overflow:hidden;
+}
+#iframe-wrap {
+  background:#fff; box-shadow:0 8px 40px rgba(0,0,0,0.15);
+  transition:width 0.3s ease, border-radius 0.3s;
+  width:100%; height:100%; overflow:hidden;
+}
+#iframe-wrap.tablet { width:768px; border-radius:4px; }
+#iframe-wrap.mobile { width:390px; border-radius:20px; }
+#preview-iframe { width:100%; height:100%; border:none; display:block; }
 </style>
 </head>
 <body>
 
-<!-- ── LOGIN ── -->
+<!-- ══ LOGIN ══════════════════════════════════════════════ -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">Maler<span>Marc</span></div>
@@ -150,64 +274,72 @@
   </div>
 </div>
 
-<!-- ── ADMIN APP ── -->
+<!-- ══ ADMIN APP ══════════════════════════════════════════ -->
 <div id="admin-app">
 
   <!-- TOP BAR -->
   <div id="topbar">
     <div class="topbar-logo">Maler<span>Marc</span></div>
     <div class="topbar-sep"></div>
-
-    <!-- Undo / Redo -->
-    <div class="topbar-group">
-      <button class="tb-btn undo-disabled" id="btn-undo" onclick="doUndo()" title="Rückgängig (Ctrl+Z)">
-        ↩ Rückgängig
-      </button>
-      <button class="tb-btn undo-disabled" id="btn-redo" onclick="doRedo()" title="Wiederholen (Ctrl+Y)">
-        ↪ Wiederholen
-      </button>
+    <div style="display:flex;gap:4px;">
+      <button class="tb-btn" id="btn-undo" disabled onclick="doUndo()" title="Ctrl+Z">↩</button>
+      <button class="tb-btn" id="btn-redo" disabled onclick="doRedo()" title="Ctrl+Y">↪</button>
     </div>
-
     <div class="topbar-sep"></div>
-
-    <!-- Breakpoints -->
-    <div class="topbar-group">
-      <button class="tb-btn active" id="bp-desktop" onclick="setBreakpoint('desktop')">🖥 Desktop</button>
-      <button class="tb-btn" id="bp-tablet" onclick="setBreakpoint('tablet')">📱 Tablet</button>
-      <button class="tb-btn" id="bp-mobile" onclick="setBreakpoint('mobile')">📲 Mobile</button>
+    <div style="display:flex;gap:4px;">
+      <button class="tb-btn active" id="bp-desktop" onclick="setBreakpoint('desktop')">🖥</button>
+      <button class="tb-btn" id="bp-tablet"  onclick="setBreakpoint('tablet')">📱 768px</button>
+      <button class="tb-btn" id="bp-mobile"  onclick="setBreakpoint('mobile')">📲 390px</button>
     </div>
-
     <div class="topbar-spacer"></div>
-
-    <button class="tb-publish" onclick="doPublish()">✓ Veröffentlicht</button>
+    <a href="index.html" target="_blank" class="tb-btn">🌐 Website</a>
+    <button class="tb-publish" onclick="doPublish()">✓ Alles live</button>
     <button class="tb-logout" onclick="doLogout()">Abmelden</button>
   </div>
 
-  <!-- MAIN -->
-  <div id="main-area">
+  <!-- MAIN ROW -->
+  <div id="main-row">
 
-    <!-- SIDEBAR -->
+    <!-- ══ SIDEBAR ══ -->
     <div id="sidebar">
-      <div class="sidebar-section">
-        <a href="index.html" target="_blank" class="sidebar-link">🌐 Website ansehen</a>
-      </div>
-      <div class="sidebar-help">
-        <strong>So funktioniert's</strong>
-        <p>Klicke direkt auf ein Element in der Vorschau, um es zu bearbeiten.</p>
-        <p><strong style="color:var(--green);font-family:inherit;font-size:inherit;text-transform:none;letter-spacing:0;">Grüner Rahmen</strong> = editierbar</p>
-        <p>📷 <b>Bild/Video:</b> Slot anklicken → hochladen</p>
-        <p>✏️ <b>Text:</b> Direkt klicken und tippen</p>
-        <p>✓ <b>Änderungen</b> werden sofort in der Cloud gespeichert.</p>
-        <p style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border);">
-          Undo/Redo mit den Pfeilen oben oder<br>Ctrl+Z / Ctrl+Y
-        </p>
+      <div id="sidebar-panels-wrap">
+
+        <!-- ── LEVEL 1: Hauptmenü ── -->
+        <div class="sidebar-panel level-active" id="panel-l1">
+          <div style="padding:14px 16px 8px; border-bottom:1px solid var(--border);">
+            <div class="login-logo" style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.05rem;">Maler<span style="color:var(--green)">Marc</span></div>
+          </div>
+          <div id="l1-menu"></div>
+          <div class="sidebar-bottom"><button onclick="doLogout()">Abmelden</button></div>
+        </div>
+
+        <!-- ── LEVEL 2 ── -->
+        <div class="sidebar-panel level-hidden-right" id="panel-l2">
+          <div class="panel-back" id="l2-back-btn">
+            <span class="back-arrow">←</span>
+            <span id="l2-back-label">Hauptmenü</span>
+          </div>
+          <div id="l2-content"></div>
+        </div>
+
+        <!-- ── LEVEL 3 ── -->
+        <div class="sidebar-panel level-hidden-right" id="panel-l3">
+          <div class="panel-back" id="l3-back-btn">
+            <span class="back-arrow">←</span>
+            <span id="l3-back-label">Zurück</span>
+          </div>
+          <div id="l3-content"></div>
+        </div>
+
       </div>
     </div>
 
-    <!-- IFRAME -->
+    <!-- ══ IFRAME ══ -->
     <div id="iframe-outer">
-      <div id="iframe-wrap">
-        <iframe id="preview-iframe" src="index.html?cms=1"></iframe>
+      <div id="iframe-scale-wrap">
+        <div id="iframe-wrap">
+          <iframe id="preview-iframe" src="index.html?cms=1"></iframe>
+        </div>
       </div>
     </div>
 
@@ -215,18 +347,84 @@
 </div>
 
 <!-- TOAST -->
-<div id="toast" style="display:none;"></div>
+<div id="toast" style="display:none;position:fixed;bottom:20px;right:20px;z-index:99999;"></div>
 
 <script>
+// ══════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://zfyesnrezqupxolslbgx.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmeWVzbnJlenF1cHhvbHNsYmd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyOTIxOTcsImV4cCI6MjA4ODg2ODE5N30.8BeDmPJjYV7_UfGEW3E3wniq1HBx1_W85c-oxQuNuck';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let contentCache = {};
-let undoStack = [];   // [{key, oldVal, newVal}]
-let redoStack = [];
+let faqCache = [];
+let undoStack = [], redoStack = [];
+let currentLevel = 1;
+let l2Page = null; // 'baukasten'|'design'|'medien'|'texte'|'kontakt'|'faq'
+let currentFontsize = 'M';
 
-// ── LOGIN / LOGOUT ────────────────────────────────────────
+// ── Text keys (not media) ──
+const TEXT_KEYS = new Set(['hero_titel','hero_sub','ueber_titel','ueber_text',
+  'kontakt_telefon','kontakt_email','kontakt_adresse','kontakt_zeiten','stat_projekte','stat_jahre']);
+
+const MEDIA_ITEMS = [
+  { key:'hero_media',      label:'Hero Hintergrundbild / Video' },
+  { key:'bild_marc',       label:'Über mich – Foto Marc' },
+  { key:'galerie_1',       label:'Galerie 1' },
+  { key:'galerie_2',       label:'Galerie 2' },
+  { key:'galerie_3',       label:'Galerie 3' },
+  { key:'galerie_4',       label:'Galerie 4' },
+  { key:'galerie_5',       label:'Galerie 5' },
+  { key:'galerie_6',       label:'Galerie 6' },
+  { key:'galerie_7',       label:'Galerie 7' },
+  { key:'galerie_8',       label:'Galerie 8' },
+  { key:'galerie_9',       label:'Galerie 9' },
+  { key:'einblick_1',      label:'Einblick 1' },
+  { key:'einblick_2',      label:'Einblick 2' },
+  { key:'einblick_3',      label:'Einblick 3' },
+  { key:'einblick_4',      label:'Einblick 4' },
+  { key:'einblick_5',      label:'Einblick 5' },
+  { key:'einblick_6',      label:'Einblick 6' },
+  { key:'einblick_7',      label:'Einblick 7' },
+  { key:'einblick_8',      label:'Einblick 8' },
+  { key:'leistung_bild_1', label:'Leistungsbild 1' },
+  { key:'leistung_bild_2', label:'Leistungsbild 2' },
+  { key:'leistung_bild_3', label:'Leistungsbild 3' },
+  { key:'leistung_bild_4', label:'Leistungsbild 4' },
+  { key:'leistung_bild_5', label:'Leistungsbild 5' },
+  { key:'leistung_bild_6', label:'Leistungsbild 6' },
+];
+
+const TEXT_ITEMS = [
+  { key:'hero_titel',      label:'Hero Titel' },
+  { key:'hero_sub',        label:'Hero Untertitel' },
+  { key:'ueber_titel',     label:'Über mich Titel' },
+  { key:'ueber_text',      label:'Über mich Text' },
+  { key:'stat_projekte',   label:'Statistik: Projekte' },
+  { key:'stat_jahre',      label:'Statistik: Jahre' },
+];
+
+const KONTAKT_ITEMS = [
+  { key:'kontakt_telefon', label:'Telefon', placeholder:'+41 XX XXX XX XX' },
+  { key:'kontakt_email',   label:'E-Mail',  placeholder:'info@malermarc.ch' },
+  { key:'kontakt_adresse', label:'Adresse', placeholder:'Musterstrasse 1, 3000 Bern' },
+  { key:'kontakt_zeiten',  label:'Öffnungszeiten', placeholder:'Mo–Fr, 07:00–17:00 Uhr' },
+];
+
+const COLORS = [
+  { label:'Maler Grün',  var:'--green',    default:'#2EBE6E' },
+  { label:'Anthrazit',   var:'--anthrazit','default':'#1a1a1a' },
+  { label:'Orange',      var:'--orange',   default:'#FF7A00' },
+  { label:'Weiss',       var:'--white',    default:'#FFFFFF' },
+];
+
+const FONTS_HEADING = ['Montserrat','Playfair Display','Oswald','Raleway','Lato','Nunito','Merriweather'];
+const FONTS_BODY    = ['Open Sans','Montserrat','Lato','Nunito','Raleway','Merriweather'];
+
+// ══════════════════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════════════════
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pw    = document.getElementById('login-pw').value;
@@ -236,123 +434,733 @@ async function doLogin() {
   if (error) { errEl.textContent = error.message; errEl.style.display = 'block'; return; }
   showAdmin();
 }
-
 async function doLogout() {
   await db.auth.signOut();
   document.getElementById('admin-app').classList.remove('active');
   document.getElementById('login-screen').style.display = 'flex';
 }
-
 async function checkSession() {
   const { data: { session } } = await db.auth.getSession();
   if (session) showAdmin();
 }
-
 async function showAdmin() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-app').classList.add('active');
-  // Load content cache
+  await loadContent();
+  await loadFaq();
+  buildL1();
+}
+
+// ══════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════
+async function loadContent() {
   const { data } = await db.from('content').select('key,value');
   if (data) data.forEach(({ key, value }) => { contentCache[key] = value || ''; });
 }
-
-// ── PUBLISH ───────────────────────────────────────────────
-function doPublish() {
-  toast('✓ Alle Änderungen sind live gespeichert!');
+async function loadFaq() {
+  const { data } = await db.from('faq').select('*').order('reihenfolge');
+  if (data) faqCache = data;
 }
 
-// ── BREAKPOINTS ───────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// SIDEBAR LEVELS
+// ══════════════════════════════════════════════════════════
+function setLevel(n) {
+  const panels = { 1:'panel-l1', 2:'panel-l2', 3:'panel-l3' };
+  Object.entries(panels).forEach(([lvl, id]) => {
+    const el = document.getElementById(id);
+    const num = parseInt(lvl);
+    if (num === n) el.className = 'sidebar-panel level-active';
+    else if (num < n) el.className = 'sidebar-panel level-hidden-left';
+    else el.className = 'sidebar-panel level-hidden-right';
+  });
+  currentLevel = n;
+}
+
+function goL2(page, backLabel) {
+  l2Page = page;
+  document.getElementById('l2-back-label').textContent = backLabel || 'Hauptmenü';
+  buildL2(page);
+  setLevel(2);
+}
+function goL3(buildFn, backLabel) {
+  document.getElementById('l3-back-label').textContent = backLabel || 'Zurück';
+  buildFn();
+  setLevel(3);
+}
+function goBack() {
+  if (currentLevel === 3) setLevel(2);
+  else if (currentLevel === 2) { setLevel(1); l2Page = null; }
+}
+
+document.getElementById('l2-back-btn').addEventListener('click', goBack);
+document.getElementById('l3-back-btn').addEventListener('click', goBack);
+
+// ══════════════════════════════════════════════════════════
+// LEVEL 1 — Hauptmenü
+// ══════════════════════════════════════════════════════════
+const L1_ITEMS = [
+  { icon:'🏠', label:'Dashboard',           page:null,        hint:'Willkommen' },
+  { icon:'🎨', label:'Website-Baukasten',   page:'baukasten'  },
+  { icon:'🖼', label:'Bilder & Medien',     page:'medien'     },
+  { icon:'✏️', label:'Texte & Inhalte',     page:'texte'      },
+  { icon:'📋', label:'FAQ',                 page:'faq'        },
+  { icon:'📞', label:'Kontakt',             page:'kontakt'    },
+  { icon:'⚙️', label:'Einstellungen',       page:'einstellungen' },
+];
+
+function buildL1() {
+  const menu = document.getElementById('l1-menu');
+  menu.innerHTML = '';
+  L1_ITEMS.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'menu-item';
+    el.innerHTML = `<span class="mi-icon">${item.icon}</span><span class="mi-label">${item.label}</span>${item.page ? '<span class="mi-arrow">›</span>' : ''}`;
+    el.addEventListener('click', () => {
+      if (!item.page) { showDashboard(); return; }
+      document.querySelectorAll('#l1-menu .menu-item').forEach(x => x.classList.remove('active'));
+      el.classList.add('active');
+      goL2(item.page, 'Hauptmenü');
+    });
+    menu.appendChild(el);
+  });
+}
+
+function showDashboard() {
+  toast('👋 Willkommen, Marc! Klicke auf ein Element in der Vorschau oder wähle einen Bereich links.');
+}
+
+// ══════════════════════════════════════════════════════════
+// LEVEL 2 — Sub-pages
+// ══════════════════════════════════════════════════════════
+function buildL2(page) {
+  const c = document.getElementById('l2-content');
+  c.innerHTML = '';
+  if (page === 'baukasten') buildL2Baukasten(c);
+  else if (page === 'medien') buildL2Medien(c);
+  else if (page === 'texte') buildL2Texte(c);
+  else if (page === 'kontakt') buildL2Kontakt(c);
+  else if (page === 'faq') buildL2Faq(c);
+  else if (page === 'einstellungen') buildL2Einstellungen(c);
+  else if (page === 'design') buildL2Design(c);
+}
+
+// ── Baukasten ──
+function buildL2Baukasten(c) {
+  c.innerHTML = `<div class="panel-section-title">WEBSITE-BAUKASTEN</div>`;
+  const items = [
+    { label:'Website-Baukasten', active:true },
+    { label:'Design', sub:'design' },
+    { label:'Sektionen' },
+  ];
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'menu-item' + (item.active ? ' active' : '');
+    el.innerHTML = `<span class="mi-label">${item.label}</span>${item.sub ? '<span class="mi-arrow">›</span>' : ''}`;
+    if (item.sub) el.addEventListener('click', () => {
+      goL2(item.sub, 'Website-Baukasten');
+    });
+    c.appendChild(el);
+  });
+}
+
+// ── Design ──
+function buildL2Design(c) {
+  c.innerHTML = '';
+  // Farben
+  const sec1 = document.createElement('div');
+  sec1.innerHTML = `<div class="panel-section-title">FARBEN</div>`;
+  const swatches = document.createElement('div');
+  swatches.className = 'sf-body';
+  const swatchRow = document.createElement('div');
+  swatchRow.className = 'color-swatches';
+  COLORS.forEach(col => {
+    const current = getComputedStyle(document.documentElement).getPropertyValue(col.var).trim() || col.default;
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch';
+    sw.style.background = current;
+    sw.title = col.label;
+    sw.addEventListener('click', () => openColorPicker(col, sw));
+    swatchRow.appendChild(sw);
+  });
+  swatches.appendChild(swatchRow);
+  const editLink = document.createElement('div');
+  editLink.style.cssText = 'font-size:12px;color:var(--blue);cursor:pointer;padding:4px 0;';
+  editLink.textContent = 'Farbpalette bearbeiten →';
+  editLink.addEventListener('click', () => goL3(() => buildL3Colors(), 'Design'));
+  swatches.appendChild(editLink);
+  sec1.appendChild(swatches);
+  c.appendChild(sec1);
+
+  // Schrift
+  const sec2 = document.createElement('div');
+  sec2.innerHTML = `<div class="panel-section-title">SCHRIFT</div>`;
+  const fontBox = document.createElement('div');
+  fontBox.className = 'sf-body';
+  const preview = document.createElement('div');
+  preview.className = 'font-preview-box';
+  preview.innerHTML = `
+    <div class="fp-label">MONTSERRAT + OPEN SANS</div>
+    <div class="fp-heading" style="font-family:'Montserrat',sans-serif">Überschrift</div>
+    <div class="fp-body" style="font-family:'Open Sans',sans-serif">Fliesstext – sauber und lesbar.</div>`;
+  const fontLink = document.createElement('div');
+  fontLink.style.cssText = 'font-size:12px;color:var(--blue);cursor:pointer;padding:4px 0;margin-top:8px;';
+  fontLink.textContent = 'Schriftpaar bearbeiten →';
+  fontLink.addEventListener('click', () => goL3(() => buildL3Fonts(), 'Design'));
+  fontBox.appendChild(preview);
+  fontBox.appendChild(fontLink);
+  sec2.appendChild(fontBox);
+  c.appendChild(sec2);
+
+  // Schriftgrösse
+  const sec3 = document.createElement('div');
+  sec3.innerHTML = `<div class="panel-section-title">SCHRIFTGRÖSSE</div>`;
+  const fsBox = document.createElement('div');
+  fsBox.className = 'sf-body';
+  const scales = { S:0.85, M:1, L:1.15, XL:1.3 };
+  const btns = document.createElement('div');
+  btns.className = 'fontsize-btns';
+  Object.entries(scales).forEach(([label, scale]) => {
+    const b = document.createElement('button');
+    b.className = 'fs-btn' + (currentFontsize === label ? ' active' : '');
+    b.textContent = label;
+    b.addEventListener('click', () => {
+      currentFontsize = label;
+      btns.querySelectorAll('.fs-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      sendToIframe({ type:'cms_fontsize', scale });
+    });
+    btns.appendChild(b);
+  });
+  fsBox.appendChild(btns);
+  sec3.appendChild(fsBox);
+  c.appendChild(sec3);
+}
+
+// ── Medien ──
+function buildL2Medien(c) {
+  c.innerHTML = `<div class="panel-section-title">BILDER & MEDIEN</div>`;
+  MEDIA_ITEMS.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'menu-item' + (contentCache[item.key] ? ' has-dot' : '');
+    el.innerHTML = `<span class="mi-label" style="font-size:13px">${item.label}</span><span class="mi-arrow">›</span>`;
+    el.addEventListener('click', () => {
+      goL3(() => buildL3Media(item), item.label);
+    });
+    c.appendChild(el);
+  });
+}
+
+// ── Texte ──
+function buildL2Texte(c) {
+  c.innerHTML = `<div class="panel-section-title">TEXTE & INHALTE</div>`;
+  TEXT_ITEMS.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'menu-item' + (contentCache[item.key] ? ' has-dot' : '');
+    el.innerHTML = `<span class="mi-label" style="font-size:13px">${item.label}</span><span class="mi-arrow">›</span>`;
+    el.addEventListener('click', () => {
+      goL3(() => buildL3Text(item), item.label);
+    });
+    c.appendChild(el);
+  });
+}
+
+// ── Kontakt ──
+function buildL2Kontakt(c) {
+  c.innerHTML = `<div class="panel-section-title">KONTAKT</div>`;
+  const body = document.createElement('div');
+  body.className = 'sf-body';
+  KONTAKT_ITEMS.forEach(item => {
+    const label = document.createElement('label');
+    label.className = 'sf-label';
+    label.textContent = item.label;
+    const input = document.createElement('input');
+    input.className = 'sf-input';
+    input.type = 'text';
+    input.placeholder = item.placeholder;
+    input.value = contentCache[item.key] || '';
+    input.dataset.key = item.key;
+    body.appendChild(label);
+    body.appendChild(input);
+  });
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'sf-btn sf-btn-green';
+  saveBtn.textContent = 'Alles speichern';
+  saveBtn.addEventListener('click', async () => {
+    const inputs = body.querySelectorAll('.sf-input');
+    for (const inp of inputs) {
+      const key = inp.dataset.key;
+      const value = inp.value.trim();
+      await saveContent(key, value, 'text');
+    }
+    toast('✓ Kontakt gespeichert!');
+  });
+  body.appendChild(saveBtn);
+  c.appendChild(body);
+}
+
+// ── FAQ ──
+function buildL2Faq(c) {
+  c.innerHTML = '';
+  const topBar = document.createElement('div');
+  topBar.style.cssText = 'padding:10px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:flex-end;';
+  const addBtn = document.createElement('button');
+  addBtn.className = 'sf-btn sf-btn-green';
+  addBtn.style.cssText = 'width:auto;padding:6px 14px;font-size:11px;';
+  addBtn.textContent = '+ Neue Frage';
+  addBtn.addEventListener('click', () => goL3(() => buildL3FaqItem(null), 'FAQ'));
+  topBar.appendChild(addBtn);
+  c.appendChild(topBar);
+
+  if (!faqCache.length) {
+    c.insertAdjacentHTML('beforeend', '<div style="padding:16px;color:var(--text-muted);font-size:13px;">Noch keine FAQ-Einträge.</div>');
+    return;
+  }
+  faqCache.forEach(faq => {
+    const row = document.createElement('div');
+    row.className = 'faq-row';
+    row.innerHTML = `
+      <span class="faq-q">${faq.frage || '(Frage fehlt)'}</span>
+      <label class="toggle-switch" title="Aktiv/Inaktiv" onclick="event.stopPropagation()">
+        <input type="checkbox" ${faq.aktiv ? 'checked' : ''} onchange="toggleFaqAktiv(${faq.id}, this.checked)">
+        <div class="toggle-track"></div>
+      </label>`;
+    row.addEventListener('click', () => goL3(() => buildL3FaqItem(faq), 'FAQ'));
+    c.appendChild(row);
+  });
+}
+
+// ── Einstellungen ──
+function buildL2Einstellungen(c) {
+  c.innerHTML = `<div class="panel-section-title">EINSTELLUNGEN</div>
+    <div class="sf-body" style="color:var(--text-muted);font-size:13px;line-height:1.6;">
+      <p>Supabase Projekt: <code style="font-size:11px;background:var(--bg);padding:2px 5px;border-radius:3px;">zfyesnrezqupxolslbgx</code></p>
+      <p style="margin-top:8px;">Alle Inhalte werden automatisch in Echtzeit gespeichert.</p>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// LEVEL 3 — Detail Editors
+// ══════════════════════════════════════════════════════════
+
+// ── Colors ──
+function buildL3Colors() {
+  const c = document.getElementById('l3-content');
+  c.innerHTML = `<div class="panel-section-title">FARBPALETTE</div>`;
+  const body = document.createElement('div');
+  body.className = 'sf-body';
+  COLORS.forEach(col => {
+    const current = contentCache['color_' + col.var.replace('--', '')] || col.default;
+    const label = document.createElement('label');
+    label.className = 'sf-label';
+    label.textContent = col.label;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;';
+    const swatch = document.createElement('div');
+    swatch.style.cssText = `width:36px;height:36px;border-radius:6px;background:${current};border:1.5px solid var(--border);flex-shrink:0;cursor:pointer;`;
+    const inp = document.createElement('input');
+    inp.type = 'color';
+    inp.value = current;
+    inp.style.cssText = 'flex:1;height:36px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;padding:2px;';
+    inp.addEventListener('input', () => {
+      swatch.style.background = inp.value;
+      sendToIframe({ type:'cms_color', var: col.var, value: inp.value });
+    });
+    inp.addEventListener('change', async () => {
+      await saveContent('color_' + col.var.replace('--',''), inp.value, 'text');
+      toast('✓ Farbe gespeichert!');
+    });
+    swatch.addEventListener('click', () => inp.click());
+    row.appendChild(swatch);
+    row.appendChild(inp);
+    body.appendChild(label);
+    body.appendChild(row);
+  });
+  c.appendChild(body);
+}
+
+// open color picker inline (from swatch click in Design page)
+function openColorPicker(col, swatchEl) {
+  const inp = document.createElement('input');
+  inp.type = 'color';
+  inp.value = swatchEl.style.background || col.default;
+  inp.style.cssText = 'position:absolute;opacity:0;pointer-events:none;';
+  document.body.appendChild(inp);
+  inp.addEventListener('input', () => {
+    swatchEl.style.background = inp.value;
+    sendToIframe({ type:'cms_color', var: col.var, value: inp.value });
+  });
+  inp.addEventListener('change', async () => {
+    await saveContent('color_' + col.var.replace('--',''), inp.value, 'text');
+    document.body.removeChild(inp);
+    toast('✓ Farbe gespeichert!');
+  });
+  inp.click();
+}
+
+// ── Fonts ──
+function buildL3Fonts() {
+  const c = document.getElementById('l3-content');
+  c.innerHTML = `<div class="panel-section-title">SCHRIFTPAAR</div>`;
+  const body = document.createElement('div');
+  body.className = 'sf-body';
+
+  const hVal = contentCache['font_heading'] || 'Montserrat';
+  const bVal = contentCache['font_body'] || 'Open Sans';
+
+  // Preview
+  const preview = document.createElement('div');
+  preview.className = 'font-preview-box';
+  preview.id = 'font-preview-box';
+  preview.innerHTML = `
+    <div class="fp-label" id="fp-label">${hVal.toUpperCase()} + ${bVal.toUpperCase()}</div>
+    <div class="fp-heading" id="fp-heading" style="font-family:'${hVal}',sans-serif">Überschrift</div>
+    <div class="fp-body" id="fp-body" style="font-family:'${bVal}',sans-serif">Fliesstext – sauber und lesbar.</div>`;
+  body.appendChild(preview);
+
+  function makeSelect(label, options, currentVal, onChange) {
+    const lbl = document.createElement('label');
+    lbl.className = 'sf-label';
+    lbl.textContent = label;
+    lbl.style.marginTop = '10px';
+    const sel = document.createElement('select');
+    sel.className = 'sf-input';
+    options.forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt; o.textContent = opt;
+      if (opt === currentVal) o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.addEventListener('change', () => onChange(sel.value));
+    body.appendChild(lbl);
+    body.appendChild(sel);
+    return sel;
+  }
+
+  let hFont = hVal, bFont = bVal;
+
+  makeSelect('Überschriften-Schrift', FONTS_HEADING, hVal, val => {
+    hFont = val;
+    document.getElementById('fp-heading').style.fontFamily = `'${val}',sans-serif`;
+    document.getElementById('fp-label').textContent = `${hFont.toUpperCase()} + ${bFont.toUpperCase()}`;
+    sendToIframe({ type:'cms_font', target:'heading', family: val });
+  });
+  makeSelect('Fliesstext-Schrift', FONTS_BODY, bVal, val => {
+    bFont = val;
+    document.getElementById('fp-body').style.fontFamily = `'${val}',sans-serif`;
+    document.getElementById('fp-label').textContent = `${hFont.toUpperCase()} + ${bFont.toUpperCase()}`;
+    sendToIframe({ type:'cms_font', target:'body', family: val });
+  });
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'sf-btn sf-btn-green';
+  saveBtn.style.marginTop = '4px';
+  saveBtn.textContent = 'Schriftpaar speichern';
+  saveBtn.addEventListener('click', async () => {
+    await saveContent('font_heading', hFont, 'text');
+    await saveContent('font_body', bFont, 'text');
+    toast('✓ Schriftpaar gespeichert!');
+  });
+  body.appendChild(saveBtn);
+  c.appendChild(body);
+}
+
+// ── Media ──
+function buildL3Media(item) {
+  const c = document.getElementById('l3-content');
+  c.innerHTML = '';
+  const body = document.createElement('div');
+  body.className = 'sf-body';
+
+  const previewBox = document.createElement('div');
+  previewBox.className = 'media-preview-box';
+  previewBox.id = 'media-preview';
+  renderMediaPreview(previewBox, contentCache[item.key] || '');
+  body.appendChild(previewBox);
+
+  const uploadBtn = document.createElement('button');
+  uploadBtn.className = 'sf-btn sf-btn-green';
+  uploadBtn.textContent = '📷  Bild oder Video hochladen';
+  uploadBtn.addEventListener('click', () => doUpload(item.key, previewBox));
+  body.appendChild(uploadBtn);
+
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'sf-btn sf-btn-red';
+  removeBtn.textContent = '🗑  Entfernen';
+  removeBtn.addEventListener('click', async () => {
+    await saveContent(item.key, '', 'media');
+    renderMediaPreview(previewBox, '');
+    // Update dot in parent list
+    toast('✓ Entfernt');
+  });
+  body.appendChild(removeBtn);
+  c.appendChild(body);
+}
+
+function renderMediaPreview(box, url) {
+  if (!url) {
+    box.innerHTML = '<span>Kein Inhalt</span>';
+    return;
+  }
+  const isVid = /\.(mp4|webm)/i.test(url);
+  box.innerHTML = isVid
+    ? `<video src="${url}" autoplay muted loop style="width:100%;height:100%;object-fit:cover;border-radius:7px;"></video>`
+    : `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:7px;">`;
+}
+
+// ── Text ──
+function buildL3Text(item) {
+  const c = document.getElementById('l3-content');
+  c.innerHTML = '';
+  const body = document.createElement('div');
+  body.className = 'sf-body';
+
+  const lbl = document.createElement('label');
+  lbl.className = 'sf-label';
+  lbl.textContent = item.label;
+  const ta = document.createElement('textarea');
+  ta.className = 'sf-textarea';
+  ta.value = contentCache[item.key] || '';
+  ta.rows = 4;
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'sf-btn sf-btn-green';
+  saveBtn.textContent = 'Speichern';
+  saveBtn.addEventListener('click', async () => {
+    await saveContent(item.key, ta.value, 'text');
+    toast('✓ Gespeichert!');
+  });
+  body.appendChild(lbl);
+  body.appendChild(ta);
+  body.appendChild(saveBtn);
+  c.appendChild(body);
+}
+
+// ── FAQ Item ──
+function buildL3FaqItem(faq) {
+  const c = document.getElementById('l3-content');
+  c.innerHTML = '';
+  const body = document.createElement('div');
+  body.className = 'sf-body';
+  const isNew = !faq;
+
+  const lbl1 = document.createElement('label'); lbl1.className = 'sf-label'; lbl1.textContent = 'Frage';
+  const taq = document.createElement('textarea'); taq.className = 'sf-textarea'; taq.rows = 2;
+  taq.value = faq?.frage || '';
+
+  const lbl2 = document.createElement('label'); lbl2.className = 'sf-label'; lbl2.style.marginTop = '4px'; lbl2.textContent = 'Antwort';
+  const taa = document.createElement('textarea'); taa.className = 'sf-textarea'; taa.rows = 4;
+  taa.value = faq?.antwort || '';
+
+  const aktiv = document.createElement('label');
+  aktiv.style.cssText = 'display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;';
+  aktiv.innerHTML = `<input type="checkbox" ${faq?.aktiv !== false ? 'checked' : ''} style="width:16px;height:16px;accent-color:var(--green);"> Aktiv (wird auf Website angezeigt)`;
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'sf-btn sf-btn-green';
+  saveBtn.textContent = isNew ? '+ Erstellen' : 'Speichern';
+  saveBtn.addEventListener('click', async () => {
+    const data = { frage: taq.value, antwort: taa.value, aktiv: aktiv.querySelector('input').checked };
+    if (isNew) {
+      data.reihenfolge = (faqCache.length + 1) * 10;
+      await db.from('faq').insert(data);
+    } else {
+      await db.from('faq').update(data).eq('id', faq.id);
+    }
+    await loadFaq();
+    goBack();
+    toast('✓ FAQ gespeichert!');
+  });
+
+  body.appendChild(lbl1); body.appendChild(taq);
+  body.appendChild(lbl2); body.appendChild(taa);
+  body.appendChild(aktiv);
+  body.appendChild(saveBtn);
+
+  if (!isNew) {
+    const delBtn = document.createElement('button');
+    delBtn.className = 'sf-btn sf-btn-red';
+    delBtn.textContent = 'Frage löschen';
+    delBtn.addEventListener('click', async () => {
+      if (!confirm('Frage wirklich löschen?')) return;
+      await db.from('faq').delete().eq('id', faq.id);
+      await loadFaq();
+      goBack();
+      toast('✓ Gelöscht');
+    });
+    body.appendChild(delBtn);
+  }
+  c.appendChild(body);
+}
+
+// ══════════════════════════════════════════════════════════
+// SAVE & UPLOAD
+// ══════════════════════════════════════════════════════════
+async function saveContent(key, value, type) {
+  const oldVal = contentCache[key] || '';
+  await db.from('content').upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+  if (oldVal !== value) {
+    pushUndo(key, oldVal, value);
+    contentCache[key] = value;
+  }
+  sendToIframe({ type: type === 'media' ? 'cms_media' : 'cms_text', key, value });
+}
+
+async function doUpload(key, previewBox) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*,video/mp4,video/webm';
+  input.onchange = async () => {
+    const file = input.files[0]; if (!file) return;
+    toast('⏳ Hochladen...');
+    const ext = file.name.split('.').pop().toLowerCase();
+    const path = key + '_' + Date.now() + '.' + ext;
+    const { error: e1 } = await db.storage.from('bilder').upload(path, file, { upsert: true });
+    if (e1) { toast('❌ ' + e1.message, true); return; }
+    const { data } = db.storage.from('bilder').getPublicUrl(path);
+    const url = data.publicUrl;
+    await saveContent(key, url, 'media');
+    renderMediaPreview(previewBox, url);
+    toast('✓ Gespeichert!');
+  };
+  input.click();
+}
+
+async function toggleFaqAktiv(id, aktiv) {
+  await db.from('faq').update({ aktiv }).eq('id', id);
+  const idx = faqCache.findIndex(f => f.id === id);
+  if (idx !== -1) faqCache[idx].aktiv = aktiv;
+}
+
+// ══════════════════════════════════════════════════════════
+// IFRAME COMMUNICATION
+// ══════════════════════════════════════════════════════════
+function sendToIframe(msg) {
+  document.getElementById('preview-iframe').contentWindow.postMessage(msg, '*');
+}
+
+// Handle cms_select from iframe (click on element)
+window.addEventListener('message', e => {
+  if (!e.data) return;
+  if (e.data.type === 'cms_select') {
+    const { key, editable } = e.data;
+    if (editable === 'image') {
+      const item = MEDIA_ITEMS.find(m => m.key === key);
+      if (item) {
+        goL2('medien', 'Hauptmenü');
+        setTimeout(() => goL3(() => buildL3Media(item), item.label), 260);
+      }
+    } else if (editable === 'text') {
+      const item = TEXT_ITEMS.find(t => t.key === key) || KONTAKT_ITEMS.find(t => t.key === key);
+      if (item && TEXT_ITEMS.find(t => t.key === key)) {
+        goL2('texte', 'Hauptmenü');
+        setTimeout(() => goL3(() => buildL3Text(item), item.label), 260);
+      } else if (item) {
+        goL2('kontakt', 'Hauptmenü');
+      }
+    }
+    // Highlight active L1 item
+    document.querySelectorAll('#l1-menu .menu-item').forEach(el => el.classList.remove('active'));
+    const target = editable === 'image' ? 'medien' : 'texte';
+    const l1 = L1_ITEMS.findIndex(i => i.page === target);
+    if (l1 >= 0) document.querySelectorAll('#l1-menu .menu-item')[l1]?.classList.add('active');
+  }
+});
+
+// Also handle cms_color live in iframe
+// (already sent via sendToIframe above, iframe needs to handle it)
+
+// ══════════════════════════════════════════════════════════
+// BREAKPOINTS
+// ══════════════════════════════════════════════════════════
 function setBreakpoint(bp) {
   const wrap = document.getElementById('iframe-wrap');
+  const outer = document.getElementById('iframe-scale-wrap');
   wrap.className = bp === 'desktop' ? '' : bp;
+  if (bp === 'desktop') {
+    outer.style.padding = '0';
+    document.getElementById('iframe-outer').style.background = '#c8c8c0';
+  } else {
+    outer.style.padding = '16px';
+    document.getElementById('iframe-outer').style.background = '#a8a8a0';
+  }
   ['desktop','tablet','mobile'].forEach(b => {
-    document.getElementById('bp-'+b).classList.toggle('active', b === bp);
+    document.getElementById('bp-'+b)?.classList.toggle('active', b === bp);
   });
-  document.getElementById('iframe-outer').style.background =
-    bp === 'desktop' ? '#d8d8d2' : '#b8b8b0';
 }
 
-// ── UNDO / REDO ───────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// UNDO / REDO
+// ══════════════════════════════════════════════════════════
 function pushUndo(key, oldVal, newVal) {
   undoStack.push({ key, oldVal, newVal });
   redoStack = [];
-  updateUndoButtons();
+  syncUndoButtons();
 }
-
-function updateUndoButtons() {
-  document.getElementById('btn-undo').classList.toggle('undo-disabled', undoStack.length === 0);
-  document.getElementById('btn-redo').classList.toggle('undo-disabled', redoStack.length === 0);
+function syncUndoButtons() {
+  document.getElementById('btn-undo').disabled = !undoStack.length;
+  document.getElementById('btn-redo').disabled = !redoStack.length;
 }
-
 async function doUndo() {
   if (!undoStack.length) return;
   const { key, oldVal } = undoStack.pop();
   redoStack.push({ key, oldVal, newVal: contentCache[key] });
-  await applyChange(key, oldVal);
-  updateUndoButtons();
-  toast('↩ Rückgängig gemacht');
+  await db.from('content').upsert({ key, value: oldVal, updated_at: new Date().toISOString() }, { onConflict:'key' });
+  contentCache[key] = oldVal;
+  sendToIframe({ type: TEXT_KEYS.has(key) ? 'cms_text' : 'cms_media', key, value: oldVal });
+  syncUndoButtons();
+  toast('↩ Rückgängig');
 }
-
 async function doRedo() {
   if (!redoStack.length) return;
   const { key, newVal } = redoStack.pop();
   undoStack.push({ key, oldVal: contentCache[key], newVal });
-  await applyChange(key, newVal);
-  updateUndoButtons();
+  await db.from('content').upsert({ key, value: newVal, updated_at: new Date().toISOString() }, { onConflict:'key' });
+  contentCache[key] = newVal;
+  sendToIframe({ type: TEXT_KEYS.has(key) ? 'cms_text' : 'cms_media', key, value: newVal });
+  syncUndoButtons();
   toast('↪ Wiederholt');
 }
 
-async function applyChange(key, value) {
-  // Save to Supabase
-  await db.from('content').upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-  contentCache[key] = value;
-  // Push to iframe
-  const isMedia = !['hero_titel','hero_sub','ueber_titel','ueber_text',
-    'kontakt_telefon','kontakt_email','kontakt_adresse','kontakt_zeiten',
-    'stat_projekte','stat_jahre'].includes(key);
-  const iframe = document.getElementById('preview-iframe');
-  iframe.contentWindow.postMessage({
-    type: isMedia ? 'cms_media' : 'cms_text', key, value
-  }, '*');
-}
-
-// ── Listen for saves from iframe ──────────────────────────
-window.addEventListener('message', async e => {
-  if (e.data?.type !== 'cms_saved') return;
-  const { key, value } = e.data;
-  const oldVal = contentCache[key] || '';
-  if (oldVal === value) return;
-  pushUndo(key, oldVal, value);
-  contentCache[key] = value;
-  toast('✓ Gespeichert!');
-});
-
-// ── Keyboard shortcuts ────────────────────────────────────
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); doUndo(); }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); doRedo(); }
 });
 
-// ── Login enter key ───────────────────────────────────────
-document.getElementById('login-pw').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
+// ══════════════════════════════════════════════════════════
+// PUBLISH + TOAST
+// ══════════════════════════════════════════════════════════
+function doPublish() {
+  toast('✓ Alle Änderungen sind automatisch live gespeichert!');
+}
 
-// ── Toast ──────────────────────────────────────────────────
 function toast(msg, err=false) {
   const t = document.getElementById('toast');
+  const isErr = err || msg.startsWith('❌');
   t.textContent = msg;
-  const isErr = err || msg.includes('❌');
-  t.style.cssText = `position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:8px;
-    font-family:'Montserrat',sans-serif;font-weight:600;font-size:14px;z-index:9999;display:block;
+  t.style.cssText = `position:fixed;bottom:20px;right:20px;z-index:99999;padding:11px 18px;
+    border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:13px;
     background:${isErr?'#e74c3c':'#2EBE6E'};color:${isErr?'#fff':'#000'};
-    box-shadow:0 4px 16px rgba(0,0,0,0.15);`;
+    box-shadow:0 4px 14px rgba(0,0,0,0.15);display:block;`;
   clearTimeout(t._t);
   t._t = setTimeout(() => { t.style.display='none'; }, 3000);
 }
 
-// ── Init ──────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// ENTER KEY
+// ══════════════════════════════════════════════════════════
+document.getElementById('login-pw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
 checkSession();
 </script>
+
+<!-- Handle cms_color + cms_font + cms_fontsize in iframe via postMessage -->
+<!-- These are sent TO the iframe; index.html must handle them -->
+<!-- We also need to add listener for cms_color in index.html -->
 </body>
 </html>

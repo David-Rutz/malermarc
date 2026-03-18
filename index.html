@@ -373,60 +373,7 @@
     color: var(--green); opacity: 0.7;
   }
 
-  /* ── BEFORE/AFTER SLIDER ── */
-  #referenzen { background: var(--bg); position: relative; }
-  .ba-container {
-    position: relative; overflow: hidden;
-    border-radius: 12px; cursor: ew-resize;
-    height: 520px; max-width: 900px; margin: 3rem auto 0;
-    user-select: none;
-  }
-  .ba-after, .ba-before {
-    position: absolute; inset: 0;
-    background-size: cover; background-position: center;
-  }
-  .ba-after {
-    background: linear-gradient(135deg, #1a3a27 0%, #2EBE6E22 50%, #0d2b1a 100%);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .ba-before {
-    background: linear-gradient(135deg, #2a2a2a 0%, #444 50%, #1a1a1a 100%);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .ba-mockroom {
-    text-align: center; color: rgba(255,255,255,0.5);
-    font-family: 'Montserrat', sans-serif; font-weight: 700;
-    font-size: 1.5rem;
-  }
-  .ba-after .ba-mockroom { color: rgba(46,190,110,0.8); }
-  .ba-clip {
-    position: absolute; inset: 0; overflow: hidden;
-  }
-  .ba-divider {
-    position: absolute; top: 0; bottom: 0;
-    width: 3px; background: var(--white);
-    transform: translateX(-50%);
-    z-index: 10;
-  }
-  .ba-handle {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 48px; height: 48px;
-    background: var(--white); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 0 4px rgba(46,190,110,0.4);
-    z-index: 11;
-    transition: box-shadow 0.2s;
-  }
-  .ba-handle:hover { box-shadow: 0 0 0 8px rgba(46,190,110,0.3); }
-  .ba-label {
-    position: absolute; top: 1.5rem;
-    font-family: 'Montserrat', sans-serif; font-weight: 700;
-    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
-    padding: 0.4rem 1rem; border-radius: 4px; z-index: 12;
-  }
-  .ba-label.before { left: 1.5rem; background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.7); }
-  .ba-label.after { right: 1.5rem; background: var(--green); color: #000; }
+
 
   /* Fake room visualization */
   .room-before {
@@ -706,7 +653,7 @@
     position: absolute; inset: 0; pointer-events: none; z-index: 0;
     background: radial-gradient(ellipse 55% 60% at 85% 45%, rgba(46,190,110,0.10) 0%, transparent 70%);
   }
-  #referenzen::before, #faq::before {
+  #faq::before {
     content: '';
     position: absolute; inset: 0; pointer-events: none; z-index: 0;
     background: radial-gradient(ellipse 50% 55% at 15% 55%, rgba(255,122,0,0.08) 0%, transparent 70%);
@@ -1065,7 +1012,6 @@
   <a href="#" class="nav-logo"><img src="Logo_Malermark_Transparent.png" alt="MalerMarc"></a>
   <ul class="nav-links">
     <li><a href="#leistungen">Leistungen</a></li>
-    <li><a href="#referenzen">Referenzen</a></li>
     <li><a href="#ueber-mich">Über mich</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#kontakt" class="nav-cta">Offerte</a></li>
@@ -1113,7 +1059,7 @@
         <i data-lucide="send" width="16" height="16"></i>
         Offerte anfragen
       </a>
-      <a href="#referenzen" class="btn-ghost">
+      <a href="#galerie" class="btn-ghost">
         <i data-lucide="eye" width="16" height="16"></i>
         Projekte ansehen
       </a>
@@ -1282,44 +1228,7 @@
   </div>
 </section>
 
-<!-- BEFORE / AFTER -->
-<div class="glow-line"></div>
-<section id="referenzen">
-  <div class="section-label reveal">Referenzprojekte</div>
-  <h2 class="reveal reveal-delay-1">Der Unterschied ist<br><span style="color:var(--green)">sichtbar.</span></h2>
-  <p class="reveal reveal-delay-2" style="color:rgba(26,26,26,0.6); max-width:520px; line-height:1.8; font-size:0.95rem;">
-    Ziehen Sie den Regler und erleben Sie die Transformation. Jedes Projekt ist ein Beweis für handwerkliche Perfektion.
-  </p>
 
-  <div class="ba-container reveal reveal-delay-3" id="ba-slider" data-editable="beforeafter" data-key="referenz_1">
-    <!-- BEFORE -->
-    <div class="ba-before">
-      <div class="cms-slot" data-key="referenz_vorher" style="position:absolute; inset:0; width:100%; height:100%;">
-        <div class="cms-placeholder" style="position:absolute; inset:0; background:#2a2520; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.3); font-size:3rem;">＋</div>
-        <img class="cms-img" src="" alt="Vorher" style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
-        <video class="cms-video" autoplay muted loop playsinline style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover;"></video>
-      </div>
-    </div>
-    <!-- AFTER (clipped) -->
-    <div class="ba-clip" id="ba-clip" style="clip-path: inset(0 50% 0 0);">
-      <div class="ba-after">
-        <div class="cms-slot" data-key="referenz_nachher" style="position:absolute; inset:0; width:100%; height:100%;">
-          <div class="cms-placeholder" style="position:absolute; inset:0; background:#1a3a27; display:flex; align-items:center; justify-content:center; color:rgba(46,190,110,0.7); font-size:3rem;">＋</div>
-          <img class="cms-img" src="" alt="Nachher" style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
-          <video class="cms-video" autoplay muted loop playsinline style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover;"></video>
-        </div>
-      </div>
-    </div>
-    <!-- Labels -->
-    <span class="ba-label before">Vorher</span>
-    <span class="ba-label after">Nachher</span>
-    <!-- Divider -->
-    <div class="ba-divider" id="ba-divider" style="left:50%;"></div>
-    <div class="ba-handle" id="ba-handle" style="left:50%;">
-      <i data-lucide="move-horizontal" width="20" height="20" style="color:#000;"></i>
-    </div>
-  </div>
-</section>
 
 <!-- GALERIE REFERENZGALERIE -->
 <div class="glow-line"></div>
@@ -2011,7 +1920,6 @@
       <div class="footer-col-title">Unternehmen</div>
       <ul class="footer-links">
         <li><a href="#ueber-mich">Über mich</a></li>
-        <li><a href="#referenzen">Referenzen</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="#kontakt">Kontakt</a></li>
       </ul>
@@ -2088,7 +1996,7 @@
       });
     });
   }
-  addHoverCursor(document.querySelectorAll('a, button, input, textarea, select, .ba-container, .masonry-tile'));
+  addHoverCursor(document.querySelectorAll('a, button, input, textarea, select, .masonry-tile'));
 
   // Click: kurz verkleinern
   document.addEventListener('mousedown', () => {
@@ -2112,29 +2020,6 @@
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
   document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-  // ── BEFORE/AFTER SLIDER ──
-  const slider = document.getElementById('ba-slider');
-  const clip = document.getElementById('ba-clip');
-  const divider = document.getElementById('ba-divider');
-  const handle = document.getElementById('ba-handle');
-  let isDragging = false;
-
-  function updateSlider(x) {
-    const rect = slider.getBoundingClientRect();
-    let pct = ((x - rect.left) / rect.width) * 100;
-    pct = Math.max(2, Math.min(98, pct));
-    clip.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-    divider.style.left = pct + '%';
-    handle.style.left = pct + '%';
-  }
-
-  slider.addEventListener('mousedown', e => { isDragging = true; updateSlider(e.clientX); });
-  slider.addEventListener('touchstart', e => { isDragging = true; updateSlider(e.touches[0].clientX); }, {passive:true});
-  window.addEventListener('mousemove', e => { if (isDragging) updateSlider(e.clientX); });
-  window.addEventListener('touchmove', e => { if (isDragging) updateSlider(e.touches[0].clientX); }, {passive:true});
-  window.addEventListener('mouseup', () => isDragging = false);
-  window.addEventListener('touchend', () => isDragging = false);
 
   // ── FAQ ──
   function toggleFaq(btn) {
@@ -2319,8 +2204,27 @@ async function _loadContent() {
 
 // ── postMessage listener ──────────────────────────────────
 window.addEventListener('message', e => {
-  if (e.data?.type === 'cms_media') _applyMedia(e.data.key, e.data.value);
-  if (e.data?.type === 'cms_text')  _applyText(e.data.key, e.data.value);
+  const d = e.data;
+  if (!d) return;
+  if (d.type === 'cms_media') _applyMedia(d.key, d.value);
+  if (d.type === 'cms_text')  _applyText(d.key, d.value);
+  if (d.type === 'cms_color') {
+    document.documentElement.style.setProperty(d.var, d.value);
+  }
+  if (d.type === 'cms_font') {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(d.family)}:wght@400;700;900&display=swap`;
+    document.head.appendChild(link);
+    if (d.target === 'heading') {
+      document.querySelectorAll('h1,h2,h3,.logo-text,.nav-logo,.hero-eyebrow').forEach(el => el.style.fontFamily = `'${d.family}',sans-serif`);
+    } else {
+      document.body.style.fontFamily = `'${d.family}',sans-serif`;
+    }
+  }
+  if (d.type === 'cms_fontsize') {
+    document.documentElement.style.fontSize = (d.scale * 100) + '%';
+  }
 });
 
 document.addEventListener('DOMContentLoaded', _loadContent);
@@ -2353,31 +2257,28 @@ function _analyzeContrast(imgEl) {
 }
 
 // ══════════════════════════════════════════════════════════
-// INLINE VISUAL EDITOR (only when ?cms=1)
+// INLINE HOVER + SELECT (only when ?cms=1)
 // ══════════════════════════════════════════════════════════
 function _initEditor() {
-  // ── Inject CMS styles ────────────────────────────────────
   const style = document.createElement('style');
   style.textContent = `
-    body.cms-edit-mode *, body.cms-edit-mode *::before, body.cms-edit-mode *::after,
-    body.cms-edit-mode a, body.cms-edit-mode button { cursor: default !important; }
-    body.cms-edit-mode .cms-editable { cursor: pointer !important; }
-    body.cms-edit-mode .cms-editable-text { cursor: text !important; }
-    body.cms-edit-mode .cms-editable:hover {
+    body.cms-edit-mode .cms-editable,
+    body.cms-edit-mode [data-editable] { cursor: pointer !important; }
+    body.cms-edit-mode .cms-editable:hover,
+    body.cms-edit-mode [data-editable]:hover {
       outline: 2px solid #2EBE6E !important;
       outline-offset: 2px;
+      position: relative;
     }
-    body.cms-edit-mode .cms-editable:focus-within {
+    body.cms-edit-mode .cms-editable.cms-selected,
+    body.cms-edit-mode [data-editable].cms-selected {
       outline: 2px solid #FF7A00 !important;
     }
-    [contenteditable="true"] { outline: none !important; }
     #hero.hero-dark-bg h1,
     #hero.hero-dark-bg .hero-eyebrow,
     #hero.hero-dark-bg .hero-sub { color: #ffffff !important; transition: color 0.5s; }
     #hero.hero-light-bg h1 { color: #1a1a1a !important; transition: color 0.5s; }
     #hero.hero-light-bg .hero-sub { color: rgba(26,26,26,0.75) !important; transition: color 0.5s; }
-    #cms-toolbar { display:none; }
-    #cms-toolbar button { line-height:1; }
     #cms-hover-label {
       position:fixed; z-index:100000; pointer-events:none;
       background:#2EBE6E; color:#000; font-family:'Montserrat',sans-serif;
@@ -2388,256 +2289,36 @@ function _initEditor() {
   document.head.appendChild(style);
   document.body.classList.add('cms-edit-mode');
 
-  // ── Hover label ───────────────────────────────────────────
   const hoverLabel = document.createElement('div');
   hoverLabel.id = 'cms-hover-label';
   document.body.appendChild(hoverLabel);
 
-  // ── Toolbar ───────────────────────────────────────────────
-  const toolbar = document.createElement('div');
-  toolbar.id = 'cms-toolbar';
-  toolbar.style.cssText = `
-    position:fixed; z-index:99999; background:#1a1a1a; border-radius:8px;
-    padding:5px 6px; box-shadow:0 4px 20px rgba(0,0,0,0.35);
-    font-family:'Open Sans',sans-serif; white-space:nowrap;
-    transform-origin:top center;
-    animation:cmsToolbarIn 0.15s ease;
-  `;
-  const arrowEl = document.createElement('div');
-  arrowEl.id = 'cms-arrow';
-  arrowEl.style.cssText = `position:absolute;width:0;height:0;left:50%;transform:translateX(-50%);
-    border-left:6px solid transparent;border-right:6px solid transparent;`;
-  toolbar.appendChild(arrowEl);
-  document.body.appendChild(toolbar);
-
-  const styleAnim = document.createElement('style');
-  styleAnim.textContent = `@keyframes cmsToolbarIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}`;
-  document.head.appendChild(styleAnim);
-
-  let activeEl = null;
-  let savedContent = null;
-
-  // ── Position toolbar near element ─────────────────────────
-  function positionToolbar(el) {
-    toolbar.style.display = 'block';
-    toolbar.style.animation = 'cmsToolbarIn 0.15s ease';
-    const rect = el.getBoundingClientRect();
-    const tw = toolbar.offsetWidth || 200;
-    const th = toolbar.offsetHeight || 44;
-    let left = rect.left + rect.width / 2 - tw / 2;
-    let top = rect.top - th - 10;
-    const below = top < 8;
-    if (left < 8) left = 8;
-    if (left + tw > window.innerWidth - 8) left = window.innerWidth - tw - 8;
-    if (below) top = rect.bottom + 10;
-    toolbar.style.left = left + 'px';
-    toolbar.style.top = top + 'px';
-    // Arrow
-    const arrowX = Math.max(10, Math.min(rect.left + rect.width/2 - left, tw - 10));
-    arrowEl.style.left = arrowX + 'px';
-    arrowEl.style.transform = 'translateX(-50%)';
-    if (below) {
-      arrowEl.style.top = '-6px'; arrowEl.style.bottom = 'auto';
-      arrowEl.style.borderTop = 'none'; arrowEl.style.borderBottom = '6px solid #1a1a1a';
-    } else {
-      arrowEl.style.bottom = '-6px'; arrowEl.style.top = 'auto';
-      arrowEl.style.borderBottom = 'none'; arrowEl.style.borderTop = '6px solid #1a1a1a';
-    }
+  function wireEl(el, labelText, editable) {
+    el.classList.add('cms-editable');
+    el.addEventListener('mouseenter', () => {
+      const rect = el.getBoundingClientRect();
+      hoverLabel.textContent = labelText;
+      hoverLabel.style.display = 'block';
+      hoverLabel.style.top = Math.max(0, rect.top) + 'px';
+      hoverLabel.style.left = rect.left + 'px';
+    });
+    el.addEventListener('mouseleave', () => { hoverLabel.style.display = 'none'; });
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      hoverLabel.style.display = 'none';
+      document.querySelectorAll('.cms-selected').forEach(x => x.classList.remove('cms-selected'));
+      el.classList.add('cms-selected');
+      const key = el.dataset.key || el.dataset.cms || '';
+      window.parent.postMessage({ type: 'cms_select', key, editable }, '*');
+    });
   }
 
-  function hideToolbar() {
-    toolbar.style.display = 'none';
-    if (activeEl && activeEl.contentEditable === 'true') {
-      activeEl.contentEditable = 'false';
-    }
-    activeEl = null; savedContent = null;
-  }
-
-  // ── Build text toolbar ─────────────────────────────────────
-  function buildTextToolbar(el) {
-    toolbar.querySelectorAll(':not(#cms-arrow)').forEach(x => x.remove());
-    savedContent = el.innerHTML;
-    el.contentEditable = 'true';
-    el.focus();
-    activeEl = el;
-
-    function tbBtn(html, action, style='') {
-      const b = document.createElement('button');
-      b.innerHTML = html;
-      b.style.cssText = `background:none;border:none;color:#fff;cursor:pointer;padding:5px 8px;
-        border-radius:4px;font-size:13px;font-family:inherit;vertical-align:middle;${style}`;
-      b.onmouseenter = () => b.style.background = '#333';
-      b.onmouseleave = () => b.style.background = 'none';
-      b.onmousedown = ev => { ev.preventDefault(); action(); };
-      toolbar.insertBefore(b, arrowEl);
-    }
-    function sep() {
-      const s = document.createElement('span');
-      s.style.cssText = 'display:inline-block;width:1px;height:18px;background:#444;margin:0 3px;vertical-align:middle;';
-      toolbar.insertBefore(s, arrowEl);
-    }
-
-    tbBtn('<b style="font-weight:900">B</b>', () => document.execCommand('bold'));
-    tbBtn('<i>I</i>', () => document.execCommand('italic'));
-    tbBtn('<u>U</u>', () => document.execCommand('underline'));
-    sep();
-    tbBtn('S−', () => { const s = parseFloat(getComputedStyle(el).fontSize); el.style.fontSize = (s-1)+'px'; });
-    tbBtn('S+', () => { const s = parseFloat(getComputedStyle(el).fontSize); el.style.fontSize = (s+1)+'px'; });
-    sep();
-    // Save
-    const save = document.createElement('button');
-    save.textContent = '✓ Speichern';
-    save.style.cssText = `background:#2EBE6E;border:none;color:#000;cursor:pointer;padding:5px 12px;
-      border-radius:4px;font-size:12px;font-family:'Montserrat',sans-serif;font-weight:700;vertical-align:middle;`;
-    save.onmouseenter = () => save.style.background = '#1a9a52';
-    save.onmouseleave = () => save.style.background = '#2EBE6E';
-    save.onclick = () => saveText(el);
-    toolbar.insertBefore(save, arrowEl);
-    // Cancel
-    const cancel = document.createElement('button');
-    cancel.textContent = '✕';
-    cancel.style.cssText = `background:none;border:none;color:#888;cursor:pointer;padding:5px 8px;
-      border-radius:4px;font-size:13px;vertical-align:middle;`;
-    cancel.onmouseenter = () => cancel.style.color = '#fff';
-    cancel.onmouseleave = () => cancel.style.color = '#888';
-    cancel.onclick = () => { el.innerHTML = savedContent; el.contentEditable='false'; hideToolbar(); };
-    toolbar.insertBefore(cancel, arrowEl);
-  }
-
-  // ── Build image toolbar ────────────────────────────────────
-  function buildImageToolbar(el) {
-    toolbar.querySelectorAll(':not(#cms-arrow)').forEach(x => x.remove());
-    activeEl = el;
-    toolbar.style.padding = '4px';
-
-    function imgBtn(label, action, red=false) {
-      const b = document.createElement('button');
-      b.textContent = label;
-      b.style.cssText = `display:block;width:100%;background:none;border:none;
-        color:${red?'#e74c3c':'#fff'};cursor:pointer;padding:8px 16px;text-align:left;
-        font-size:13px;font-family:inherit;white-space:nowrap;border-radius:4px;`;
-      b.onmouseenter = () => b.style.background = red ? '#3a1010' : '#2a2a2a';
-      b.onmouseleave = () => b.style.background = 'none';
-      b.onclick = action;
-      toolbar.insertBefore(b, arrowEl);
-    }
-    imgBtn('📷  Bild hochladen', () => doUpload(el, 'image/*'));
-    imgBtn('🎬  Video hochladen', () => doUpload(el, 'video/mp4,video/webm'));
-    imgBtn('🗑  Entfernen', () => doRemove(el), true);
-  }
-
-  // ── Upload ─────────────────────────────────────────────────
-  async function doUpload(el, accept) {
-    const key = el.dataset.key;
-    const input = document.createElement('input');
-    input.type = 'file'; input.accept = accept;
-    input.onchange = async () => {
-      const file = input.files[0]; if (!file) return;
-      hideToolbar();
-      _showToast('⏳ Hochladen...');
-      const ext = file.name.split('.').pop().toLowerCase();
-      const path = key + '_' + Date.now() + '.' + ext;
-      const { error: e1 } = await _db.storage.from('bilder').upload(path, file, { upsert: true });
-      if (e1) { _showToast('❌ ' + e1.message); return; }
-      const { data } = _db.storage.from('bilder').getPublicUrl(path);
-      const url = data.publicUrl;
-      const { error: e2 } = await _db.from('content').upsert(
-        { key, value: url, updated_at: new Date().toISOString() }, { onConflict: 'key' }
-      );
-      if (e2) { _showToast('❌ ' + e2.message); return; }
-      _applyMedia(key, url);
-      window.parent.postMessage({ type: 'cms_saved', key, value: url }, '*');
-      _showToast('✓ Gespeichert!');
-    };
-    input.click();
-  }
-
-  async function doRemove(el) {
-    const key = el.dataset.key;
-    const { error } = await _db.from('content').upsert(
-      { key, value: '', updated_at: new Date().toISOString() }, { onConflict: 'key' }
-    );
-    if (error) { _showToast('❌ ' + error.message); return; }
-    _applyMedia(key, '');
-    window.parent.postMessage({ type: 'cms_saved', key, value: '' }, '*');
-    hideToolbar();
-    _showToast('✓ Entfernt');
-  }
-
-  // ── Save text ──────────────────────────────────────────────
-  async function saveText(el) {
-    const key = el.dataset.key || el.dataset.cms;
-    const value = el.innerText.trim();
-    const { error } = await _db.from('content').upsert(
-      { key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' }
-    );
-    if (error) { _showToast('❌ ' + error.message); return; }
-    el.contentEditable = 'false';
-    window.parent.postMessage({ type: 'cms_saved', key, value }, '*');
-    hideToolbar();
-    _showToast('✓ Gespeichert!');
-  }
-
-  // ── Wire up editable elements ──────────────────────────────
   document.querySelectorAll('[data-editable="text"], [data-editable="heading"]').forEach(el => {
-    el.classList.add('cms-editable', 'cms-editable-text');
-    el.setAttribute('data-cms-label', el.dataset.editable === 'heading' ? 'Titel' : 'Text');
-    el.addEventListener('mouseenter', () => {
-      const rect = el.getBoundingClientRect();
-      hoverLabel.textContent = el.dataset.cmsLabel;
-      hoverLabel.style.cssText += `display:block;top:${rect.top + window.scrollY}px;left:${rect.left}px;`;
-      hoverLabel.style.display = 'block';
-      hoverLabel.style.top = (rect.top + window.scrollY) + 'px';
-      hoverLabel.style.left = rect.left + 'px';
-    });
-    el.addEventListener('mouseleave', () => { hoverLabel.style.display = 'none'; });
-    el.addEventListener('click', e => {
-      e.stopPropagation();
-      hoverLabel.style.display = 'none';
-      buildTextToolbar(el);
-      setTimeout(() => positionToolbar(el), 0);
-    });
+    wireEl(el, el.dataset.editable === 'heading' ? 'Titel' : 'Text', 'text');
   });
-
-  document.querySelectorAll('.cms-slot').forEach(el => {
-    el.classList.add('cms-editable', 'cms-editable-image');
-    el.setAttribute('data-cms-label', 'Bild');
-    el.addEventListener('mouseenter', () => {
-      const rect = el.getBoundingClientRect();
-      hoverLabel.textContent = 'Bild';
-      hoverLabel.style.display = 'block';
-      hoverLabel.style.top = (rect.top + window.scrollY) + 'px';
-      hoverLabel.style.left = rect.left + 'px';
-    });
-    el.addEventListener('mouseleave', () => { hoverLabel.style.display = 'none'; });
-    el.addEventListener('click', e => {
-      e.stopPropagation();
-      hoverLabel.style.display = 'none';
-      buildImageToolbar(el);
-      setTimeout(() => positionToolbar(el), 0);
-    });
+  document.querySelectorAll('.cms-slot[data-key]').forEach(el => {
+    wireEl(el, 'Bild / Video', 'image');
   });
-
-  // ── Click outside ──────────────────────────────────────────
-  document.addEventListener('click', e => {
-    if (!toolbar.contains(e.target) && e.target !== activeEl && !e.target.closest('.cms-editable')) {
-      if (activeEl?.contentEditable === 'true') {
-        activeEl.innerHTML = savedContent; activeEl.contentEditable = 'false';
-      }
-      hideToolbar();
-    }
-  });
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && activeEl) {
-      if (activeEl.contentEditable === 'true') { activeEl.innerHTML = savedContent; activeEl.contentEditable = 'false'; }
-      hideToolbar();
-    }
-  });
-
-  window.addEventListener('scroll', () => {
-    if (activeEl && toolbar.style.display !== 'none') positionToolbar(activeEl);
-  }, { passive: true });
 }
 
 // ── Toast ──────────────────────────────────────────────────
