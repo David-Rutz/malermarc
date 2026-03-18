@@ -3,1750 +3,407 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MalerMarc – Live-Editor</title>
+<title>MalerMarc – Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <style>
   :root {
     --green: #2EBE6E;
     --green-dark: #1a9a52;
-    --orange: #FF7A00;
-    --bg: #f8f8f6;
+    --danger: #e74c3c;
+    --bg: #f5f5f0;
     --white: #ffffff;
     --text: #1a1a1a;
-    --text-muted: #666;
+    --text-muted: #888;
     --border: #e0e0d8;
-    --card-bg: #ffffff;
-    --danger: #e53e3e;
-    --sidebar-w: 220px;
-    --panel-w: 320px;
+    --sidebar-w: 240px;
+    --panel-w: 300px;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
-  body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; font-family:'Open Sans',sans-serif; background:var(--bg); color:var(--text); }
 
-  /* ══════════ LOGIN ══════════ */
+  /* LOGIN */
   #login-screen {
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #f8f8f6 0%, #eeeee8 100%);
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#f5f5f0,#eeeee8);
   }
   .login-card {
-    background: var(--white); border-radius: 16px; padding: 3rem 2.5rem;
-    width: 100%; max-width: 420px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+    background:var(--white); border-radius:16px; padding:3rem 2.5rem;
+    width:100%; max-width:400px; box-shadow:0 8px 40px rgba(0,0,0,0.08);
   }
-  .login-logo { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.8rem; text-align: center; margin-bottom: 0.25rem; }
-  .login-logo span { color: var(--green); }
-  .login-sub { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 2rem; }
+  .login-logo { font-family:'Montserrat',sans-serif; font-weight:900; font-size:1.8rem; text-align:center; margin-bottom:0.25rem; }
+  .login-logo span { color:var(--green); }
+  .login-sub { text-align:center; color:var(--text-muted); font-size:0.85rem; margin-bottom:2rem; }
+  .form-field { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1rem; }
+  .form-field label { font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); }
+  .form-field input { border:1.5px solid var(--border); border-radius:8px; padding:0.75rem 0.9rem; font-size:0.9rem; outline:none; transition:border-color 0.2s; }
+  .form-field input:focus { border-color:var(--green); }
+  .login-error { color:var(--danger); font-size:0.85rem; margin-bottom:0.75rem; display:none; }
 
-  /* ══════════ BUTTONS ══════════ */
-  .btn {
-    font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.82rem;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    padding: 0.7rem 1.4rem; border-radius: 8px; border: none; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    text-decoration: none;
-  }
-  .btn-primary { background: var(--green); color: #000; }
-  .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(46,190,110,0.3); }
-  .btn-secondary { background: rgba(0,0,0,0.06); color: var(--text); }
-  .btn-secondary:hover { background: rgba(0,0,0,0.1); }
-  .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
-  .btn-ghost:hover { background: rgba(0,0,0,0.04); color: var(--text); }
-  .btn-danger { background: var(--danger); color: #fff; }
-  .btn-danger:hover { background: #c53030; }
-  .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.73rem; }
-  .btn-full { width: 100%; justify-content: center; }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+  /* ADMIN LAYOUT */
+  #admin-app { display:none; height:100vh; }
+  #admin-app.active { display:flex; }
 
-  /* ══════════ FORMS ══════════ */
-  .form-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
-  .form-field label {
-    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.7rem;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
+  /* SIDEBAR */
+  #sidebar {
+    width:var(--sidebar-w); background:var(--white); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; overflow:hidden; flex-shrink:0;
   }
-  .form-field input, .form-field textarea, .form-field select {
-    border: 1.5px solid var(--border); border-radius: 8px; padding: 0.7rem 0.9rem;
-    font-family: 'Open Sans', sans-serif; font-size: 0.88rem; color: var(--text);
-    background: var(--white); outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+  .sidebar-header {
+    padding:1.25rem 1rem; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
   }
-  .form-field input:focus, .form-field textarea:focus, .form-field select:focus {
-    border-color: var(--green); box-shadow: 0 0 0 3px rgba(46,190,110,0.12);
+  .sidebar-logo { font-family:'Montserrat',sans-serif; font-weight:900; font-size:1.1rem; }
+  .sidebar-logo span { color:var(--green); }
+  .sidebar-logout { font-size:0.75rem; color:var(--text-muted); cursor:pointer; background:none; border:none; font-family:'Open Sans',sans-serif; }
+  .sidebar-logout:hover { color:var(--danger); }
+  .sidebar-nav { flex:1; overflow-y:auto; padding:0.75rem 0; }
+  .nav-group-label {
+    padding:0.5rem 1rem 0.3rem; font-family:'Montserrat',sans-serif; font-weight:700;
+    font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted);
   }
-  .form-field textarea { min-height: 90px; resize: vertical; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-
-  /* ══════════ MSGS ══════════ */
-  .error-msg {
-    background: #fff5f5; border: 1px solid #fed7d7; border-radius: 8px;
-    padding: 0.7rem 1rem; color: var(--danger); font-size: 0.85rem;
-    margin-bottom: 1rem; display: none;
-  }
-  .success-msg {
-    background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 8px;
-    padding: 0.7rem 1rem; color: #276749; font-size: 0.85rem;
-    margin-bottom: 1rem; display: none;
-  }
-
-  /* ══════════ ADMIN LAYOUT ══════════ */
-  #admin-app { display: none; height: 100vh; }
-  #admin-app.active { display: flex; }
-
-  /* ── SIDEBAR ── */
-  .sidebar {
-    width: var(--sidebar-w); height: 100vh; background: var(--white);
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column; flex-shrink: 0;
-    position: sticky; top: 0; overflow-y: auto;
-  }
-  .sidebar-logo {
-    padding: 1.25rem 1.25rem 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .sidebar-logo small { display: block; font-size: 0.62rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
-  .sidebar-nav { flex: 1; padding: 0.75rem 0; }
   .nav-item {
-    display: flex; align-items: center; gap: 0.7rem;
-    padding: 0.7rem 1.25rem; color: var(--text-muted);
-    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.8rem;
-    letter-spacing: 0.03em; cursor: pointer; border: none; background: none;
-    width: 100%; text-align: left;
-    transition: background 0.15s, color 0.15s;
-    position: relative;
+    display:flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem;
+    font-size:0.82rem; cursor:pointer; border-radius:0; transition:background 0.15s;
+    border-left:3px solid transparent; color:var(--text);
   }
-  .nav-item:hover { background: rgba(46,190,110,0.06); color: var(--text); }
-  .nav-item.active { color: var(--green); background: rgba(46,190,110,0.08); }
-  .nav-item.active::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-    width: 3px; background: var(--green); border-radius: 0 2px 2px 0;
+  .nav-item:hover { background:rgba(46,190,110,0.06); }
+  .nav-item.active { background:rgba(46,190,110,0.1); border-left-color:var(--green); color:var(--green); font-weight:600; }
+  .nav-item .nav-dot { width:8px; height:8px; border-radius:50%; background:var(--border); flex-shrink:0; }
+  .nav-item.has-content .nav-dot { background:var(--green); }
+
+  /* IFRAME */
+  #iframe-wrap { flex:1; position:relative; overflow:hidden; }
+  #preview-iframe { width:100%; height:100%; border:none; }
+
+  /* EDIT PANEL */
+  #edit-panel {
+    width:var(--panel-w); background:var(--white); border-left:1px solid var(--border);
+    display:none; flex-direction:column; overflow:hidden; flex-shrink:0;
   }
-  .sidebar-footer {
-    padding: 1rem 1.25rem 1.25rem;
-    border-top: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 0.5rem;
-  }
-  .sidebar-user {
-    display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.5rem;
-  }
-  .sidebar-avatar {
-    width: 30px; height: 30px; border-radius: 50%; background: var(--green);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 0.75rem; color: #000;
-  }
-  .sidebar-user-email { font-size: 0.72rem; color: var(--text-muted); word-break: break-all; }
-
-  /* ── MAIN AREA ── */
-  .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-
-  /* ── VIEWS (Dashboard, Projekte, etc.) ── */
-  .view { display: none; flex: 1; padding: 2rem; overflow-y: auto; }
-  .view.active { display: block; }
-  .view-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 1.75rem; padding-bottom: 1rem;
-    border-bottom: 1.5px solid var(--border);
-  }
-  .view-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.5rem; }
-  .view-sub { color: var(--text-muted); font-size: 0.83rem; margin-top: 2px; }
-
-  /* ── CARDS ── */
-  .card {
-    background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04); padding: 1.5rem; margin-bottom: 1.25rem;
-  }
-  .card-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; }
-  .card-title svg { color: var(--green); }
-
-  /* ── DASHBOARD STATS ── */
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
-  .stat-card {
-    background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
-    padding: 1.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  }
-  .stat-card .num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2rem; color: var(--green); line-height: 1; }
-  .stat-card .lbl { font-size: 0.73rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Montserrat', sans-serif; font-weight: 600; }
-
-  /* ── TABLE ── */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
-  th { text-align: left; padding: 0.65rem 0.9rem; background: var(--bg); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1.5px solid var(--border); }
-  td { padding: 0.8rem 0.9rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(46,190,110,0.02); }
-  .badge { display: inline-block; padding: 0.22rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; font-family: 'Montserrat', sans-serif; letter-spacing: 0.05em; }
-  .badge-green { background: rgba(46,190,110,0.12); color: var(--green-dark); }
-  .badge-gray { background: rgba(0,0,0,0.06); color: var(--text-muted); }
-  .badge-orange { background: rgba(255,122,0,0.12); color: #c05a00; }
-  .actions { display: flex; gap: 0.4rem; align-items: center; }
-
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.35);
-    z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1.5rem;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal { background: var(--white); border-radius: 16px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); }
-  .modal-header { padding: 1.25rem 1.5rem 0.9rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .modal-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; }
-  .modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 0.2rem; border-radius: 6px; transition: color 0.2s; }
-  .modal-close:hover { color: var(--text); }
-  .modal-body { padding: 1.25rem 1.5rem; }
-  .modal-footer { padding: 0.9rem 1.5rem 1.25rem; display: flex; gap: 0.65rem; justify-content: flex-end; border-top: 1px solid var(--border); }
-
-  /* ── UPLOAD ZONE ── */
-  .upload-zone {
-    border: 2px dashed rgba(46,190,110,0.4); border-radius: 10px;
-    padding: 1.5rem; text-align: center; cursor: pointer;
-    transition: border-color 0.2s, background 0.2s; color: var(--text-muted); font-size: 0.85rem;
-  }
-  .upload-zone:hover { border-color: var(--green); background: rgba(46,190,110,0.04); }
-  .upload-zone input[type=file] { display: none; }
-  .img-preview { width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-top: 0.75rem; display: none; }
-
-  /* ── PROGRESS BAR ── */
-  .progress-wrap { margin-top: 0.75rem; display: none; }
-  .progress-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.3s ease; width: 0; }
-
-  /* ── GALLERY ── */
-  .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.85rem; margin-top: 0.75rem; }
-  .gallery-item { position: relative; border-radius: 10px; overflow: hidden; border: 1.5px solid var(--border); aspect-ratio: 1; background: var(--bg); transition: border-color 0.2s; }
-  .gallery-item:hover { border-color: var(--green); }
-  .gallery-item img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
-  .gallery-item-actions { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); padding: 0.4rem; display: flex; gap: 0.3rem; justify-content: center; opacity: 0; transition: opacity 0.2s; }
-  .gallery-item:hover .gallery-item-actions { opacity: 1; }
-  .gallery-item-name { font-size: 0.68rem; color: var(--text-muted); padding: 0.35rem; word-break: break-all; text-align: center; }
-
-  /* ── FAQ LIST ── */
-  .faq-list { display: flex; flex-direction: column; gap: 0.65rem; }
-  .faq-row { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 0.85rem; }
-  .faq-row .faq-q-text { font-weight: 600; font-size: 0.88rem; flex: 1; }
-  .faq-row .faq-a-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
-
-  /* ── TOGGLE ── */
-  .toggle-wrap { display: flex; align-items: center; gap: 0.7rem; }
-  .toggle { position: relative; width: 40px; height: 22px; cursor: pointer; display: inline-block; flex-shrink: 0; }
-  .toggle input { display: none; }
-  .toggle-slider { position: absolute; inset: 0; background: rgba(0,0,0,0.15); border-radius: 22px; transition: background 0.2s; }
-  .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform 0.2s; }
-  .toggle input:checked + .toggle-slider { background: var(--green); }
-  .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
-  .toggle-label { font-size: 0.84rem; }
-
-  /* ── SPINNER / LOADING ── */
-  .spinner { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.1); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-state { display: flex; align-items: center; gap: 0.65rem; color: var(--text-muted); font-size: 0.88rem; padding: 2rem 0; }
-  .empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); }
-  .empty-state svg { margin-bottom: 0.65rem; opacity: 0.35; }
-
-  /* ── MISC ── */
-  .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
-  .copy-toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.8rem; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 9999; }
-  .copy-toast.show { opacity: 1; }
-  .mt-1 { margin-top: 0.5rem; }
-  .mt-2 { margin-top: 1rem; }
-  .text-muted { color: var(--text-muted); font-size: 0.83rem; }
-
-  /* ═══════════════════════════════════════════
-     LIVE-EDITOR VIEW (3-spaltig)
-  ═══════════════════════════════════════════ */
-  #view-editor {
-    display: none; /* überschrieben durch .view.active */
-    flex: 1; flex-direction: row; overflow: hidden; padding: 0;
-  }
-  #view-editor.active { display: flex; }
-
-  /* ── PREVIEW AREA (Mitte) ── */
-  .preview-area {
-    flex: 1; display: flex; flex-direction: column; overflow: hidden;
-    background: #e8e8e4; min-width: 0;
-  }
-
-  /* ── TOOLBAR ── */
-  .preview-toolbar {
-    height: 52px; flex-shrink: 0;
-    background: var(--white); border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 0.75rem;
-    padding: 0 1rem;
-  }
-  .device-toggle { display: flex; gap: 2px; background: var(--bg); border-radius: 8px; padding: 3px; }
-  .device-btn {
-    background: none; border: none; cursor: pointer; padding: 0.35rem 0.7rem;
-    border-radius: 6px; color: var(--text-muted); transition: background 0.15s, color 0.15s;
-    font-size: 0.75rem; font-family: 'Montserrat', sans-serif; font-weight: 600;
-    display: flex; align-items: center; gap: 0.3rem;
-  }
-  .device-btn.active { background: var(--white); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .toolbar-center { flex: 1; text-align: center; font-size: 0.78rem; color: var(--text-muted); font-family: 'Montserrat', sans-serif; font-weight: 600; letter-spacing: 0.06em; }
-  .toolbar-right { display: flex; align-items: center; gap: 0.75rem; margin-left: auto; }
-  .status-badge {
-    font-size: 0.7rem; font-family: 'Montserrat', sans-serif; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    padding: 0.3rem 0.75rem; border-radius: 20px;
-  }
-  .status-badge.published { background: rgba(46,190,110,0.12); color: var(--green-dark); }
-  .status-badge.unpublished { background: rgba(255,122,0,0.12); color: #c05a00; }
-
-  /* ── IFRAME WRAPPER ── */
-  .iframe-outer { flex: 1; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 0; position: relative; }
-  .iframe-inner {
-    width: 100%; height: 100%; transition: width 0.3s ease, max-width 0.3s ease;
-    position: relative;
-  }
-  .iframe-inner iframe {
-    width: 100%; height: 100%; border: none;
-    display: block;
-  }
-
-  /* ── EDIT PANEL (Rechts) ── */
-  .edit-panel {
-    width: var(--panel-w); flex-shrink: 0;
-    background: var(--white); border-left: 1px solid var(--border);
-    display: flex; flex-direction: column; overflow: hidden;
-  }
+  #edit-panel.open { display:flex; }
   .panel-header {
-    padding: 1rem 1.25rem 0.75rem;
-    border-bottom: 1px solid var(--border);
-    font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem;
-    display: flex; align-items: center; justify-content: space-between;
+    padding:1rem 1.25rem; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
   }
-  .panel-back {
-    background: none; border: none; cursor: pointer; color: var(--text-muted);
-    display: flex; align-items: center; gap: 0.3rem; font-size: 0.75rem;
-    font-family: 'Montserrat', sans-serif; font-weight: 600; padding: 0;
-    transition: color 0.15s;
-  }
-  .panel-back:hover { color: var(--text); }
-  .panel-body { flex: 1; overflow-y: auto; padding: 1.1rem 1.25rem; }
+  .panel-title { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.9rem; }
+  .panel-key { font-size:0.72rem; color:var(--text-muted); font-family:monospace; margin-top:0.1rem; }
+  .panel-close { background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.2rem; line-height:1; }
+  .panel-close:hover { color:var(--text); }
+  .panel-body { flex:1; padding:1.25rem; overflow-y:auto; display:flex; flex-direction:column; gap:1rem; }
 
-  /* Area Tiles (Default Panel) */
-  .area-tiles { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; }
-  .area-tile {
-    background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px;
-    padding: 0.9rem 1rem; cursor: pointer;
-    display: flex; align-items: center; justify-content: space-between;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .area-tile:hover { border-color: var(--green); background: rgba(46,190,110,0.04); }
-  .area-tile-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.83rem; }
-  .area-tile-desc { font-size: 0.73rem; color: var(--text-muted); margin-top: 2px; }
+  /* BUTTONS */
+  .btn { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.8rem; letter-spacing:0.06em; text-transform:uppercase; padding:0.7rem 1rem; border-radius:8px; border:none; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:0.5rem; transition:background 0.2s, transform 0.1s; }
+  .btn:active { transform:scale(0.98); }
+  .btn-green { background:var(--green); color:#000; }
+  .btn-green:hover { background:var(--green-dark, #1a9a52); }
+  .btn-red { background:var(--danger); color:#fff; }
+  .btn-red:hover { background:#c0392b; }
+  .btn-secondary { background:rgba(0,0,0,0.06); color:var(--text); }
+  .btn-secondary:hover { background:rgba(0,0,0,0.1); }
 
-  /* Breadcrumb */
-  .editor-breadcrumb {
-    font-size: 0.72rem; color: var(--text-muted);
-    font-family: 'Montserrat', sans-serif; font-weight: 600;
-    letter-spacing: 0.05em; margin-bottom: 1rem;
-    display: flex; align-items: center; gap: 0.3rem;
+  textarea.edit-textarea {
+    width:100%; min-height:100px; border:1.5px solid var(--border); border-radius:8px;
+    padding:0.75rem; font-size:0.9rem; font-family:'Open Sans',sans-serif; resize:vertical; outline:none;
+    transition:border-color 0.2s;
   }
-  .char-count { font-size: 0.72rem; color: var(--text-muted); text-align: right; margin-top: 0.3rem; }
-
-  /* Image panel */
-  .img-current-preview {
-    width: 100%; height: 180px; object-fit: cover; border-radius: 8px;
-    display: none; margin-bottom: 0.75rem; background: var(--bg);
-  }
-  .img-placeholder {
-    width: 100%; height: 180px; background: var(--bg); border: 1.5px dashed var(--border);
-    border-radius: 8px; display: flex; align-items: center; justify-content: center;
-    color: var(--text-muted); font-size: 0.83rem; margin-bottom: 0.75rem;
-    flex-direction: column; gap: 0.5rem;
-  }
-
-  /* Before/After panel */
-  .ba-upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; }
-  .ba-upload-col label { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.4rem; }
-
-  /* Image library modal */
-  .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.65rem; margin-top: 0.75rem; }
-  .lib-item { position: relative; border-radius: 8px; overflow: hidden; border: 1.5px solid var(--border); aspect-ratio: 1; cursor: pointer; background: var(--bg); transition: border-color 0.15s; }
-  .lib-item:hover { border-color: var(--green); }
-  .lib-item img { width: 100%; height: 100%; object-fit: cover; }
-  .lib-item-name { font-size: 0.66rem; color: var(--text-muted); padding: 0.3rem; text-align: center; word-break: break-all; }
-  .lib-delete {
-    position: absolute; top: 4px; right: 4px;
-    background: rgba(229,62,62,0.85); border: none; border-radius: 5px;
-    cursor: pointer; color: #fff; padding: 3px; display: none; align-items: center;
-  }
-  .lib-item:hover .lib-delete { display: flex; }
-
-  /* Panel footer (save/cancel buttons) */
-  .panel-footer {
-    padding: 0.85rem 1.25rem;
-    border-top: 1px solid var(--border);
-    display: flex; gap: 0.5rem;
-  }
+  textarea.edit-textarea:focus { border-color:var(--green); }
 </style>
 </head>
 <body>
 
-<!-- ══════════ LOGIN ══════════ -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
-    <div class="login-logo"><img src="Logo_Malermark_Transparent.png" alt="MalerMarc" style="height:56px; width:auto; object-fit:contain;"></div>
-    <div class="login-sub">Admin · Live-Editor</div>
-    <div class="error-msg" id="login-error"></div>
-    <div id="login-form">
-      <div class="form-field">
-        <label>E-Mail</label>
-        <input type="email" id="login-email" placeholder="admin@malermarc.ch" autocomplete="email">
-      </div>
-      <div class="form-field">
-        <label>Passwort</label>
-        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
-      </div>
-      <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">
-        <i data-lucide="log-in" width="16" height="16"></i>
-        Einloggen
-      </button>
+    <div class="login-logo">Maler<span>Marc</span></div>
+    <div class="login-sub">Admin — Content Management</div>
+    <div id="login-error" class="login-error"></div>
+    <div class="form-field">
+      <label>E-Mail</label>
+      <input type="email" id="login-email" value="marc@malermarc.ch" autocomplete="username">
     </div>
+    <div class="form-field">
+      <label>Passwort</label>
+      <input type="password" id="login-pw" autocomplete="current-password">
+    </div>
+    <button class="btn btn-green" style="margin-top:0.5rem;" onclick="doLogin()">Anmelden</button>
   </div>
 </div>
 
-<!-- ══════════ ADMIN APP ══════════ -->
+<!-- ADMIN APP -->
 <div id="admin-app">
 
   <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <img src="Logo_Malermark_Transparent.png" alt="MalerMarc" style="height:40px; width:auto; object-fit:contain; display:block; margin-bottom:4px;">
-      <small>Admin Panel</small>
+  <div id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Maler<span>Marc</span></div>
+      <button class="sidebar-logout" onclick="doLogout()">Abmelden</button>
     </div>
-    <nav class="sidebar-nav">
-      <button class="nav-item active" data-view="editor" onclick="showView('editor', this)">
-        <i data-lucide="layout" width="15" height="15"></i>
-        Seiten-Editor
-      </button>
-      <button class="nav-item" data-view="dashboard" onclick="showView('dashboard', this)">
-        <i data-lucide="layout-dashboard" width="15" height="15"></i>
-        Dashboard
-      </button>
-      <button class="nav-item" data-view="projekte" onclick="showView('projekte', this)">
-        <i data-lucide="image" width="15" height="15"></i>
-        Projekte
-      </button>
-      <button class="nav-item" data-view="faq" onclick="showView('faq', this)">
-        <i data-lucide="help-circle" width="15" height="15"></i>
-        FAQ
-      </button>
-      <button class="nav-item" data-view="bilder" onclick="showView('bilder', this)">
-        <i data-lucide="folder-open" width="15" height="15"></i>
-        Bilder
-      </button>
-      <button class="nav-item" data-view="kontakt" onclick="showView('kontakt', this)">
-        <i data-lucide="phone" width="15" height="15"></i>
-        Kontakt
-      </button>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="sidebar-avatar" id="sidebar-avatar">M</div>
-        <div class="sidebar-user-email" id="sidebar-email">–</div>
-      </div>
-      <a href="index.html" target="_blank" class="btn btn-ghost btn-sm btn-full">
-        <i data-lucide="external-link" width="13" height="13"></i>
-        Website besuchen
-      </a>
-      <button class="btn btn-secondary btn-sm btn-full" onclick="doLogout()">
-        <i data-lucide="log-out" width="13" height="13"></i>
-        Logout
-      </button>
-    </div>
-  </aside>
-
-  <!-- MAIN AREA -->
-  <div class="main-area">
-
-    <!-- ══════ SEITEN-EDITOR (3-spaltig: Vorschau + Edit-Panel) ══════ -->
-    <div class="view active" id="view-editor">
-
-      <!-- Vorschau-Bereich -->
-      <div class="preview-area">
-        <div class="preview-toolbar">
-          <!-- Geräte-Toggle -->
-          <div class="device-toggle">
-            <button class="device-btn active" id="device-desktop" onclick="setDevice('desktop')">
-              <i data-lucide="monitor" width="14" height="14"></i> Desktop
-            </button>
-            <button class="device-btn" id="device-tablet" onclick="setDevice('tablet')">
-              <i data-lucide="tablet" width="14" height="14"></i> Tablet
-            </button>
-            <button class="device-btn" id="device-mobile" onclick="setDevice('mobile')">
-              <i data-lucide="smartphone" width="14" height="14"></i> Mobile
-            </button>
-          </div>
-
-          <div class="toolbar-center" id="toolbar-hint">
-            Klicke auf ein Element um es zu bearbeiten
-          </div>
-
-          <div class="toolbar-right">
-            <div class="status-badge published" id="publish-status">Alles publiziert</div>
-            <button class="btn btn-primary btn-sm" id="publish-btn" onclick="veroeffentlichen()">
-              <i data-lucide="upload-cloud" width="14" height="14"></i>
-              Veröffentlichen
-            </button>
-          </div>
-        </div>
-
-        <!-- iframe -->
-        <div class="iframe-outer">
-          <div class="iframe-inner" id="iframe-inner">
-            <iframe id="preview-iframe" src="index.html?cms=true" title="Website Vorschau"></iframe>
-          </div>
-        </div>
-      </div>
-
-      <!-- Edit Panel -->
-      <div class="edit-panel">
-        <!-- DEFAULT: Bereiche-Übersicht -->
-        <div id="panel-default" style="display:flex; flex-direction:column; height:100%;">
-          <div class="panel-header">
-            Bereiche bearbeiten
-          </div>
-          <div class="panel-body">
-            <div class="text-muted" style="margin-bottom:0.75rem;">Klicke auf einen Bereich oder direkt auf der Vorschau auf ein Element.</div>
-            <div class="area-tiles">
-              <div class="area-tile" onclick="scrollToArea('hero_titel')">
-                <div>
-                  <div class="area-tile-name">Hero</div>
-                  <div class="area-tile-desc">Titel, Untertitel, Hintergrundbild</div>
-                </div>
-                <i data-lucide="chevron-right" width="16" height="16" style="color:var(--text-muted);"></i>
-              </div>
-              <div class="area-tile" onclick="scrollToArea('ueber_titel')">
-                <div>
-                  <div class="area-tile-name">Über mich</div>
-                  <div class="area-tile-desc">Titel, Text, Foto von Marc</div>
-                </div>
-                <i data-lucide="chevron-right" width="16" height="16" style="color:var(--text-muted);"></i>
-              </div>
-              <div class="area-tile" onclick="scrollToArea('referenz_1')">
-                <div>
-                  <div class="area-tile-name">Referenzen</div>
-                  <div class="area-tile-desc">Vorher/Nachher Slider</div>
-                </div>
-                <i data-lucide="chevron-right" width="16" height="16" style="color:var(--text-muted);"></i>
-              </div>
-              <div class="area-tile" onclick="scrollToArea('kontakt_telefon')">
-                <div>
-                  <div class="area-tile-name">Kontakt</div>
-                  <div class="area-tile-desc">Telefon, E-Mail, Adresse, Zeiten</div>
-                </div>
-                <i data-lucide="chevron-right" width="16" height="16" style="color:var(--text-muted);"></i>
-              </div>
-              <div class="area-tile" onclick="showView('faq', document.querySelector('[data-view=faq]'))">
-                <div>
-                  <div class="area-tile-name">FAQ</div>
-                  <div class="area-tile-desc">Häufig gestellte Fragen</div>
-                </div>
-                <i data-lucide="chevron-right" width="16" height="16" style="color:var(--text-muted);"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TEXT EDITOR PANEL -->
-        <div id="panel-text" style="display:none; flex-direction:column; height:100%;">
-          <div class="panel-header">
-            <div id="text-panel-title">Text bearbeiten</div>
-            <button class="panel-back" onclick="closeEditPanel()">
-              <i data-lucide="x" width="14" height="14"></i>
-            </button>
-          </div>
-          <div class="panel-body">
-            <div class="editor-breadcrumb" id="text-panel-breadcrumb">—</div>
-            <div class="form-field">
-              <textarea id="text-panel-input" rows="6" oninput="updateCharCount()" placeholder="Text eingeben…"></textarea>
-            </div>
-            <div class="char-count" id="text-char-count">0 Zeichen</div>
-            <div class="success-msg mt-1" id="text-save-success">✓ Gespeichert</div>
-            <div class="error-msg mt-1" id="text-save-error"></div>
-          </div>
-          <div class="panel-footer">
-            <button class="btn btn-secondary btn-sm" onclick="closeEditPanel()">Abbrechen</button>
-            <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center;" onclick="saveTextEdit()">
-              <i data-lucide="save" width="13" height="13"></i>
-              Speichern
-            </button>
-          </div>
-        </div>
-
-        <!-- IMAGE EDITOR PANEL -->
-        <div id="panel-image" style="display:none; flex-direction:column; height:100%;">
-          <div class="panel-header">
-            <div id="image-panel-title">Bild / Video bearbeiten</div>
-            <button class="panel-back" onclick="closeEditPanel()">
-              <i data-lucide="x" width="14" height="14"></i>
-            </button>
-          </div>
-          <div class="panel-body">
-            <div class="editor-breadcrumb" id="image-panel-breadcrumb">—</div>
-            <div id="image-panel-slot-container"></div>
-          </div>
-          <div class="panel-footer">
-            <button class="btn btn-secondary btn-sm" onclick="closeEditPanel()">Schliessen</button>
-          </div>
-        </div>
-
-        <!-- BEFORE/AFTER PANEL -->
-        <div id="panel-beforeafter" style="display:none; flex-direction:column; height:100%;">
-          <div class="panel-header">
-            <div>Vorher / Nachher</div>
-            <button class="panel-back" onclick="closeEditPanel()">
-              <i data-lucide="x" width="14" height="14"></i>
-            </button>
-          </div>
-          <div class="panel-body">
-            <div class="editor-breadcrumb">Referenzen › Vorher/Nachher Slider</div>
-            <div class="ba-upload-grid">
-              <div class="ba-upload-col">
-                <label>Vorher-Bild</label>
-                <img id="ba-vorher-preview" class="img-current-preview" style="height:120px;" alt="">
-                <div class="upload-zone" style="padding:1rem;" onclick="document.getElementById('ba-vorher-input').click()">
-                  <i data-lucide="image" width="18" height="18"></i><br>
-                  <span style="font-size:0.72rem;">Klicken</span>
-                  <input type="file" id="ba-vorher-input" accept="image/*" onchange="handleBAUpload(this, 'vorher')">
-                </div>
-                <div class="progress-wrap" id="ba-vorher-progress">
-                  <div class="progress-track"><div class="progress-fill" id="ba-vorher-fill"></div></div>
-                </div>
-              </div>
-              <div class="ba-upload-col">
-                <label>Nachher-Bild</label>
-                <img id="ba-nachher-preview" class="img-current-preview" style="height:120px;" alt="">
-                <div class="upload-zone" style="padding:1rem;" onclick="document.getElementById('ba-nachher-input').click()">
-                  <i data-lucide="image" width="18" height="18"></i><br>
-                  <span style="font-size:0.72rem;">Klicken</span>
-                  <input type="file" id="ba-nachher-input" accept="image/*" onchange="handleBAUpload(this, 'nachher')">
-                </div>
-                <div class="progress-wrap" id="ba-nachher-progress">
-                  <div class="progress-track"><div class="progress-fill" id="ba-nachher-fill"></div></div>
-                </div>
-              </div>
-            </div>
-            <div class="success-msg mt-2" id="ba-save-success">✓ Bilder gespeichert</div>
-            <div class="error-msg mt-1" id="ba-save-error"></div>
-          </div>
-          <div class="panel-footer">
-            <button class="btn btn-secondary btn-sm" onclick="closeEditPanel()">Abbrechen</button>
-          </div>
-        </div>
-      </div><!-- /edit-panel -->
-    </div><!-- /view-editor -->
-
-    <!-- ══════ DASHBOARD ══════ -->
-    <div class="view" id="view-dashboard">
-      <div class="view-header">
-        <div>
-          <div class="view-title">Dashboard</div>
-          <div class="view-sub">Übersicht über Ihre Website-Inhalte</div>
-        </div>
-        <button class="btn btn-secondary btn-sm" onclick="showView('editor', document.querySelector('[data-view=editor]'))">
-          <i data-lucide="layout" width="13" height="13"></i>
-          Zum Editor
-        </button>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="num" id="dash-projekte">–</div><div class="lbl">Projekte</div></div>
-        <div class="stat-card"><div class="num" id="dash-faq">–</div><div class="lbl">FAQ-Einträge</div></div>
-        <div class="stat-card"><div class="num" id="dash-content">–</div><div class="lbl">Text-Felder</div></div>
-        <div class="stat-card"><div class="num" id="dash-bilder">–</div><div class="lbl">Bilder</div></div>
-      </div>
-      <div class="card">
-        <div class="card-title"><i data-lucide="zap" width="15" height="15"></i> Schnellzugriff</div>
-        <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
-          <button class="btn btn-secondary btn-sm" onclick="showView('editor', document.querySelector('[data-view=editor]'))">
-            <i data-lucide="layout" width="13" height="13"></i> Seiten bearbeiten
-          </button>
-          <button class="btn btn-secondary btn-sm" onclick="showView('projekte', document.querySelector('[data-view=projekte]'))">Projekte verwalten</button>
-          <button class="btn btn-secondary btn-sm" onclick="showView('faq', document.querySelector('[data-view=faq]'))">FAQ bearbeiten</button>
-          <button class="btn btn-secondary btn-sm" onclick="showView('bilder', document.querySelector('[data-view=bilder]'))">Bilder hochladen</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ PROJEKTE ══════ -->
-    <div class="view" id="view-projekte">
-      <div class="view-header">
-        <div>
-          <div class="view-title">Projekte</div>
-          <div class="view-sub">Referenzprojekte verwalten</div>
-        </div>
-        <button class="btn btn-primary btn-sm" onclick="openProjektModal(null)">
-          <i data-lucide="plus" width="13" height="13"></i>
-          Neues Projekt
-        </button>
-      </div>
-      <div class="card" style="padding:0;">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Titel</th><th>Kategorie</th><th>Reihenfolge</th><th>Status</th><th>Aktionen</th>
-              </tr>
-            </thead>
-            <tbody id="projekte-tbody">
-              <tr><td colspan="5"><div class="loading-state"><div class="spinner"></div> Lade…</div></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ FAQ ══════ -->
-    <div class="view" id="view-faq">
-      <div class="view-header">
-        <div>
-          <div class="view-title">FAQ</div>
-          <div class="view-sub">Häufig gestellte Fragen verwalten</div>
-        </div>
-        <button class="btn btn-primary btn-sm" onclick="openFaqModal(null)">
-          <i data-lucide="plus" width="13" height="13"></i>
-          Neue Frage
-        </button>
-      </div>
-      <div id="faq-list" class="faq-list">
-        <div class="loading-state"><div class="spinner"></div> Lade FAQ…</div>
-      </div>
-    </div>
-
-    <!-- ══════ BILDER ══════ -->
-    <div class="view" id="view-bilder">
-      <div class="view-header">
-        <div>
-          <div class="view-title">Bilder</div>
-          <div class="view-sub">Storage-Bucket "bilder"</div>
-        </div>
-        <label class="btn btn-primary btn-sm" style="cursor:pointer;">
-          <i data-lucide="upload" width="13" height="13"></i>
-          Hochladen
-          <input type="file" id="bulk-upload" accept="image/*" multiple style="display:none;" onchange="bulkUpload(this)">
-        </label>
-      </div>
-      <div class="success-msg" id="bilder-success"></div>
-      <div class="error-msg" id="bilder-error"></div>
-      <div id="gallery-grid" class="gallery-grid">
-        <div class="loading-state"><div class="spinner"></div> Lade Bilder…</div>
-      </div>
-    </div>
-
-    <!-- ══════ KONTAKT ══════ -->
-    <div class="view" id="view-kontakt">
-      <div class="view-header">
-        <div>
-          <div class="view-title">Kontakt</div>
-          <div class="view-sub">Kontaktdaten und Öffnungszeiten</div>
-        </div>
-        <button class="btn btn-primary btn-sm" onclick="saveKontakt()">
-          <i data-lucide="save" width="13" height="13"></i>
-          Speichern
-        </button>
-      </div>
-      <div class="success-msg" id="kontakt-success">✓ Kontaktdaten gespeichert.</div>
-      <div class="error-msg" id="kontakt-error"></div>
-      <div class="card">
-        <div class="form-row">
-          <div class="form-field"><label>Telefon</label><input type="text" id="f-kontakt_telefon" placeholder="+41 XX XXX XX XX"></div>
-          <div class="form-field"><label>E-Mail</label><input type="email" id="f-kontakt_email" placeholder="info@malermarc.ch"></div>
-        </div>
-        <div class="form-field"><label>Adresse</label><input type="text" id="f-kontakt_adresse" placeholder="Musterstrasse 1, 3000 Bern"></div>
-        <div class="form-field"><label>Öffnungszeiten</label><input type="text" id="f-kontakt_zeiten" placeholder="Mo–Fr, 07:00–17:00 Uhr"></div>
-      </div>
-    </div>
-
-  </div><!-- /main-area -->
-</div><!-- /admin-app -->
-
-<!-- ══════════ MODAL: PROJEKT ══════════ -->
-<div class="modal-overlay" id="modal-projekt">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-projekt-title">Neues Projekt</div>
-      <button class="modal-close" onclick="closeModal('modal-projekt')"><i data-lucide="x" width="17" height="17"></i></button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="p-id">
-      <div class="form-field"><label>Titel *</label><input type="text" id="p-titel" placeholder="z.B. Wohnzimmer Renovation Bern"></div>
-      <div class="form-field"><label>Beschreibung</label><textarea id="p-beschreibung" placeholder="Kurze Projektbeschreibung…"></textarea></div>
-      <div class="form-row">
-        <div class="form-field">
-          <label>Kategorie</label>
-          <select id="p-kategorie">
-            <option value="Innen">Innenmalerarbeiten</option>
-            <option value="Aussen">Aussenmalerarbeiten</option>
-            <option value="Wandgestaltung">Wandgestaltung</option>
-            <option value="Gipser">Gipserarbeiten</option>
-          </select>
-        </div>
-        <div class="form-field"><label>Reihenfolge</label><input type="number" id="p-reihenfolge" value="0" min="0"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-field">
-          <label>Bild Vorher</label>
-          <div class="upload-zone" onclick="this.querySelector('input').click()">
-            <i data-lucide="image" width="18" height="18"></i><br>Bild auswählen
-            <input type="file" id="p-bild-vorher" accept="image/*" onchange="previewImg(this,'p-prev-vorher')">
-          </div>
-          <img id="p-prev-vorher" class="img-preview">
-          <input type="hidden" id="p-bild_vorher">
-        </div>
-        <div class="form-field">
-          <label>Bild Nachher</label>
-          <div class="upload-zone" onclick="this.querySelector('input').click()">
-            <i data-lucide="image" width="18" height="18"></i><br>Bild auswählen
-            <input type="file" id="p-bild-nachher" accept="image/*" onchange="previewImg(this,'p-prev-nachher')">
-          </div>
-          <img id="p-prev-nachher" class="img-preview">
-          <input type="hidden" id="p-bild_nachher">
-        </div>
-      </div>
-      <div class="toggle-wrap mt-1">
-        <label class="toggle"><input type="checkbox" id="p-aktiv" checked><span class="toggle-slider"></span></label>
-        <span class="toggle-label">Aktiv (auf Website sichtbar)</span>
-      </div>
-      <div class="error-msg mt-1" id="projekt-error"></div>
-      <div class="success-msg mt-1" id="projekt-success"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-projekt')">Abbrechen</button>
-      <button class="btn btn-primary btn-sm" id="save-projekt-btn" onclick="saveProjekt()">
-        <i data-lucide="save" width="13" height="13"></i> Speichern
-      </button>
-    </div>
+    <div class="sidebar-nav" id="sidebar-nav"></div>
   </div>
+
+  <!-- IFRAME -->
+  <div id="iframe-wrap">
+    <iframe id="preview-iframe" src="index.html?cms=1"></iframe>
+  </div>
+
+  <!-- EDIT PANEL -->
+  <div id="edit-panel">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title" id="panel-title">—</div>
+        <div class="panel-key" id="panel-key"></div>
+      </div>
+      <button class="panel-close" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-body" id="panel-body"></div>
+  </div>
+
 </div>
 
-<!-- ══════════ MODAL: FAQ ══════════ -->
-<div class="modal-overlay" id="modal-faq">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-faq-title">Neue FAQ</div>
-      <button class="modal-close" onclick="closeModal('modal-faq')"><i data-lucide="x" width="17" height="17"></i></button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="faq-id">
-      <div class="form-field"><label>Frage *</label><input type="text" id="faq-frage" placeholder="Was kostet ein Maler in Bern?"></div>
-      <div class="form-field"><label>Antwort *</label><textarea id="faq-antwort" style="min-height:120px;" placeholder="Die ausführliche Antwort…"></textarea></div>
-      <div class="form-row">
-        <div class="form-field"><label>Reihenfolge</label><input type="number" id="faq-reihenfolge" value="0" min="0"></div>
-        <div class="form-field">
-          <label>&nbsp;</label>
-          <div class="toggle-wrap" style="margin-top:0.3rem;">
-            <label class="toggle"><input type="checkbox" id="faq-aktiv" checked><span class="toggle-slider"></span></label>
-            <span class="toggle-label">Aktiv</span>
-          </div>
-        </div>
-      </div>
-      <div class="error-msg" id="faq-error"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-faq')">Abbrechen</button>
-      <button class="btn btn-primary btn-sm" onclick="saveFaq()">
-        <i data-lucide="save" width="13" height="13"></i> Speichern
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ MODAL: BILD-BIBLIOTHEK ══════════ -->
-<div class="modal-overlay" id="modal-image-library">
-  <div class="modal" style="max-width:720px;">
-    <div class="modal-header">
-      <div class="modal-title">Bild-Bibliothek</div>
-      <button class="modal-close" onclick="closeModal('modal-image-library')"><i data-lucide="x" width="17" height="17"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="text-muted" style="margin-bottom:0.75rem;">Klicke auf ein Bild um es auszuwählen.</div>
-      <div id="library-grid" class="lib-grid">
-        <div class="loading-state"><div class="spinner"></div> Lade…</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="copy-toast" id="copy-toast">✓ URL kopiert!</div>
-<div id="toast" style="display:none; position:fixed; bottom:24px; right:24px; padding:12px 20px; border-radius:8px; font-family:Montserrat,sans-serif; font-weight:600; font-size:14px; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,0.15); max-width:340px; word-break:break-word;"></div>
+<!-- TOAST -->
+<div id="toast" style="display:none;"></div>
 
 <script>
-// ══════════════════════════════════════
-// SUPABASE INIT
-// ══════════════════════════════════════
 const SUPABASE_URL = 'https://zfyesnrezqupxolslbgx.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmeWVzbnJlenF1cHhvbHNsYmd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyOTIxOTcsImV4cCI6MjA4ODg2ODE5N30.8BeDmPJjYV7_UfGEW3E3wniq1HBx1_W85c-oxQuNuck';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmeWVzbnJlenF1cHhvbHNsYmd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyOTIxOTcsImV4cCI6MjA4ODg2ODE5N30.8BeDmPJjYV7_UfGEW3E3wniq1HBx1_W85c-oxQuNuck';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let contentCache = {};
+let currentKey = null;
 
-// ── STATE ──
-let activeEditKey = null;
-let activeEditType = null;
-let projekteListe = [];
-let faqListe = [];
+// ─── NAVIGATION STRUCTURE ───────────────────────────────
+const NAV = [
+  { group: 'BILDER', items: [
+    { key: 'hero_media',       label: 'Hero Hintergrund', type: 'media' },
+    { key: 'bild_marc',        label: 'Portrait Marc',    type: 'media' },
+    { key: 'referenz_vorher',  label: 'Vorher',           type: 'media' },
+    { key: 'referenz_nachher', label: 'Nachher',          type: 'media' },
+    { key: 'galerie_1',  label: 'Galerie 1',  type: 'media' },
+    { key: 'galerie_2',  label: 'Galerie 2',  type: 'media' },
+    { key: 'galerie_3',  label: 'Galerie 3',  type: 'media' },
+    { key: 'galerie_4',  label: 'Galerie 4',  type: 'media' },
+    { key: 'galerie_5',  label: 'Galerie 5',  type: 'media' },
+    { key: 'galerie_6',  label: 'Galerie 6',  type: 'media' },
+    { key: 'galerie_7',  label: 'Galerie 7',  type: 'media' },
+    { key: 'galerie_8',  label: 'Galerie 8',  type: 'media' },
+    { key: 'galerie_9',  label: 'Galerie 9',  type: 'media' },
+    { key: 'einblick_1', label: 'Einblick 1', type: 'media' },
+    { key: 'einblick_2', label: 'Einblick 2', type: 'media' },
+    { key: 'einblick_3', label: 'Einblick 3', type: 'media' },
+    { key: 'einblick_4', label: 'Einblick 4', type: 'media' },
+    { key: 'einblick_5', label: 'Einblick 5', type: 'media' },
+    { key: 'einblick_6', label: 'Einblick 6', type: 'media' },
+    { key: 'einblick_7', label: 'Einblick 7', type: 'media' },
+    { key: 'einblick_8', label: 'Einblick 8', type: 'media' },
+    { key: 'leistung_bild_1', label: 'Leistung 1', type: 'media' },
+    { key: 'leistung_bild_2', label: 'Leistung 2', type: 'media' },
+    { key: 'leistung_bild_3', label: 'Leistung 3', type: 'media' },
+    { key: 'leistung_bild_4', label: 'Leistung 4', type: 'media' },
+    { key: 'leistung_bild_5', label: 'Leistung 5', type: 'media' },
+    { key: 'leistung_bild_6', label: 'Leistung 6', type: 'media' },
+  ]},
+  { group: 'TEXTE', items: [
+    { key: 'hero_titel',       label: 'Hero Titel',      type: 'text' },
+    { key: 'hero_sub',         label: 'Hero Untertitel', type: 'text' },
+    { key: 'ueber_titel',      label: 'Über mich Titel', type: 'text' },
+    { key: 'ueber_text',       label: 'Über mich Text',  type: 'text' },
+    { key: 'kontakt_telefon',  label: 'Telefon',         type: 'text' },
+    { key: 'kontakt_email',    label: 'E-Mail',          type: 'text' },
+    { key: 'kontakt_adresse',  label: 'Adresse',         type: 'text' },
+    { key: 'kontakt_zeiten',   label: 'Öffnungszeiten',  type: 'text' },
+    { key: 'stat_projekte',    label: 'Stat: Projekte',  type: 'text' },
+    { key: 'stat_jahre',       label: 'Stat: Jahre',     type: 'text' },
+  ]},
+];
 
-// ══════════════════════════════════════
-// INIT
-// ══════════════════════════════════════
-document.addEventListener('DOMContentLoaded', async () => {
-  lucide.createIcons();
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) showApp(session.user);
-
-  sb.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_OUT') location.reload();
-  });
-
-  // postMessage vom iframe empfangen
-  window.addEventListener('message', handleIframeMessage);
-
-  // (drop zones sind jetzt in renderMediaSlot inline)
-});
-
-// ══════════════════════════════════════
-// AUTH
-// ══════════════════════════════════════
+// ─── LOGIN / LOGOUT ──────────────────────────────────────
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
-  const pw = document.getElementById('login-password').value;
-  const btn = document.getElementById('login-btn');
-  const err = document.getElementById('login-error');
-  err.style.display = 'none';
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Einloggen…';
-
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
-  if (error) {
-    err.textContent = 'Login fehlgeschlagen: ' + error.message;
-    err.style.display = 'block';
-    btn.disabled = false;
-    btn.innerHTML = '<i data-lucide="log-in" width="16" height="16"></i> Einloggen';
-    lucide.createIcons();
-    return;
-  }
-  showApp(data.user);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('login-password').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
-  });
-});
-
-async function doLogout() {
-  await sb.auth.signOut();
-  location.reload();
-}
-
-function showApp(user) {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('admin-app').classList.add('active');
-  document.getElementById('sidebar-email').textContent = user.email;
-  document.getElementById('sidebar-avatar').textContent = (user.email || 'M')[0].toUpperCase();
-  loadDashboard();
-  loadProjekte();
-  loadFaq();
-  loadBilder();
-  loadKontakt();
-  loadAdminPreviews();
-}
-
-// ══════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════
-function showView(viewId, btn) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  const view = document.getElementById('view-' + viewId);
-  if (view) view.classList.add('active');
-  if (btn) btn.classList.add('active');
-}
-
-function closeModal(id) {
-  document.getElementById(id).classList.remove('active');
-}
-
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) overlay.classList.remove('active');
-  });
-});
-
-// ══════════════════════════════════════
-// POSTMESSAGE ↔ IFRAME
-// ══════════════════════════════════════
-function sendToIframe(actionOrMsg, key, value) {
-  const iframe = document.getElementById('preview-iframe');
-  if (!iframe?.contentWindow) return;
-  const msg = typeof actionOrMsg === 'string'
-    ? { action: actionOrMsg, key, value }
-    : actionOrMsg;
-  iframe.contentWindow.postMessage(msg, '*');
-}
-
-function handleIframeMessage(e) {
-  const msg = e.data;
-  if (!msg || !msg.action) return;
-  if (msg.action === 'select') {
-    openEditPanel(msg.key, msg.type, msg.currentValue, msg.label);
-  }
-}
-
-function scrollToArea(key) {
-  sendToIframe({ action: 'highlight', key: key });
-}
-
-// ══════════════════════════════════════
-// GERÄT-TOGGLE
-// ══════════════════════════════════════
-function setDevice(device) {
-  document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('device-' + device).classList.add('active');
-  const inner = document.getElementById('iframe-inner');
-  if (device === 'desktop') {
-    inner.style.width = '100%';
-    inner.style.maxWidth = '100%';
-    inner.style.margin = '0 auto';
-  } else if (device === 'tablet') {
-    inner.style.width = '768px';
-    inner.style.maxWidth = '768px';
-    inner.style.margin = '0 auto';
-  } else {
-    inner.style.width = '390px';
-    inner.style.maxWidth = '390px';
-    inner.style.margin = '0 auto';
-  }
-}
-
-// ══════════════════════════════════════
-// PUBLISH
-// ══════════════════════════════════════
-async function veroeffentlichen() {
-  const btn = document.getElementById('publish-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div>';
-
-  const { error } = await sb.from('content').upsert(
-    { key: '_published_at', value: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { onConflict: 'key' }
-  );
-
-  btn.disabled = false;
-  btn.innerHTML = '<i data-lucide="upload-cloud" width="14" height="14"></i> Veröffentlichen';
-  lucide.createIcons();
-
-  if (error) {
-    zeigeError('Fehler beim Veröffentlichen: ' + error.message);
-    return;
-  }
-
-  setPublishStatus(true);
-  zeigeErfolg('✓ Änderungen veröffentlicht');
-
-  // iframe neu laden mit Cache-Busting
-  const iframe = document.getElementById('preview-iframe');
-  const url = new URL(iframe.src, window.location.href);
-  url.searchParams.set('t', Date.now());
-  url.searchParams.set('cms', 'true');
-  iframe.src = url.toString();
-}
-
-function zeigeInfo(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.background = '#555';
-  t.style.color = '#fff';
-  t.style.display = 'block';
-  clearTimeout(t._timeout);
-  t._timeout = setTimeout(() => { t.style.display = 'none'; }, 2000);
-}
-
-function zeigeErfolg(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.background = '#2EBE6E';
-  t.style.color = '#000';
-  t.style.display = 'block';
-  clearTimeout(t._timeout);
-  t._timeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
-}
-
-function zeigeError(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.background = '#e53e3e';
-  t.style.color = '#fff';
-  t.style.display = 'block';
-  clearTimeout(t._timeout);
-  t._timeout = setTimeout(() => { t.style.display = 'none'; }, 5000);
-}
-
-function setPublishStatus(published) {
-  const badge = document.getElementById('publish-status');
-  if (published) {
-    badge.className = 'status-badge published';
-    badge.textContent = 'Alles publiziert';
-  } else {
-    badge.className = 'status-badge unpublished';
-    badge.textContent = 'Unveröffentlichte Änderungen';
-  }
-}
-
-// ══════════════════════════════════════
-// EDIT PANEL
-// ══════════════════════════════════════
-function openEditPanel(key, type, currentValue, label) {
-  activeEditKey = key;
-  activeEditType = type;
-
-  // Alle Panels ausblenden
-  ['default', 'text', 'image', 'beforeafter'].forEach(id => {
-    const el = document.getElementById('panel-' + id);
-    if (el) el.style.display = 'none';
-  });
-
-  if (type === 'text') {
-    document.getElementById('text-panel-breadcrumb').textContent = label || key;
-    document.getElementById('text-panel-title').textContent = 'Text bearbeiten';
-    const ta = document.getElementById('text-panel-input');
-    ta.value = currentValue || '';
-    updateCharCount();
-    document.getElementById('text-save-success').style.display = 'none';
-    document.getElementById('text-save-error').style.display = 'none';
-    document.getElementById('panel-text').style.display = 'flex';
-  } else if (type === 'image') {
-    document.getElementById('image-panel-breadcrumb').textContent = label || key;
-    document.getElementById('image-panel-slot-container').innerHTML = renderMediaSlot(key, label || key);
-    bindAllMediaSlots();
-    loadCurrentPreview(key);
-    document.getElementById('panel-image').style.display = 'flex';
-  } else if (type === 'beforeafter') {
-    // Vorher/Nachher Bilder aus DB laden
-    loadBACurrentImages();
-    document.getElementById('ba-save-success').style.display = 'none';
-    document.getElementById('ba-save-error').style.display = 'none';
-    document.getElementById('panel-beforeafter').style.display = 'flex';
-  }
-
-  lucide.createIcons();
-}
-
-function closeEditPanel() {
-  activeEditKey = null;
-  activeEditType = null;
-  ['text', 'image', 'beforeafter'].forEach(id => {
-    const el = document.getElementById('panel-' + id);
-    if (el) el.style.display = 'none';
-  });
-  document.getElementById('panel-default').style.display = 'flex';
-  sendToIframe({ action: 'clearHighlight' });
-}
-
-// ── TEXT EDIT ──
-function updateCharCount() {
-  const val = document.getElementById('text-panel-input').value;
-  document.getElementById('text-char-count').textContent = val.length + ' Zeichen';
-}
-
-async function saveTextEdit() {
-  const key = activeEditKey;
-  const value = document.getElementById('text-panel-input').value;
-  const sucEl = document.getElementById('text-save-success');
-  const errEl = document.getElementById('text-save-error');
-  sucEl.style.display = 'none';
+  const pw = document.getElementById('login-pw').value;
+  const errEl = document.getElementById('login-error');
   errEl.style.display = 'none';
-
-  const { error } = await sb.from('content').upsert({ key, value }, { onConflict: 'key' });
+  const { error } = await db.auth.signInWithPassword({ email, password: pw });
   if (error) {
-    errEl.textContent = 'Fehler: ' + error.message;
+    errEl.textContent = error.message;
     errEl.style.display = 'block';
     return;
   }
-  sucEl.style.display = 'block';
-  setTimeout(() => sucEl.style.display = 'none', 3000);
-
-  sendToIframe('update_text', key, value);
-  setPublishStatus(false);
+  showAdmin();
 }
 
-// ── UNIVERSELLER MEDIA UPLOAD ──
-async function mediaUpload(key, file) {
-  if (!key || !file) return;
-  if (file.size > 50 * 1024 * 1024) { zeigeError('Datei zu gross (max. 50 MB)'); return; }
+async function doLogout() {
+  await db.auth.signOut();
+  document.getElementById('admin-app').classList.remove('active');
+  document.getElementById('login-screen').style.display = 'flex';
+}
 
-  try {
-    zeigeInfo('Wird hochgeladen…');
+async function checkSession() {
+  const { data: { session } } = await db.auth.getSession();
+  if (session) showAdmin();
+}
+
+async function showAdmin() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-app').classList.add('active');
+  await loadContent();
+  buildNav();
+}
+
+// ─── CONTENT LOADING ─────────────────────────────────────
+async function loadContent() {
+  const { data } = await db.from('content').select('key,value');
+  if (data) data.forEach(({ key, value }) => { contentCache[key] = value || ''; });
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────
+function buildNav() {
+  const nav = document.getElementById('sidebar-nav');
+  nav.innerHTML = '';
+  NAV.forEach(group => {
+    const label = document.createElement('div');
+    label.className = 'nav-group-label';
+    label.textContent = group.group;
+    nav.appendChild(label);
+    group.items.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'nav-item' + (contentCache[item.key] ? ' has-content' : '');
+      el.dataset.key = item.key;
+      el.innerHTML = `<span class="nav-dot"></span><span>${item.label}</span>`;
+      el.addEventListener('click', () => selectItem(item));
+      nav.appendChild(el);
+    });
+  });
+}
+
+function selectItem(item) {
+  currentKey = item.key;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.key === item.key));
+  const panel = document.getElementById('edit-panel');
+  panel.classList.add('open');
+  document.getElementById('panel-title').textContent = item.label;
+  document.getElementById('panel-key').textContent = item.key;
+  const body = document.getElementById('panel-body');
+  if (item.type === 'media') {
+    const url = contentCache[item.key] || '';
+    body.innerHTML = `
+      <div id="media-preview"></div>
+      <button class="btn btn-green" onclick="doUpload('${item.key}')">&#xFF0B; Bild oder Video hochladen</button>
+      <button class="btn btn-red" onclick="doEntfernen('${item.key}')">&#x00D7; Entfernen</button>
+    `;
+    zeigeVorschau(item.key, url);
+  } else {
+    const val = contentCache[item.key] || '';
+    body.innerHTML = `
+      <textarea class="edit-textarea" id="text-input">${val.replace(/</g,'&lt;')}</textarea>
+      <button class="btn btn-green" onclick="doSaveText('${item.key}')">Speichern</button>
+    `;
+  }
+}
+
+function closePanel() {
+  document.getElementById('edit-panel').classList.remove('open');
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  currentKey = null;
+}
+
+// ─── MEDIA UPLOAD ─────────────────────────────────────────
+async function doUpload(key) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*,video/mp4,video/webm';
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file) return;
+    toast('\u23F3 Hochladen...');
     const ext = file.name.split('.').pop().toLowerCase();
-    const filePath = key + '_' + Date.now() + '.' + ext;
-
-    const { error: upErr } = await sb.storage.from('bilder').upload(filePath, file, { upsert: true });
-    if (upErr) throw upErr;
-
-    const { data } = sb.storage.from('bilder').getPublicUrl(filePath);
+    const path = key + '_' + Date.now() + '.' + ext;
+    const { error: e1 } = await db.storage
+      .from('bilder').upload(path, file, { upsert: true });
+    if (e1) { toast('\u274C ' + e1.message, true); return; }
+    const { data } = db.storage.from('bilder').getPublicUrl(path);
     const url = data.publicUrl;
-
-    const { error: saveErr } = await sb.from('content').upsert(
+    const { error: e2 } = await db.from('content').upsert(
       { key, value: url, updated_at: new Date().toISOString() },
       { onConflict: 'key' }
     );
-    if (saveErr) throw saveErr;
-
-    updateAdminPreview(key, url, ext);
-    sendToIframe('update_media', key, url);
-    setPublishStatus(false);
-    zeigeErfolg('✓ Gespeichert');
-    loadBilder();
-    return url;
-  } catch (err) {
-    zeigeError('Fehler: ' + err.message);
-    console.error(err);
-  }
+    if (e2) { toast('\u274C ' + e2.message, true); return; }
+    contentCache[key] = url;
+    document.getElementById('preview-iframe')
+      .contentWindow.postMessage({ type: 'cms_media', key, value: url }, '*');
+    zeigeVorschau(key, url);
+    updateNavDot(key, true);
+    toast('\u2713 Gespeichert!');
+  };
+  input.click();
 }
 
-async function mediaEntfernen(key) {
-  if (!key) return;
-  if (!confirm('Inhalt für "' + key + '" wirklich entfernen?')) return;
-  const { error } = await sb.from('content').upsert(
+async function doEntfernen(key) {
+  const { error } = await db.from('content').upsert(
     { key, value: '', updated_at: new Date().toISOString() },
     { onConflict: 'key' }
   );
-  if (error) { zeigeError('Fehler: ' + error.message); return; }
-  updateAdminPreview(key, '', '');
-  sendToIframe('update_media', key, '');
-  setPublishStatus(false);
-  zeigeErfolg('✓ Entfernt');
+  if (error) { toast('\u274C ' + error.message, true); return; }
+  contentCache[key] = '';
+  document.getElementById('preview-iframe')
+    .contentWindow.postMessage({ type: 'cms_media', key, value: '' }, '*');
+  zeigeVorschau(key, '');
+  updateNavDot(key, false);
+  toast('\u2713 Entfernt');
 }
 
-function updateAdminPreview(key, url, ext) {
-  const container = document.getElementById('admin-preview-' + key);
-  if (!container) return;
-  const isVideo = ['mp4', 'webm', 'ogg'].includes((ext || '').toLowerCase());
-  if (!url) {
-    container.innerHTML = '<div style="height:120px;background:#f0f0ec;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:13px;font-family:Montserrat,sans-serif;">Kein Inhalt</div>';
-  } else if (isVideo) {
-    container.innerHTML = '<video src="' + esc(url) + '" muted autoplay loop playsinline style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block;"></video>';
-  } else {
-    container.innerHTML = '<img src="' + esc(url) + '" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block;">';
-  }
-}
-
-function renderMediaSlot(key, label) {
-  return `
-    <div style="margin-bottom:16px; padding:14px; background:#f8f8f6; border-radius:10px; border:1px solid #e0e0d8;">
-      <div style="font-family:Montserrat,sans-serif; font-weight:600; font-size:12px; margin-bottom:8px; color:#555; text-transform:uppercase; letter-spacing:0.06em;">${esc(label || key)}</div>
-      <div id="admin-preview-${esc(key)}">
-        <div style="height:120px;background:#f0f0ec;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:13px;font-family:Montserrat,sans-serif;">Kein Inhalt</div>
-      </div>
-      <label style="display:block;margin-top:10px;padding:12px;border:2px dashed var(--green);border-radius:8px;text-align:center;cursor:pointer;color:var(--green);font-size:13px;font-family:Montserrat,sans-serif;font-weight:600;">
-        + Bild oder Video wählen
-        <input type="file" class="media-upload-input" data-key="${esc(key)}" accept="image/*,video/mp4,video/webm" style="display:none;">
-      </label>
-      <button class="media-library-btn" data-key="${esc(key)}"
-        style="width:100%;margin-top:8px;padding:9px;background:transparent;border:1px solid var(--border);color:var(--text);border-radius:6px;font-size:12px;font-family:Montserrat,sans-serif;font-weight:600;cursor:pointer;">
-        Aus Bibliothek wählen
-      </button>
-      <button class="media-remove-btn" data-key="${esc(key)}"
-        style="width:100%;margin-top:6px;padding:8px;background:transparent;border:1px solid #e74c3c;color:#e74c3c;border-radius:6px;font-size:12px;font-family:Montserrat,sans-serif;cursor:pointer;">
-        × Entfernen
-      </button>
-    </div>`;
-}
-
-function bindAllMediaSlots() {
-  document.querySelectorAll('.media-upload-input').forEach(input => {
-    input.addEventListener('change', function() {
-      if (this.files[0]) mediaUpload(this.dataset.key, this.files[0]);
-      this.value = '';
-    });
-  });
-  document.querySelectorAll('.media-library-btn').forEach(btn => {
-    btn.addEventListener('click', function() { openImageLibrary(this.dataset.key); });
-  });
-  document.querySelectorAll('.media-remove-btn').forEach(btn => {
-    btn.addEventListener('click', function() { mediaEntfernen(this.dataset.key); });
-  });
-}
-
-async function loadCurrentPreview(key) {
-  const { data } = await sb.from('content').select('value').eq('key', key).maybeSingle();
-  if (data?.value) {
-    const ext = data.value.split('.').pop().split('?')[0].toLowerCase();
-    updateAdminPreview(key, data.value, ext);
-  }
-}
-
-async function loadAdminPreviews() {
-  const { data } = await sb.from('content').select('key, value');
-  if (!data) return;
-  data.forEach(({ key, value }) => {
-    if (!value) return;
-    const ext = value.split('.').pop().split('?')[0].toLowerCase();
-    updateAdminPreview(key, value, ext);
-  });
-}
-
-// Bildbibliotek — unterstützt jetzt auch Key-Argument
-async function handleImageFileSelect(input) {
-  const file = input.files[0];
-  if (file) mediaUpload(activeEditKey, file);
-}
-
-// ── IMAGE LIBRARY ──
-let _libraryTargetKey = null;
-async function openImageLibrary(key) {
-  _libraryTargetKey = key || activeEditKey;
-  document.getElementById('modal-image-library').classList.add('active');
-  const grid = document.getElementById('library-grid');
-  grid.innerHTML = '<div class="loading-state"><div class="spinner"></div> Lade Bilder…</div>';
-
-  const { data } = await sb.storage.from('bilder').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
-  const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
-
-  if (!files.length) {
-    grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:2rem;">Noch keine Bilder vorhanden.</p>';
-    return;
-  }
-
-  grid.innerHTML = files.map(f => {
-    const { data: u } = sb.storage.from('bilder').getPublicUrl(f.name);
-    return `
-      <div class="lib-item" onclick="selectFromLibrary('${u.publicUrl}')">
-        <img src="${u.publicUrl}" alt="${esc(f.name)}" loading="lazy">
-        <div class="lib-item-name">${esc(f.name)}</div>
-        <button class="lib-delete" onclick="event.stopPropagation();deleteLibraryImage('${esc(f.name)}',this.closest('.lib-item'))">
-          <i data-lucide="trash-2" width="11" height="11"></i>
-        </button>
-      </div>`;
-  }).join('');
-  lucide.createIcons();
-}
-
-async function selectFromLibrary(url) {
-  const key = _libraryTargetKey || activeEditKey;
-  if (!key) return;
-  const ext = url.split('.').pop().split('?')[0].toLowerCase();
-  await sb.from('content').upsert(
-    { key, value: url, updated_at: new Date().toISOString() },
+async function doSaveText(key) {
+  const value = document.getElementById('text-input').value;
+  const { error } = await db.from('content').upsert(
+    { key, value, updated_at: new Date().toISOString() },
     { onConflict: 'key' }
   );
-  updateAdminPreview(key, url, ext);
-  sendToIframe('update_media', key, url);
-  setPublishStatus(false);
-  closeModal('modal-image-library');
-  zeigeErfolg('✓ Gespeichert');
+  if (error) { toast('\u274C ' + error.message, true); return; }
+  contentCache[key] = value;
+  document.getElementById('preview-iframe')
+    .contentWindow.postMessage({ type: 'cms_text', key, value }, '*');
+  updateNavDot(key, !!value);
+  toast('\u2713 Gespeichert!');
 }
 
-async function deleteLibraryImage(name, el) {
-  if (!confirm('Bild "' + name + '" wirklich löschen?')) return;
-  await sb.storage.from('bilder').remove([name]);
-  if (el) el.remove();
-}
-
-// ── BEFORE/AFTER ──
-async function loadBACurrentImages() {
-  const keys = ['referenz_vorher', 'referenz_nachher'];
-  const { data } = await sb.from('content').select('key,value').in('key', keys);
-  if (!data) return;
-  data.forEach(({ key, value }) => {
-    const side = key.endsWith('_vorher') ? 'vorher' : 'nachher';
-    const img = document.getElementById('ba-' + side + '-preview');
-    if (img && value) { img.src = value; img.style.display = 'block'; }
-  });
-}
-
-async function handleBAUpload(input, side) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { alert('Max. 5 MB'); return; }
-
-  const progressWrap = document.getElementById('ba-' + side + '-progress');
-  const progressFill = document.getElementById('ba-' + side + '-fill');
-  progressWrap.style.display = 'block';
-  progressFill.style.width = '30%';
-
-  const ext = file.name.split('.').pop().toLowerCase();
-  const filename = 'referenz_1_' + side + '_' + Date.now() + '.' + ext;
-  const { error } = await sb.storage.from('bilder').upload(filename, file, { upsert: true });
-  progressFill.style.width = '75%';
-
-  if (error) {
-    progressWrap.style.display = 'none';
-    document.getElementById('ba-save-error').textContent = 'Upload fehlgeschlagen';
-    document.getElementById('ba-save-error').style.display = 'block';
+// ─── HELPERS ─────────────────────────────────────────────
+function zeigeVorschau(key, url) {
+  const el = document.getElementById('media-preview');
+  if (!el) return;
+  if (!url) {
+    el.innerHTML = '<div style="height:180px; background:#f0f0ec; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#aaa;">Kein Inhalt</div>';
     return;
   }
-
-  const { data: u } = sb.storage.from('bilder').getPublicUrl(filename);
-  const url = u.publicUrl;
-  progressFill.style.width = '100%';
-  setTimeout(() => { progressWrap.style.display = 'none'; progressFill.style.width = '0'; }, 600);
-
-  const contentKey = 'referenz_' + side;
-  await sb.from('content').upsert({ key: contentKey, value: url, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-  sendToIframe('update_media', contentKey, url);
-
-  const img = document.getElementById('ba-' + side + '-preview');
-  img.src = url; img.style.display = 'block';
-  setPublishStatus(false);
-  document.getElementById('ba-save-success').style.display = 'block';
-  setTimeout(() => document.getElementById('ba-save-success').style.display = 'none', 3000);
+  const isVid = /\.(mp4|webm)/i.test(url);
+  el.innerHTML = isVid
+    ? `<video src="${url}" autoplay muted loop style="width:100%; height:180px; object-fit:cover; border-radius:8px;"></video>`
+    : `<img src="${url}" style="width:100%; height:180px; object-fit:cover; border-radius:8px;">`;
 }
 
-// ══════════════════════════════════════
-// DASHBOARD
-// ══════════════════════════════════════
-async function loadDashboard() {
-  const [p, f, c, b] = await Promise.all([
-    sb.from('projekte').select('id', { count: 'exact', head: true }),
-    sb.from('faq').select('id', { count: 'exact', head: true }),
-    sb.from('content').select('id', { count: 'exact', head: true }),
-    sb.storage.from('bilder').list('', { limit: 1000 })
-  ]);
-  document.getElementById('dash-projekte').textContent = p.count ?? '–';
-  document.getElementById('dash-faq').textContent = f.count ?? '–';
-  document.getElementById('dash-content').textContent = c.count ?? '–';
-  document.getElementById('dash-bilder').textContent = b.data ? b.data.filter(x => x.name !== '.emptyFolderPlaceholder').length : '–';
+function updateNavDot(key, hasContent) {
+  const item = document.querySelector(`.nav-item[data-key="${key}"]`);
+  if (item) item.classList.toggle('has-content', hasContent);
 }
 
-// ══════════════════════════════════════
-// KONTAKT
-// ══════════════════════════════════════
-async function loadKontakt() {
-  const keys = ['kontakt_telefon','kontakt_email','kontakt_adresse','kontakt_zeiten'];
-  const { data } = await sb.from('content').select('key,value').in('key', keys);
-  if (!data) return;
-  data.forEach(row => {
-    const el = document.getElementById('f-' + row.key);
-    if (el) el.value = row.value || '';
-  });
+function toast(msg, err = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.cssText = `position:fixed; bottom:24px; right:24px; padding:12px 20px; border-radius:8px;
+    font-family:Montserrat,sans-serif; font-weight:600; font-size:14px; z-index:9999; display:block;
+    background:${err ? '#e74c3c; color:#fff' : '#2EBE6E; color:#000'};`;
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.style.display = 'none', 3000);
 }
 
-async function saveKontakt() {
-  const keys = ['kontakt_telefon','kontakt_email','kontakt_adresse','kontakt_zeiten'];
-  const rows = keys.map(k => ({ key: k, value: document.getElementById('f-' + k).value }));
-  const { error } = await sb.from('content').upsert(rows, { onConflict: 'key' });
-  showFeedback('kontakt', error);
-  if (!error) setPublishStatus(false);
-}
+// ─── LOGIN FORM ENTER KEY ─────────────────────────────────
+document.getElementById('login-pw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
 
-// ══════════════════════════════════════
-// PROJEKTE
-// ══════════════════════════════════════
-async function loadProjekte() {
-  const { data, error } = await sb.from('projekte').select('*').order('reihenfolge');
-  const tbody = document.getElementById('projekte-tbody');
-  if (error || !data) {
-    tbody.innerHTML = `<tr><td colspan="5" style="color:#e53e3e;padding:1rem;">Fehler: ${error?.message}</td></tr>`;
-    return;
-  }
-  projekteListe = data;
-  if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i data-lucide="folder-open" width="28" height="28"></i><p>Noch keine Projekte.</p></div></td></tr>`;
-    lucide.createIcons(); return;
-  }
-  tbody.innerHTML = data.map(p => `
-    <tr>
-      <td><strong>${esc(p.titel)}</strong></td>
-      <td><span class="badge badge-green">${esc(p.kategorie || '–')}</span></td>
-      <td>${p.reihenfolge}</td>
-      <td><span class="badge ${p.aktiv ? 'badge-green' : 'badge-gray'}">${p.aktiv ? 'Aktiv' : 'Inaktiv'}</span></td>
-      <td>
-        <div class="actions">
-          <button class="btn btn-secondary btn-sm" onclick="openProjektModal('${p.id}')">
-            <i data-lucide="edit-2" width="12" height="12"></i> Bearbeiten
-          </button>
-          <button class="btn btn-danger btn-sm" onclick="deleteProjekt('${p.id}')">
-            <i data-lucide="trash-2" width="12" height="12"></i>
-          </button>
-        </div>
-      </td>
-    </tr>`).join('');
-  lucide.createIcons();
-}
-
-function openProjektModal(id) {
-  const isEdit = !!id;
-  document.getElementById('modal-projekt-title').textContent = isEdit ? 'Projekt bearbeiten' : 'Neues Projekt';
-  document.getElementById('projekt-error').style.display = 'none';
-  document.getElementById('projekt-success').style.display = 'none';
-  ['p-id','p-titel','p-beschreibung','p-bild_vorher','p-bild_nachher'].forEach(fid => {
-    const el = document.getElementById(fid); if (el) el.value = '';
-  });
-  document.getElementById('p-reihenfolge').value = 0;
-  document.getElementById('p-aktiv').checked = true;
-  ['p-bild-vorher','p-bild-nachher'].forEach(fid => document.getElementById(fid).value = '');
-  ['p-prev-vorher','p-prev-nachher'].forEach(fid => document.getElementById(fid).style.display = 'none');
-  if (isEdit) {
-    const p = projekteListe.find(x => x.id === id);
-    if (p) {
-      document.getElementById('p-id').value = p.id;
-      document.getElementById('p-titel').value = p.titel || '';
-      document.getElementById('p-beschreibung').value = p.beschreibung || '';
-      document.getElementById('p-kategorie').value = p.kategorie || 'Innen';
-      document.getElementById('p-reihenfolge').value = p.reihenfolge ?? 0;
-      document.getElementById('p-aktiv').checked = p.aktiv !== false;
-      document.getElementById('p-bild_vorher').value = p.bild_vorher || '';
-      document.getElementById('p-bild_nachher').value = p.bild_nachher || '';
-      if (p.bild_vorher) { const img = document.getElementById('p-prev-vorher'); img.src = p.bild_vorher; img.style.display = 'block'; }
-      if (p.bild_nachher) { const img = document.getElementById('p-prev-nachher'); img.src = p.bild_nachher; img.style.display = 'block'; }
-    }
-  }
-  document.getElementById('modal-projekt').classList.add('active');
-  lucide.createIcons();
-}
-
-async function saveProjekt() {
-  const btn = document.getElementById('save-projekt-btn');
-  const errEl = document.getElementById('projekt-error');
-  const sucEl = document.getElementById('projekt-success');
-  errEl.style.display = 'none'; sucEl.style.display = 'none';
-  btn.disabled = true;
-
-  const titel = document.getElementById('p-titel').value.trim();
-  if (!titel) { showElError(errEl, 'Titel ist erforderlich.'); btn.disabled = false; return; }
-
-  let bildVorher = document.getElementById('p-bild_vorher').value;
-  let bildNachher = document.getElementById('p-bild_nachher').value;
-  const fileVorher = document.getElementById('p-bild-vorher').files[0];
-  const fileNachher = document.getElementById('p-bild-nachher').files[0];
-
-  if (fileVorher) { const url = await uploadFile(fileVorher); if (url) bildVorher = url; else { showElError(errEl, 'Fehler beim Upload (Vorher).'); btn.disabled = false; return; } }
-  if (fileNachher) { const url = await uploadFile(fileNachher); if (url) bildNachher = url; else { showElError(errEl, 'Fehler beim Upload (Nachher).'); btn.disabled = false; return; } }
-
-  const row = {
-    titel,
-    beschreibung: document.getElementById('p-beschreibung').value,
-    kategorie: document.getElementById('p-kategorie').value,
-    reihenfolge: parseInt(document.getElementById('p-reihenfolge').value) || 0,
-    aktiv: document.getElementById('p-aktiv').checked,
-    bild_vorher: bildVorher, bild_nachher: bildNachher
-  };
-  const pid = document.getElementById('p-id').value;
-  if (pid) row.id = pid;
-
-  const { error } = await sb.from('projekte').upsert(row);
-  btn.disabled = false;
-  if (error) { showElError(errEl, error.message); return; }
-  sucEl.style.display = 'block';
-  setTimeout(() => { closeModal('modal-projekt'); loadProjekte(); loadDashboard(); }, 900);
-}
-
-async function deleteProjekt(id) {
-  if (!confirm('Projekt wirklich löschen?')) return;
-  await sb.from('projekte').delete().eq('id', id);
-  loadProjekte(); loadDashboard();
-}
-
-// ══════════════════════════════════════
-// FAQ
-// ══════════════════════════════════════
-async function loadFaq() {
-  const { data, error } = await sb.from('faq').select('*').order('reihenfolge');
-  const container = document.getElementById('faq-list');
-  if (error || !data) { container.innerHTML = `<p style="color:#e53e3e;">${error?.message}</p>`; return; }
-  faqListe = data;
-  if (!data.length) {
-    container.innerHTML = `<div class="empty-state"><i data-lucide="help-circle" width="28" height="28"></i><p>Noch keine FAQ-Einträge.</p></div>`;
-    lucide.createIcons(); return;
-  }
-  container.innerHTML = data.map((f, i) => `
-    <div class="faq-row">
-      <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-        <button class="btn btn-secondary btn-sm" style="padding:3px 6px;" onclick="moveFaq('${f.id}', -1)" ${i === 0 ? 'disabled' : ''}>
-          <i data-lucide="chevron-up" width="12" height="12"></i>
-        </button>
-        <button class="btn btn-secondary btn-sm" style="padding:3px 6px;" onclick="moveFaq('${f.id}', 1)" ${i === data.length-1 ? 'disabled' : ''}>
-          <i data-lucide="chevron-down" width="12" height="12"></i>
-        </button>
-      </div>
-      <div style="flex:1;">
-        <div class="faq-q-text">${esc(f.frage)}</div>
-        <div class="faq-a-text">${esc(f.antwort).substring(0,100)}${f.antwort.length > 100 ? '…' : ''}</div>
-      </div>
-      <div style="display:flex;gap:0.35rem;align-items:center;flex-shrink:0;">
-        <span class="badge ${f.aktiv ? 'badge-green' : 'badge-gray'}">${f.aktiv ? 'Aktiv' : 'Inaktiv'}</span>
-        <button class="btn btn-secondary btn-sm" onclick="openFaqModal('${f.id}')">
-          <i data-lucide="edit-2" width="12" height="12"></i>
-        </button>
-        <button class="btn btn-danger btn-sm" onclick="deleteFaq('${f.id}')">
-          <i data-lucide="trash-2" width="12" height="12"></i>
-        </button>
-      </div>
-    </div>`).join('');
-  lucide.createIcons();
-}
-
-async function moveFaq(id, direction) {
-  const idx = faqListe.findIndex(f => f.id === id);
-  if (idx < 0) return;
-  const swapIdx = idx + direction;
-  if (swapIdx < 0 || swapIdx >= faqListe.length) return;
-  const a = faqListe[idx], b = faqListe[swapIdx];
-  const [ra, rb] = [a.reihenfolge, b.reihenfolge];
-  await Promise.all([
-    sb.from('faq').update({ reihenfolge: rb }).eq('id', a.id),
-    sb.from('faq').update({ reihenfolge: ra }).eq('id', b.id)
-  ]);
-  loadFaq();
-}
-
-function openFaqModal(id) {
-  const isEdit = !!id;
-  document.getElementById('modal-faq-title').textContent = isEdit ? 'FAQ bearbeiten' : 'Neue FAQ';
-  document.getElementById('faq-error').style.display = 'none';
-  document.getElementById('faq-id').value = '';
-  document.getElementById('faq-frage').value = '';
-  document.getElementById('faq-antwort').value = '';
-  document.getElementById('faq-reihenfolge').value = 0;
-  document.getElementById('faq-aktiv').checked = true;
-  if (isEdit) {
-    const f = faqListe.find(x => x.id === id);
-    if (f) {
-      document.getElementById('faq-id').value = f.id;
-      document.getElementById('faq-frage').value = f.frage || '';
-      document.getElementById('faq-antwort').value = f.antwort || '';
-      document.getElementById('faq-reihenfolge').value = f.reihenfolge ?? 0;
-      document.getElementById('faq-aktiv').checked = f.aktiv !== false;
-    }
-  }
-  document.getElementById('modal-faq').classList.add('active');
-  lucide.createIcons();
-}
-
-async function saveFaq() {
-  const errEl = document.getElementById('faq-error');
-  errEl.style.display = 'none';
-  const frage = document.getElementById('faq-frage').value.trim();
-  const antwort = document.getElementById('faq-antwort').value.trim();
-  if (!frage || !antwort) { showElError(errEl, 'Frage und Antwort sind erforderlich.'); return; }
-  const row = { frage, antwort, reihenfolge: parseInt(document.getElementById('faq-reihenfolge').value) || 0, aktiv: document.getElementById('faq-aktiv').checked };
-  const fid = document.getElementById('faq-id').value;
-  if (fid) row.id = fid;
-  const { error } = await sb.from('faq').upsert(row);
-  if (error) { showElError(errEl, error.message); return; }
-  closeModal('modal-faq');
-  loadFaq(); loadDashboard();
-}
-
-async function deleteFaq(id) {
-  if (!confirm('FAQ-Eintrag wirklich löschen?')) return;
-  await sb.from('faq').delete().eq('id', id);
-  loadFaq(); loadDashboard();
-}
-
-// ══════════════════════════════════════
-// BILDER
-// ══════════════════════════════════════
-async function loadBilder() {
-  const { data, error } = await sb.storage.from('bilder').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
-  const grid = document.getElementById('gallery-grid');
-  if (error) { grid.innerHTML = `<p style="color:#e53e3e;">Fehler: ${error.message}</p>`; return; }
-  const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
-  if (!files.length) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i data-lucide="image" width="28" height="28"></i><p>Noch keine Bilder.</p></div>`;
-    lucide.createIcons(); return;
-  }
-  grid.innerHTML = files.map(f => {
-    const { data: u } = sb.storage.from('bilder').getPublicUrl(f.name);
-    return `
-      <div class="gallery-item">
-        <img src="${u.publicUrl}" alt="${esc(f.name)}" onclick="copyToClipboard('${u.publicUrl}')" loading="lazy">
-        <div class="gallery-item-actions">
-          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('${u.publicUrl}')" title="URL kopieren">
-            <i data-lucide="copy" width="11" height="11"></i>
-          </button>
-          <button class="btn btn-danger btn-sm" onclick="deleteBild('${esc(f.name)}')" title="Löschen">
-            <i data-lucide="trash-2" width="11" height="11"></i>
-          </button>
-        </div>
-        <div class="gallery-item-name">${esc(f.name)}</div>
-      </div>`;
-  }).join('');
-  lucide.createIcons();
-}
-
-async function bulkUpload(input) {
-  const files = Array.from(input.files);
-  if (!files.length) return;
-  const sucEl = document.getElementById('bilder-success');
-  const errEl = document.getElementById('bilder-error');
-  sucEl.style.display = 'none'; errEl.style.display = 'none';
-  let ok = 0, fail = 0;
-  for (const file of files) {
-    const url = await uploadFile(file);
-    if (url) ok++; else fail++;
-  }
-  if (ok > 0) { sucEl.textContent = `✓ ${ok} Bild${ok > 1 ? 'er' : ''} hochgeladen.`; sucEl.style.display = 'block'; }
-  if (fail > 0) { errEl.textContent = `${fail} Upload${fail > 1 ? 's' : ''} fehlgeschlagen.`; errEl.style.display = 'block'; }
-  input.value = '';
-  loadBilder(); loadDashboard();
-}
-
-async function deleteBild(name) {
-  if (!confirm(`Bild "${name}" wirklich löschen?`)) return;
-  const { error } = await sb.storage.from('bilder').remove([name]);
-  if (!error) loadBilder();
-}
-
-// ══════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════
-async function uploadFile(file) {
-  const ext = file.name.split('.').pop();
-  const name = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  const { error } = await sb.storage.from('bilder').upload(name, file, { upsert: false });
-  if (error) return null;
-  const { data } = sb.storage.from('bilder').getPublicUrl(name);
-  return data.publicUrl;
-}
-
-function previewImg(input, previewId) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = document.getElementById(previewId);
-    img.src = e.target.result;
-    img.style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-}
-
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    const t = document.getElementById('copy-toast');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2000);
-  });
-}
-
-function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function showFeedback(prefix, error) {
-  const suc = document.getElementById(prefix + '-success');
-  const err = document.getElementById(prefix + '-error');
-  if (error) {
-    err.textContent = 'Fehler: ' + error.message;
-    err.style.display = 'block';
-    suc.style.display = 'none';
-  } else {
-    suc.style.display = 'block';
-    err.style.display = 'none';
-    setTimeout(() => suc.style.display = 'none', 3000);
-  }
-}
-
-function showElError(el, msg) {
-  el.textContent = msg;
-  el.style.display = 'block';
-}
+// ─── INIT ─────────────────────────────────────────────────
+checkSession();
 </script>
 </body>
 </html>
