@@ -13,18 +13,18 @@
     --green: #2EBE6E;
     --green-dark: #1a9a52;
     --danger: #e74c3c;
-    --bg: #f5f5f0;
+    --bg: #f0f0eb;
     --white: #ffffff;
     --text: #1a1a1a;
     --text-muted: #888;
-    --border: #e0e0d8;
-    --sidebar-w: 240px;
-    --panel-w: 300px;
+    --border: #ddddd5;
+    --topbar-h: 48px;
+    --sidebar-w: 200px;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body { height:100%; font-family:'Open Sans',sans-serif; background:var(--bg); color:var(--text); }
 
-  /* LOGIN */
+  /* ── LOGIN ── */
   #login-screen {
     min-height:100vh; display:flex; align-items:center; justify-content:center;
     background:linear-gradient(135deg,#f5f5f0,#eeeee8);
@@ -41,84 +41,102 @@
   .form-field input { border:1.5px solid var(--border); border-radius:8px; padding:0.75rem 0.9rem; font-size:0.9rem; outline:none; transition:border-color 0.2s; }
   .form-field input:focus { border-color:var(--green); }
   .login-error { color:var(--danger); font-size:0.85rem; margin-bottom:0.75rem; display:none; }
+  .btn-login {
+    width:100%; padding:0.8rem; background:var(--green); color:#000; border:none;
+    border-radius:8px; font-family:'Montserrat',sans-serif; font-weight:700;
+    font-size:0.9rem; cursor:pointer; margin-top:0.5rem; transition:background 0.2s;
+  }
+  .btn-login:hover { background:var(--green-dark); }
 
-  /* ADMIN LAYOUT */
-  #admin-app { display:none; height:100vh; }
+  /* ── ADMIN APP ── */
+  #admin-app { display:none; height:100vh; flex-direction:column; }
   #admin-app.active { display:flex; }
 
-  /* SIDEBAR */
+  /* ── TOP BAR ── */
+  #topbar {
+    height:var(--topbar-h); background:var(--white); border-bottom:1px solid var(--border);
+    display:flex; align-items:center; padding:0 1rem; gap:1rem; flex-shrink:0; z-index:100;
+  }
+  .topbar-logo { font-family:'Montserrat',sans-serif; font-weight:900; font-size:1rem; margin-right:0.5rem; }
+  .topbar-logo span { color:var(--green); }
+  .topbar-sep { width:1px; height:24px; background:var(--border); }
+  .topbar-group { display:flex; align-items:center; gap:4px; }
+  .tb-btn {
+    background:none; border:1px solid var(--border); border-radius:6px;
+    padding:5px 10px; font-size:12px; cursor:pointer; color:var(--text);
+    font-family:'Montserrat',sans-serif; font-weight:600;
+    transition:background 0.15s, border-color 0.15s;
+    display:flex; align-items:center; gap:4px;
+  }
+  .tb-btn:hover { background:var(--bg); }
+  .tb-btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .tb-btn.active { background:var(--text); color:#fff; border-color:var(--text); }
+  .topbar-spacer { flex:1; }
+  .tb-publish {
+    background:var(--green); color:#000; border:none; border-radius:6px;
+    padding:6px 16px; font-family:'Montserrat',sans-serif; font-weight:700;
+    font-size:12px; cursor:pointer; transition:background 0.2s;
+  }
+  .tb-publish:hover { background:var(--green-dark); color:#fff; }
+  .tb-logout {
+    background:none; border:none; color:var(--text-muted); cursor:pointer;
+    font-size:12px; font-family:'Open Sans',sans-serif; padding:4px 8px;
+  }
+  .tb-logout:hover { color:var(--danger); }
+  .undo-disabled { opacity:0.3 !important; }
+
+  /* ── MAIN AREA ── */
+  #main-area { flex:1; display:flex; overflow:hidden; }
+
+  /* ── SIDEBAR ── */
   #sidebar {
     width:var(--sidebar-w); background:var(--white); border-right:1px solid var(--border);
-    display:flex; flex-direction:column; overflow:hidden; flex-shrink:0;
+    display:flex; flex-direction:column; flex-shrink:0; overflow:hidden;
   }
-  .sidebar-header {
-    padding:1.25rem 1rem; border-bottom:1px solid var(--border);
-    display:flex; align-items:center; justify-content:space-between;
+  .sidebar-section { padding:1rem; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:0.5rem; }
+  .sidebar-link {
+    display:block; padding:8px 12px; border-radius:6px; font-size:0.82rem;
+    font-family:'Montserrat',sans-serif; font-weight:600; text-decoration:none;
+    color:var(--text); background:var(--bg); text-align:center;
+    transition:background 0.15s;
   }
-  .sidebar-logo { font-family:'Montserrat',sans-serif; font-weight:900; font-size:1.1rem; }
-  .sidebar-logo span { color:var(--green); }
-  .sidebar-logout { font-size:0.75rem; color:var(--text-muted); cursor:pointer; background:none; border:none; font-family:'Open Sans',sans-serif; }
-  .sidebar-logout:hover { color:var(--danger); }
-  .sidebar-nav { flex:1; overflow-y:auto; padding:0.75rem 0; }
-  .nav-group-label {
-    padding:0.5rem 1rem 0.3rem; font-family:'Montserrat',sans-serif; font-weight:700;
-    font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted);
+  .sidebar-link:hover { background:var(--border); }
+  .sidebar-help {
+    padding:1rem; font-size:0.78rem; color:var(--text-muted); line-height:1.6;
+    flex:1; overflow-y:auto;
   }
-  .nav-item {
-    display:flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem;
-    font-size:0.82rem; cursor:pointer; border-radius:0; transition:background 0.15s;
-    border-left:3px solid transparent; color:var(--text);
-  }
-  .nav-item:hover { background:rgba(46,190,110,0.06); }
-  .nav-item.active { background:rgba(46,190,110,0.1); border-left-color:var(--green); color:var(--green); font-weight:600; }
-  .nav-item .nav-dot { width:8px; height:8px; border-radius:50%; background:var(--border); flex-shrink:0; }
-  .nav-item.has-content .nav-dot { background:var(--green); }
+  .sidebar-help strong { color:var(--text); display:block; margin-bottom:0.4rem; font-family:'Montserrat',sans-serif; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; }
+  .sidebar-help p { margin-bottom:0.75rem; }
 
-  /* IFRAME */
-  #iframe-wrap { flex:1; position:relative; overflow:hidden; }
+  /* ── IFRAME WRAP ── */
+  #iframe-outer {
+    flex:1; display:flex; align-items:center; justify-content:center;
+    overflow:hidden; background:#d8d8d2; position:relative;
+    transition:background 0.3s;
+  }
+  #iframe-wrap {
+    background:#fff; box-shadow:0 8px 40px rgba(0,0,0,0.12);
+    transition:width 0.35s cubic-bezier(0.4,0,0.2,1), height 0.35s;
+    width:100%; height:100%; overflow:hidden; position:relative;
+  }
+  #iframe-wrap.tablet { width:768px; height:100%; border-radius:4px; }
+  #iframe-wrap.mobile { width:390px; height:100%; border-radius:12px; }
   #preview-iframe { width:100%; height:100%; border:none; }
 
-  /* EDIT PANEL */
-  #edit-panel {
-    width:var(--panel-w); background:var(--white); border-left:1px solid var(--border);
-    display:none; flex-direction:column; overflow:hidden; flex-shrink:0;
+  /* device notch for mobile */
+  #iframe-wrap.mobile::before {
+    content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:80px; height:6px; background:#888; border-radius:0 0 4px 4px; z-index:10;
   }
-  #edit-panel.open { display:flex; }
-  .panel-header {
-    padding:1rem 1.25rem; border-bottom:1px solid var(--border);
-    display:flex; align-items:center; justify-content:space-between;
-  }
-  .panel-title { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.9rem; }
-  .panel-key { font-size:0.72rem; color:var(--text-muted); font-family:monospace; margin-top:0.1rem; }
-  .panel-close { background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.2rem; line-height:1; }
-  .panel-close:hover { color:var(--text); }
-  .panel-body { flex:1; padding:1.25rem; overflow-y:auto; display:flex; flex-direction:column; gap:1rem; }
-
-  /* BUTTONS */
-  .btn { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.8rem; letter-spacing:0.06em; text-transform:uppercase; padding:0.7rem 1rem; border-radius:8px; border:none; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:0.5rem; transition:background 0.2s, transform 0.1s; }
-  .btn:active { transform:scale(0.98); }
-  .btn-green { background:var(--green); color:#000; }
-  .btn-green:hover { background:var(--green-dark, #1a9a52); }
-  .btn-red { background:var(--danger); color:#fff; }
-  .btn-red:hover { background:#c0392b; }
-  .btn-secondary { background:rgba(0,0,0,0.06); color:var(--text); }
-  .btn-secondary:hover { background:rgba(0,0,0,0.1); }
-
-  textarea.edit-textarea {
-    width:100%; min-height:100px; border:1.5px solid var(--border); border-radius:8px;
-    padding:0.75rem; font-size:0.9rem; font-family:'Open Sans',sans-serif; resize:vertical; outline:none;
-    transition:border-color 0.2s;
-  }
-  textarea.edit-textarea:focus { border-color:var(--green); }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ── LOGIN ── -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">Maler<span>Marc</span></div>
-    <div class="login-sub">Admin — Content Management</div>
+    <div class="login-sub">Admin — Visual Editor</div>
     <div id="login-error" class="login-error"></div>
     <div class="form-field">
       <label>E-Mail</label>
@@ -128,39 +146,72 @@
       <label>Passwort</label>
       <input type="password" id="login-pw" autocomplete="current-password">
     </div>
-    <button class="btn btn-green" style="margin-top:0.5rem;" onclick="doLogin()">Anmelden</button>
+    <button class="btn-login" onclick="doLogin()">Anmelden</button>
   </div>
 </div>
 
-<!-- ADMIN APP -->
+<!-- ── ADMIN APP ── -->
 <div id="admin-app">
 
-  <!-- SIDEBAR -->
-  <div id="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-logo">Maler<span>Marc</span></div>
-      <button class="sidebar-logout" onclick="doLogout()">Abmelden</button>
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <div class="topbar-logo">Maler<span>Marc</span></div>
+    <div class="topbar-sep"></div>
+
+    <!-- Undo / Redo -->
+    <div class="topbar-group">
+      <button class="tb-btn undo-disabled" id="btn-undo" onclick="doUndo()" title="Rückgängig (Ctrl+Z)">
+        ↩ Rückgängig
+      </button>
+      <button class="tb-btn undo-disabled" id="btn-redo" onclick="doRedo()" title="Wiederholen (Ctrl+Y)">
+        ↪ Wiederholen
+      </button>
     </div>
-    <div class="sidebar-nav" id="sidebar-nav"></div>
+
+    <div class="topbar-sep"></div>
+
+    <!-- Breakpoints -->
+    <div class="topbar-group">
+      <button class="tb-btn active" id="bp-desktop" onclick="setBreakpoint('desktop')">🖥 Desktop</button>
+      <button class="tb-btn" id="bp-tablet" onclick="setBreakpoint('tablet')">📱 Tablet</button>
+      <button class="tb-btn" id="bp-mobile" onclick="setBreakpoint('mobile')">📲 Mobile</button>
+    </div>
+
+    <div class="topbar-spacer"></div>
+
+    <button class="tb-publish" onclick="doPublish()">✓ Veröffentlicht</button>
+    <button class="tb-logout" onclick="doLogout()">Abmelden</button>
   </div>
 
-  <!-- IFRAME -->
-  <div id="iframe-wrap">
-    <iframe id="preview-iframe" src="index.html?cms=1"></iframe>
-  </div>
+  <!-- MAIN -->
+  <div id="main-area">
 
-  <!-- EDIT PANEL -->
-  <div id="edit-panel">
-    <div class="panel-header">
-      <div>
-        <div class="panel-title" id="panel-title">—</div>
-        <div class="panel-key" id="panel-key"></div>
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+      <div class="sidebar-section">
+        <a href="index.html" target="_blank" class="sidebar-link">🌐 Website ansehen</a>
       </div>
-      <button class="panel-close" onclick="closePanel()">×</button>
+      <div class="sidebar-help">
+        <strong>So funktioniert's</strong>
+        <p>Klicke direkt auf ein Element in der Vorschau, um es zu bearbeiten.</p>
+        <p><strong style="color:var(--green);font-family:inherit;font-size:inherit;text-transform:none;letter-spacing:0;">Grüner Rahmen</strong> = editierbar</p>
+        <p>📷 <b>Bild/Video:</b> Slot anklicken → hochladen</p>
+        <p>✏️ <b>Text:</b> Direkt klicken und tippen</p>
+        <p>✓ <b>Änderungen</b> werden sofort in der Cloud gespeichert.</p>
+        <p style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border);">
+          Undo/Redo mit den Pfeilen oben oder<br>Ctrl+Z / Ctrl+Y
+        </p>
+      </div>
     </div>
-    <div class="panel-body" id="panel-body"></div>
-  </div>
 
+    <!-- IFRAME -->
+    <div id="iframe-outer">
+      <div id="iframe-wrap">
+        <iframe id="preview-iframe" src="index.html?cms=1"></iframe>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -172,65 +223,17 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let contentCache = {};
-let currentKey = null;
+let undoStack = [];   // [{key, oldVal, newVal}]
+let redoStack = [];
 
-// ─── NAVIGATION STRUCTURE ───────────────────────────────
-const NAV = [
-  { group: 'BILDER', items: [
-    { key: 'hero_media',       label: 'Hero Hintergrund', type: 'media' },
-    { key: 'bild_marc',        label: 'Portrait Marc',    type: 'media' },
-    { key: 'referenz_vorher',  label: 'Vorher',           type: 'media' },
-    { key: 'referenz_nachher', label: 'Nachher',          type: 'media' },
-    { key: 'galerie_1',  label: 'Galerie 1',  type: 'media' },
-    { key: 'galerie_2',  label: 'Galerie 2',  type: 'media' },
-    { key: 'galerie_3',  label: 'Galerie 3',  type: 'media' },
-    { key: 'galerie_4',  label: 'Galerie 4',  type: 'media' },
-    { key: 'galerie_5',  label: 'Galerie 5',  type: 'media' },
-    { key: 'galerie_6',  label: 'Galerie 6',  type: 'media' },
-    { key: 'galerie_7',  label: 'Galerie 7',  type: 'media' },
-    { key: 'galerie_8',  label: 'Galerie 8',  type: 'media' },
-    { key: 'galerie_9',  label: 'Galerie 9',  type: 'media' },
-    { key: 'einblick_1', label: 'Einblick 1', type: 'media' },
-    { key: 'einblick_2', label: 'Einblick 2', type: 'media' },
-    { key: 'einblick_3', label: 'Einblick 3', type: 'media' },
-    { key: 'einblick_4', label: 'Einblick 4', type: 'media' },
-    { key: 'einblick_5', label: 'Einblick 5', type: 'media' },
-    { key: 'einblick_6', label: 'Einblick 6', type: 'media' },
-    { key: 'einblick_7', label: 'Einblick 7', type: 'media' },
-    { key: 'einblick_8', label: 'Einblick 8', type: 'media' },
-    { key: 'leistung_bild_1', label: 'Leistung 1', type: 'media' },
-    { key: 'leistung_bild_2', label: 'Leistung 2', type: 'media' },
-    { key: 'leistung_bild_3', label: 'Leistung 3', type: 'media' },
-    { key: 'leistung_bild_4', label: 'Leistung 4', type: 'media' },
-    { key: 'leistung_bild_5', label: 'Leistung 5', type: 'media' },
-    { key: 'leistung_bild_6', label: 'Leistung 6', type: 'media' },
-  ]},
-  { group: 'TEXTE', items: [
-    { key: 'hero_titel',       label: 'Hero Titel',      type: 'text' },
-    { key: 'hero_sub',         label: 'Hero Untertitel', type: 'text' },
-    { key: 'ueber_titel',      label: 'Über mich Titel', type: 'text' },
-    { key: 'ueber_text',       label: 'Über mich Text',  type: 'text' },
-    { key: 'kontakt_telefon',  label: 'Telefon',         type: 'text' },
-    { key: 'kontakt_email',    label: 'E-Mail',          type: 'text' },
-    { key: 'kontakt_adresse',  label: 'Adresse',         type: 'text' },
-    { key: 'kontakt_zeiten',   label: 'Öffnungszeiten',  type: 'text' },
-    { key: 'stat_projekte',    label: 'Stat: Projekte',  type: 'text' },
-    { key: 'stat_jahre',       label: 'Stat: Jahre',     type: 'text' },
-  ]},
-];
-
-// ─── LOGIN / LOGOUT ──────────────────────────────────────
+// ── LOGIN / LOGOUT ────────────────────────────────────────
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
-  const pw = document.getElementById('login-pw').value;
+  const pw    = document.getElementById('login-pw').value;
   const errEl = document.getElementById('login-error');
   errEl.style.display = 'none';
   const { error } = await db.auth.signInWithPassword({ email, password: pw });
-  if (error) {
-    errEl.textContent = error.message;
-    errEl.style.display = 'block';
-    return;
-  }
+  if (error) { errEl.textContent = error.message; errEl.style.display = 'block'; return; }
   showAdmin();
 }
 
@@ -248,161 +251,107 @@ async function checkSession() {
 async function showAdmin() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-app').classList.add('active');
-  await loadContent();
-  buildNav();
-}
-
-// ─── CONTENT LOADING ─────────────────────────────────────
-async function loadContent() {
+  // Load content cache
   const { data } = await db.from('content').select('key,value');
   if (data) data.forEach(({ key, value }) => { contentCache[key] = value || ''; });
 }
 
-// ─── NAVIGATION ──────────────────────────────────────────
-function buildNav() {
-  const nav = document.getElementById('sidebar-nav');
-  nav.innerHTML = '';
-  NAV.forEach(group => {
-    const label = document.createElement('div');
-    label.className = 'nav-group-label';
-    label.textContent = group.group;
-    nav.appendChild(label);
-    group.items.forEach(item => {
-      const el = document.createElement('div');
-      el.className = 'nav-item' + (contentCache[item.key] ? ' has-content' : '');
-      el.dataset.key = item.key;
-      el.innerHTML = `<span class="nav-dot"></span><span>${item.label}</span>`;
-      el.addEventListener('click', () => selectItem(item));
-      nav.appendChild(el);
-    });
+// ── PUBLISH ───────────────────────────────────────────────
+function doPublish() {
+  toast('✓ Alle Änderungen sind live gespeichert!');
+}
+
+// ── BREAKPOINTS ───────────────────────────────────────────
+function setBreakpoint(bp) {
+  const wrap = document.getElementById('iframe-wrap');
+  wrap.className = bp === 'desktop' ? '' : bp;
+  ['desktop','tablet','mobile'].forEach(b => {
+    document.getElementById('bp-'+b).classList.toggle('active', b === bp);
   });
+  document.getElementById('iframe-outer').style.background =
+    bp === 'desktop' ? '#d8d8d2' : '#b8b8b0';
 }
 
-function selectItem(item) {
-  currentKey = item.key;
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.key === item.key));
-  const panel = document.getElementById('edit-panel');
-  panel.classList.add('open');
-  document.getElementById('panel-title').textContent = item.label;
-  document.getElementById('panel-key').textContent = item.key;
-  const body = document.getElementById('panel-body');
-  if (item.type === 'media') {
-    const url = contentCache[item.key] || '';
-    body.innerHTML = `
-      <div id="media-preview"></div>
-      <button class="btn btn-green" onclick="doUpload('${item.key}')">&#xFF0B; Bild oder Video hochladen</button>
-      <button class="btn btn-red" onclick="doEntfernen('${item.key}')">&#x00D7; Entfernen</button>
-    `;
-    zeigeVorschau(item.key, url);
-  } else {
-    const val = contentCache[item.key] || '';
-    body.innerHTML = `
-      <textarea class="edit-textarea" id="text-input">${val.replace(/</g,'&lt;')}</textarea>
-      <button class="btn btn-green" onclick="doSaveText('${item.key}')">Speichern</button>
-    `;
-  }
+// ── UNDO / REDO ───────────────────────────────────────────
+function pushUndo(key, oldVal, newVal) {
+  undoStack.push({ key, oldVal, newVal });
+  redoStack = [];
+  updateUndoButtons();
 }
 
-function closePanel() {
-  document.getElementById('edit-panel').classList.remove('open');
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  currentKey = null;
+function updateUndoButtons() {
+  document.getElementById('btn-undo').classList.toggle('undo-disabled', undoStack.length === 0);
+  document.getElementById('btn-redo').classList.toggle('undo-disabled', redoStack.length === 0);
 }
 
-// ─── MEDIA UPLOAD ─────────────────────────────────────────
-async function doUpload(key) {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*,video/mp4,video/webm';
-  input.onchange = async () => {
-    const file = input.files[0];
-    if (!file) return;
-    toast('\u23F3 Hochladen...');
-    const ext = file.name.split('.').pop().toLowerCase();
-    const path = key + '_' + Date.now() + '.' + ext;
-    const { error: e1 } = await db.storage
-      .from('bilder').upload(path, file, { upsert: true });
-    if (e1) { toast('\u274C ' + e1.message, true); return; }
-    const { data } = db.storage.from('bilder').getPublicUrl(path);
-    const url = data.publicUrl;
-    const { error: e2 } = await db.from('content').upsert(
-      { key, value: url, updated_at: new Date().toISOString() },
-      { onConflict: 'key' }
-    );
-    if (e2) { toast('\u274C ' + e2.message, true); return; }
-    contentCache[key] = url;
-    document.getElementById('preview-iframe')
-      .contentWindow.postMessage({ type: 'cms_media', key, value: url }, '*');
-    zeigeVorschau(key, url);
-    updateNavDot(key, true);
-    toast('\u2713 Gespeichert!');
-  };
-  input.click();
+async function doUndo() {
+  if (!undoStack.length) return;
+  const { key, oldVal } = undoStack.pop();
+  redoStack.push({ key, oldVal, newVal: contentCache[key] });
+  await applyChange(key, oldVal);
+  updateUndoButtons();
+  toast('↩ Rückgängig gemacht');
 }
 
-async function doEntfernen(key) {
-  const { error } = await db.from('content').upsert(
-    { key, value: '', updated_at: new Date().toISOString() },
-    { onConflict: 'key' }
-  );
-  if (error) { toast('\u274C ' + error.message, true); return; }
-  contentCache[key] = '';
-  document.getElementById('preview-iframe')
-    .contentWindow.postMessage({ type: 'cms_media', key, value: '' }, '*');
-  zeigeVorschau(key, '');
-  updateNavDot(key, false);
-  toast('\u2713 Entfernt');
+async function doRedo() {
+  if (!redoStack.length) return;
+  const { key, newVal } = redoStack.pop();
+  undoStack.push({ key, oldVal: contentCache[key], newVal });
+  await applyChange(key, newVal);
+  updateUndoButtons();
+  toast('↪ Wiederholt');
 }
 
-async function doSaveText(key) {
-  const value = document.getElementById('text-input').value;
-  const { error } = await db.from('content').upsert(
-    { key, value, updated_at: new Date().toISOString() },
-    { onConflict: 'key' }
-  );
-  if (error) { toast('\u274C ' + error.message, true); return; }
+async function applyChange(key, value) {
+  // Save to Supabase
+  await db.from('content').upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
   contentCache[key] = value;
-  document.getElementById('preview-iframe')
-    .contentWindow.postMessage({ type: 'cms_text', key, value }, '*');
-  updateNavDot(key, !!value);
-  toast('\u2713 Gespeichert!');
+  // Push to iframe
+  const isMedia = !['hero_titel','hero_sub','ueber_titel','ueber_text',
+    'kontakt_telefon','kontakt_email','kontakt_adresse','kontakt_zeiten',
+    'stat_projekte','stat_jahre'].includes(key);
+  const iframe = document.getElementById('preview-iframe');
+  iframe.contentWindow.postMessage({
+    type: isMedia ? 'cms_media' : 'cms_text', key, value
+  }, '*');
 }
 
-// ─── HELPERS ─────────────────────────────────────────────
-function zeigeVorschau(key, url) {
-  const el = document.getElementById('media-preview');
-  if (!el) return;
-  if (!url) {
-    el.innerHTML = '<div style="height:180px; background:#f0f0ec; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#aaa;">Kein Inhalt</div>';
-    return;
-  }
-  const isVid = /\.(mp4|webm)/i.test(url);
-  el.innerHTML = isVid
-    ? `<video src="${url}" autoplay muted loop style="width:100%; height:180px; object-fit:cover; border-radius:8px;"></video>`
-    : `<img src="${url}" style="width:100%; height:180px; object-fit:cover; border-radius:8px;">`;
-}
+// ── Listen for saves from iframe ──────────────────────────
+window.addEventListener('message', async e => {
+  if (e.data?.type !== 'cms_saved') return;
+  const { key, value } = e.data;
+  const oldVal = contentCache[key] || '';
+  if (oldVal === value) return;
+  pushUndo(key, oldVal, value);
+  contentCache[key] = value;
+  toast('✓ Gespeichert!');
+});
 
-function updateNavDot(key, hasContent) {
-  const item = document.querySelector(`.nav-item[data-key="${key}"]`);
-  if (item) item.classList.toggle('has-content', hasContent);
-}
+// ── Keyboard shortcuts ────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); doUndo(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); doRedo(); }
+});
 
-function toast(msg, err = false) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.cssText = `position:fixed; bottom:24px; right:24px; padding:12px 20px; border-radius:8px;
-    font-family:Montserrat,sans-serif; font-weight:600; font-size:14px; z-index:9999; display:block;
-    background:${err ? '#e74c3c; color:#fff' : '#2EBE6E; color:#000'};`;
-  clearTimeout(t._t);
-  t._t = setTimeout(() => t.style.display = 'none', 3000);
-}
-
-// ─── LOGIN FORM ENTER KEY ─────────────────────────────────
+// ── Login enter key ───────────────────────────────────────
 document.getElementById('login-pw').addEventListener('keydown', e => {
   if (e.key === 'Enter') doLogin();
 });
 
-// ─── INIT ─────────────────────────────────────────────────
+// ── Toast ──────────────────────────────────────────────────
+function toast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  const isErr = err || msg.includes('❌');
+  t.style.cssText = `position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:8px;
+    font-family:'Montserrat',sans-serif;font-weight:600;font-size:14px;z-index:9999;display:block;
+    background:${isErr?'#e74c3c':'#2EBE6E'};color:${isErr?'#fff':'#000'};
+    box-shadow:0 4px 16px rgba(0,0,0,0.15);`;
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.style.display='none'; }, 3000);
+}
+
+// ── Init ──────────────────────────────────────────────────
 checkSession();
 </script>
 </body>
