@@ -107,3 +107,33 @@ create policy "auth delete bilder" on storage.objects
 
 -- ERWARTETES URL-FORMAT für korrekte Bild-URLs:
 -- https://zfyesnrezqupxolslbgx.supabase.co/storage/v1/object/public/bilder/DATEINAME
+
+-- ══════════════════════════════════════════════════════════
+-- TABELLE: leistungen (Leistungskarten – dynamisch verwaltbar)
+-- ══════════════════════════════════════════════════════════
+create table if not exists leistungen (
+  id uuid default gen_random_uuid() primary key,
+  titel text not null,
+  beschreibung text,
+  tag text,
+  icon text default 'paintbrush',
+  bild_url text,
+  reihenfolge int default 0,
+  aktiv boolean default true
+);
+alter table leistungen enable row level security;
+create policy "public read leistungen"
+  on leistungen for select using (true);
+create policy "auth write leistungen"
+  on leistungen for all
+  using (auth.role() = 'authenticated');
+
+-- Start-Daten einfügen:
+insert into leistungen (titel, beschreibung, tag, icon, reihenfolge) values
+  ('Innenmalerarbeiten', 'Wände, Decken und Details – sauber und sorgfältig ausgeführt.', 'BELIEBTESTE LEISTUNG', 'home', 10),
+  ('Aussenmalerarbeiten', 'Fassaden, Balkone und Aussenholz mit witterungsbeständigen Materialien.', 'AUCH FÜR FASSADEN', 'building-2', 20),
+  ('Kreative Wandgestaltung', 'Strukturputze, Betonlook, Muster und Effektfarben.', 'KREATIVITÄT PUR', 'sparkles', 30),
+  ('Gipserarbeiten', 'Verputzarbeiten und Untergrundvorbereitung.', 'GRUNDLAGENARBEITEN', 'layers', 40),
+  ('Tapezieren', 'Klassische und moderne Tapeten professionell verlegt.', 'KLASSISCH & MODERN', 'scroll-text', 50),
+  ('Schutzanstriche', 'Brandschutzfarben, Korrosionsschutz und Spezialbeschichtungen.', 'SCHUTZ & SICHERHEIT', 'shield-check', 60)
+on conflict do nothing;
