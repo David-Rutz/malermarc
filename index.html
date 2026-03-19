@@ -937,25 +937,19 @@
   .work-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* ── LEISTUNG KARTE MIT HINTERGRUNDBILD ── */
-  .leistung-card { position: relative; }
-  .leistung-card-bg {
-    position: absolute; inset: 0; background-size: cover; background-position: center;
-    border-radius: inherit; z-index: 0; opacity: 0; transition: opacity 0.4s;
-  }
-  .leistung-card-bg.loaded { opacity: 1; }
-  .leistung-card-bg::after {
-    content: ''; position: absolute; inset: 0;
-    background: rgba(0,0,0,0.62); border-radius: inherit;
+  .leistung-card.has-bg .cms-slot::after {
+    content: ''; position: absolute; inset: 0; z-index: 1;
+    background: rgba(0,0,0,0.55);
     transition: background 0.3s;
   }
-  .leistung-card.has-bg:hover .leistung-card-bg::after {
+  .leistung-card.has-bg:hover .cms-slot::after {
     background: rgba(0,0,0,0.45);
   }
   .leistung-card.has-bg .leistung-title,
   .leistung-card.has-bg .leistung-desc,
-  .leistung-card.has-bg .leistung-tag { color: #ffffff !important; position: relative; z-index: 1; }
+  .leistung-card.has-bg .leistung-tag { color: #ffffff !important; position: relative; z-index: 2; }
   .leistung-card.has-bg .leistung-icon {
-    position: relative; z-index: 1;
+    position: relative; z-index: 2;
     background: rgba(255,255,255,0.15) !important;
   }
   .leistung-card.has-bg .leistung-icon svg { color: #fff !important; }
@@ -2111,21 +2105,14 @@ function _applyMedia(key, value) {
     } else {
       if (video) video.style.display='none';
       if (img) {
-        img.src=value; img.style.display='block';
+        img.src=value; img.style.display='block'; img.style.opacity='1';
         if (key === 'hero_media') img.onload = () => _analyzeContrast(img);
       }
     }
   });
   document.querySelectorAll(`.leistung-card[data-key="${key}"]`).forEach(card => {
-    if (value) {
-      card.classList.add('has-bg');
-      const bgDiv = card.querySelector('.leistung-card-bg');
-      if (bgDiv) { bgDiv.style.backgroundImage=`url('${value}')`; bgDiv.classList.add('loaded'); }
-    } else {
-      card.classList.remove('has-bg');
-      const bgDiv = card.querySelector('.leistung-card-bg');
-      if (bgDiv) { bgDiv.style.backgroundImage=''; bgDiv.classList.remove('loaded'); }
-    }
+    if (value) card.classList.add('has-bg');
+    else card.classList.remove('has-bg');
   });
 }
 
