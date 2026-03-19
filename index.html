@@ -166,7 +166,7 @@
   /* ── HERO ── */
   #hero {
     min-height: 100vh;
-    display: flex; align-items: center;
+    display: flex; align-items: center; justify-content: center;
     position: relative; overflow: hidden;
     padding: 0 2.5rem;
   }
@@ -184,12 +184,13 @@
   .hero-content {
     position: relative; z-index: 2;
     max-width: 720px;
+    text-align: center;
   }
   .hero-eyebrow {
     font-family: 'Montserrat', sans-serif; font-weight: 700;
-    font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+    font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
     color: #ffffff; margin-bottom: 1.5rem;
-    display: flex; align-items: center; gap: 0.75rem;
+    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
     opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
     text-shadow: 0 2px 12px rgba(0,0,0,0.7);
   }
@@ -301,23 +302,6 @@
   .stat-label {
     font-size: 0.75rem; color: var(--text-muted);
     letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px;
-  }
-
-  /* Scroll indicator */
-  .scroll-hint {
-    position: absolute; bottom: 3rem; right: 2.5rem; z-index: 2;
-    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-    opacity: 0.5;
-    animation: fadeIn 1s 1.5s forwards;
-  }
-  .scroll-line {
-    width: 1px; height: 60px;
-    background: linear-gradient(180deg, var(--green), transparent);
-    animation: scroll-pulse 2s ease infinite;
-  }
-  .scroll-text {
-    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--text-muted); writing-mode: vertical-rl;
   }
 
   /* ── SECTION BASE ── */
@@ -572,9 +556,6 @@
   }
   @keyframes fadeIn {
     from { opacity: 0; } to { opacity: 1; }
-  }
-  @keyframes scroll-pulse {
-    0%,100% { opacity: 0.3; } 50% { opacity: 1; }
   }
   @keyframes drip-fall {
     0% { height: 0; opacity: 0.8; }
@@ -1072,10 +1053,6 @@
   </div>
 
 
-  <div class="scroll-hint">
-    <div class="scroll-line"></div>
-    <div class="scroll-text">Scroll</div>
-  </div>
 </section>
 
 <!-- TICKER -->
