@@ -296,12 +296,11 @@
     opacity: 0.6;
   }
 
-  /* Hero stats */
+  /* Stats (Über mich) */
   .hero-stats {
-    position: absolute; bottom: 3rem; left: 2.5rem;
     display: flex; gap: 3rem;
-    opacity: 0; animation: fadeUp 0.8s 1s forwards;
-    z-index: 2;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
   }
   .stat-item { }
   .stat-num {
@@ -702,7 +701,6 @@
     .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
     .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
     .hero-visual { display: none; }
-    .hero-stats { position: static; margin-top: 3rem; }
     #hero { padding-bottom: 3rem; flex-direction: column; justify-content: center; padding-top: 8rem; }
     .form-row { grid-template-columns: 1fr; }
   }
@@ -1075,20 +1073,6 @@
     </div>
   </div>
 
-  <div class="hero-stats">
-    <div class="stat-item">
-      <div class="stat-num" data-cms="stat_projekte">200+</div>
-      <div class="stat-label">Projekte</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num" data-cms="stat_jahre">20+</div>
-      <div class="stat-label">Jahre Erfahrung</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">100%</div>
-      <div class="stat-label">Zufriedenheit</div>
-    </div>
-  </div>
 
   <div class="scroll-hint">
     <div class="scroll-line"></div>
@@ -1377,6 +1361,21 @@
           <div class="value-name">Persönlicher Service</div>
           <div class="value-desc">Direkte Kommunikation ohne Umwege</div>
         </div>
+      </div>
+    </div>
+
+    <div class="hero-stats reveal reveal-delay-4">
+      <div class="stat-item">
+        <div class="stat-num" data-cms="stat_projekte">200+</div>
+        <div class="stat-label">Projekte</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-cms="stat_jahre">20+</div>
+        <div class="stat-label">Jahre Erfahrung</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Zufriedenheit</div>
       </div>
     </div>
   </div>
