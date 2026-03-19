@@ -191,10 +191,7 @@
     color: #ffffff; margin-bottom: 1.5rem;
     display: flex; align-items: center; gap: 0.75rem;
     opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
-    background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
-    border-radius: 6px; padding: 4px 10px;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
-    display: inline-flex;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.7);
   }
   .hero-eyebrow::before {
     content: ''; display: block; width: 40px; height: 2px; background: var(--green);
@@ -206,10 +203,7 @@
     margin-bottom: 1.5rem;
     opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
     color: #ffffff;
-    display: inline-block;
-    background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
-    border-radius: 6px; padding: 4px 10px;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.7);
   }
   h1 .highlight {
     color: var(--green);
@@ -228,10 +222,7 @@
     font-size: 1.15rem; color: #ffffff;
     line-height: 1.7; margin-bottom: 2.5rem; max-width: 520px;
     opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
-    display: inline-block;
-    background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
-    border-radius: 6px; padding: 4px 10px;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.7);
   }
   .hero-actions {
     display: flex; gap: 1rem; flex-wrap: wrap;
@@ -796,6 +787,13 @@
   }
   .hero-media .media-placeholder {
     position: absolute; inset: 0;
+  }
+  @keyframes hero-zoom {
+    0%   { transform: scale(1.0); }
+    100% { transform: scale(1.08); }
+  }
+  .hero-media .cms-img {
+    animation: hero-zoom 8s ease-in-out alternate infinite;
   }
   .hero-overlay {
     position: absolute; inset: 0; z-index: 1;
