@@ -183,27 +183,32 @@
   }
   .hero-content {
     position: relative; z-index: 2;
-    max-width: 720px;
+    width: 100%; max-width: 900px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
     text-align: center;
   }
   .hero-eyebrow {
     font-family: 'Montserrat', sans-serif; font-weight: 700;
-    font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
+    font-size: clamp(1rem, 2.5vw, 1.8rem); letter-spacing: 0.2em; text-transform: uppercase;
     color: #ffffff; margin-bottom: 1.5rem;
-    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+    display: flex; align-items: center; justify-content: center; gap: 1rem;
     opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
     text-shadow: 0 2px 12px rgba(0,0,0,0.7);
   }
-  .hero-eyebrow::before {
+  .hero-eyebrow::before,
+  .hero-eyebrow::after {
     content: ''; display: block; width: 40px; height: 2px; background: var(--green);
+    flex-shrink: 0;
   }
   h1 {
     font-family: 'Montserrat', sans-serif; font-weight: 900;
-    font-size: clamp(3rem, 7vw, 6rem);
+    font-size: clamp(3.5rem, 8vw, 7rem);
     line-height: 1.0;
     margin-bottom: 1.5rem;
     opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
     color: #ffffff;
+    text-align: center;
     text-shadow: 0 2px 12px rgba(0,0,0,0.7);
   }
   h1 .highlight {
@@ -220,13 +225,16 @@
     opacity: 0.5;
   }
   .hero-sub {
-    font-size: 1.15rem; color: #ffffff;
-    line-height: 1.7; margin-bottom: 2.5rem; max-width: 520px;
+    font-size: 1.2rem; color: #ffffff;
+    line-height: 1.7; margin-bottom: 2.5rem; max-width: 600px;
+    margin-left: auto; margin-right: auto;
     opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+    text-align: center;
     text-shadow: 0 2px 12px rgba(0,0,0,0.7);
   }
   .hero-actions {
     display: flex; gap: 1rem; flex-wrap: wrap;
+    justify-content: center;
     background: transparent;
     opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
   }
